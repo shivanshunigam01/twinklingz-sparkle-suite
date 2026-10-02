@@ -1,0 +1,6 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { ProductCard } from "@/components/product-card";
+import { products } from "@/lib/catalog";
+import { useStore } from "@/components/store-provider";
+export const Route=createFileRoute("/wishlist")({head:()=>({meta:[{title:"Wishlist | Twinklingz"},{name:"description",content:"Your saved Twinklingz jewellery favourites."},{property:"og:title",content:"Wishlist | Twinklingz"},{property:"og:description",content:"Your saved jewellery favourites."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary"}]}),component:Page});
+function Page(){const {wishlist}=useStore();const saved=products.filter(p=>wishlist.includes(p.id));return <main className="min-h-screen px-5 pb-24 pt-36 lg:px-10"><div className="mx-auto max-w-7xl"><h1 className="font-display text-5xl">Your Wishlist</h1><p className="mt-2 text-muted-foreground">Saved sparkle, ready when you are.</p>{saved.length?<div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">{saved.map(p=><ProductCard key={p.id} product={p}/>)}</div>:<p className="py-24 text-center font-display text-2xl text-muted-foreground">No favourites saved yet.</p>}</div></main>}

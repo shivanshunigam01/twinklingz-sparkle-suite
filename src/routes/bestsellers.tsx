@@ -1,0 +1,5 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { ProductCard } from "@/components/product-card";
+import { products } from "@/lib/catalog";
+export const Route=createFileRoute("/bestsellers")({head:()=>({meta:[{title:"Bestselling Jewellery | Twinklingz"},{name:"description",content:"Shop the jewellery most loved by Twinklingz customers."},{property:"og:title",content:"Most Loved | Twinklingz"},{property:"og:description",content:"Customer favourites, thoughtfully curated."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:Page});
+function Page(){return <main className="min-h-screen px-5 pb-24 pt-36 lg:px-10"><header className="mx-auto max-w-7xl border-b border-border pb-9"><p className="text-xs tracking-[.24em] text-accent">LOVED BY OUR CUSTOMERS</p><h1 className="mt-3 font-display text-6xl">Most Loved</h1></header><div className="mx-auto mt-10 grid max-w-7xl grid-cols-2 gap-4 md:grid-cols-4">{products.map(p=><ProductCard key={p.id} product={p} showRating/>)}</div></main>}
