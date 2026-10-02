@@ -15,7 +15,7 @@ export function ProductCard({ product, showRating = false }: { product: Product;
       </Link>
       {product.badge && <span className="absolute left-3 top-3 bg-primary px-2.5 py-1 text-[10px] font-semibold tracking-[0.18em] text-primary-foreground">{product.badge}</span>}
       <Button variant="ghost" size="icon" className="absolute right-2 top-2 bg-background/85" onClick={() => toggleWishlist(product.id)} aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}><Heart className={wished ? "fill-accent text-accent" : ""} /></Button>
-      <span className="absolute bottom-3 left-3 flex items-center gap-1 bg-background/80 px-2 py-1 text-[10px]"><Images className="size-3" /> 2</span>
+      <span className="absolute bottom-3 left-3 flex items-center gap-1 bg-background/80 px-2 py-1 text-[10px]"><Images className="size-3" /> {product.images.length}</span>
       <Button className="absolute bottom-3 right-3 translate-y-3 opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100" onClick={() => addToBag(product)}><ShoppingBag /> Quick Add</Button>
     </div>
     <div className="pt-4">

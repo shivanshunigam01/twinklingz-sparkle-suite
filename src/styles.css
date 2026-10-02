@@ -67,28 +67,29 @@
 }
 
 :root {
+  /* Twinklingz luxury palette — Deep Wine, Rose Gold, Blush, Ivory, Champagne, Charcoal */
   --radius: 0.25rem;
-  --background: oklch(0.985 0.009 35);
-  --foreground: oklch(0.20 0.018 15);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.20 0.018 15);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.20 0.018 15);
-  --primary: oklch(0.205 0.055 12);
-  --primary-foreground: oklch(0.985 0.009 35);
-  --secondary: oklch(0.95 0.022 31);
-  --secondary-foreground: oklch(0.205 0.055 12);
-  --muted: oklch(0.96 0.014 30);
-  --muted-foreground: oklch(0.48 0.025 15);
-  --accent: oklch(0.69 0.075 30);
-  --accent-foreground: oklch(0.205 0.055 12);
+  --background: #fff9f6;
+  --foreground: #21191b;
+  --card: #ffffff;
+  --card-foreground: #21191b;
+  --popover: #ffffff;
+  --popover-foreground: #21191b;
+  --primary: #2b101b;
+  --primary-foreground: #fff9f6;
+  --secondary: #f7ece8;
+  --secondary-foreground: #2b101b;
+  --muted: #f7ece8;
+  --muted-foreground: #5c4a4f;
+  --accent: #d99582;
+  --accent-foreground: #2b101b;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
   --border: oklch(0.88 0.025 30);
   --input: oklch(0.84 0.025 30);
   --ring: oklch(0.69 0.075 30);
-  --champagne: oklch(0.84 0.055 55);
-  --blush: oklch(0.95 0.022 31);
+  --champagne: #e7c6a8;
+  --blush: #f7ece8;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);

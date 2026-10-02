@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useStore } from "@/components/store-provider";
 import { formatPrice, products } from "@/lib/catalog";
+import { ANNOUNCEMENT_BAR } from "@/lib/cms-settings";
 const nav = [
   { label: "NEW IN", to: "/new-arrivals" as const }, { label: "NECKLACES", to: "/collections/$slug" as const, slug: "necklaces" }, { label: "EARRINGS", to: "/collections/$slug" as const, slug: "earrings" },
   { label: "BRACELETS", to: "/collections/$slug" as const, slug: "bracelets" }, { label: "RINGS", to: "/collections/$slug" as const, slug: "rings" }, { label: "SETS", to: "/collections/$slug" as const, slug: "jewellery-sets" },
@@ -18,7 +19,7 @@ export function SiteHeader() {
   useEffect(() => { const onScroll = () => setScrolled(window.scrollY > 48); onScroll(); window.addEventListener("scroll", onScroll, { passive: true }); return () => window.removeEventListener("scroll", onScroll); }, []);
   const results = term.trim() ? products.filter((p) => `${p.name} ${p.category}`.toLowerCase().includes(term.toLowerCase())).slice(0, 5) : [];
   return <>
-    <div className="fixed inset-x-0 top-0 z-50 bg-primary py-2 text-center text-[10px] tracking-[0.16em] text-primary-foreground sm:text-xs">✦ FREE SHIPPING ON SELECTED ORDERS <span className="mx-2 opacity-60">|</span> SECURE ONLINE PAYMENTS ✦</div>
+    <div className="fixed inset-x-0 top-0 z-50 bg-primary py-2 text-center text-[10px] tracking-[0.16em] text-primary-foreground sm:text-xs">{ANNOUNCEMENT_BAR}</div>
     <header className={`fixed inset-x-0 top-8 z-40 transition-all duration-500 ${hero ? "border-transparent bg-transparent text-primary-foreground" : "border-b border-border bg-background/95 text-foreground shadow-sm backdrop-blur"}`}>
       <div className="mx-auto flex h-[70px] max-w-[1500px] items-center justify-between px-4 lg:px-8">
         <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMenu(true)} aria-label="Open menu"><Menu /></Button>
