@@ -1,0 +1,5 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { ProductCard } from "@/components/product-card";
+import { products } from "@/lib/catalog";
+export const Route=createFileRoute("/new-arrivals")({head:()=>({meta:[{title:"New Arrivals | Twinklingz"},{name:"description",content:"Fresh fashion jewellery, just in at Twinklingz."},{property:"og:title",content:"New Arrivals | Twinklingz"},{property:"og:description",content:"Fresh sparkle, made for your next moment."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:Page});
+function Page(){return <main className="min-h-screen px-5 pb-24 pt-36 lg:px-10"><header className="mx-auto max-w-7xl border-b border-border pb-9"><p className="text-xs tracking-[.24em] text-accent">FRESH SPARKLE</p><h1 className="mt-3 font-display text-6xl">Just In ✦</h1><p className="mt-3 text-muted-foreground">Fresh sparkle, made for your next moment.</p></header><div className="mx-auto mt-10 grid max-w-7xl grid-cols-2 gap-4 md:grid-cols-4">{products.filter(p=>p.badge==="NEW").map(p=><ProductCard key={p.id} product={p}/>)}</div></main>}
