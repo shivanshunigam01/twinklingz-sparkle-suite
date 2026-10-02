@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep commerce UI organized around shared catalogue and store providers, with route-level pages for every public shopping surface — this preserves consistent interactions and SEO metadata.
