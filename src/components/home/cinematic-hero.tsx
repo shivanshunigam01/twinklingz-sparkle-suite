@@ -4,9 +4,8 @@ import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { HERO_SCROLL_VIDEO_SRC } from "@/lib/cms-settings";
-import { heroScrollFrames, media } from "@/lib/catalog";
+import { media } from "@/lib/catalog";
 
-const SCROLL_VH = 320;
 const COPY = [
   "TWINKLINGZ",
   "Jewellery made for your moments.",
@@ -15,8 +14,12 @@ const COPY = [
   "TWINKLINGZ",
 ] as const;
 
+function copyIndexForProgress(progress: number) {
+  const p = Math.min(1, Math.max(0, progress));
+  return Math.min(COPY.length - 1, Math.floor(p * COPY.length));
+}
+
 export function CinematicHero() {
-  const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [progress, setProgress] = useState(0);
   const [videoReady, setVideoReady] = useState(false);
@@ -24,38 +27,37 @@ export function CinematicHero() {
   const reduced = useReducedMotion();
 
   useEffect(() => {
-    if (reduced) return;
-    const onScroll = () => {
-      const el = sectionRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const p = -rect.top / Math.max(1, el.offsetHeight - window.innerHeight);
-      setProgress(Math.min(1, Math.max(0, p)));
+    const video = videoRef.current;
+    if (!video || reduced || !useVideo) return;
+
+    const syncProgress = () => {
+      const duration = video.duration;
+      if (!Number.isFinite(duration) || duration <= 0) return;
+      setProgress(video.currentTime / duration);
     };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [reduced]);
+    const onEnded = () => setProgress(1);
+
+    video.addEventListener("timeupdate", syncProgress);
+    video.addEventListener("ended", onEnded);
+
+    return () => {
+      video.removeEventListener("timeupdate", syncProgress);
+      video.removeEventListener("ended", onEnded);
+    };
+  }, [reduced, useVideo, videoReady]);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video || reduced || !useVideo || !videoReady) return;
-    const duration = video.duration;
-    if (!Number.isFinite(duration) || duration <= 0) return;
-    video.currentTime = progress * duration;
-  }, [progress, reduced, useVideo, videoReady]);
+    void video.play().catch(() => setUseVideo(false));
+  }, [reduced, useVideo, videoReady]);
 
-  const frameIndex = Math.min(
-    heroScrollFrames.length - 1,
-    Math.floor(progress * heroScrollFrames.length),
-  );
-  const copyIndex = Math.min(4, Math.floor(progress * 5));
+  const copyIndex = copyIndexForProgress(progress);
   const poster = media.heroImage;
-  const frameSrc = heroScrollFrames[frameIndex] ?? poster;
 
   return (
-    <section ref={sectionRef} className="relative bg-primary" style={{ height: `${SCROLL_VH}vh` }}>
-      <div className="sticky top-0 h-screen overflow-hidden">
+    <section className="relative h-screen bg-primary">
+      <div className="relative h-full overflow-hidden">
         {useVideo && !reduced ? (
           <video
             ref={videoRef}
@@ -63,19 +65,20 @@ export function CinematicHero() {
             poster={poster}
             muted
             playsInline
-            preload="metadata"
+            autoPlay
+            loop
+            preload="auto"
             className="absolute inset-0 h-full w-full object-cover"
             onLoadedMetadata={() => setVideoReady(true)}
             onError={() => setUseVideo(false)}
           />
         ) : (
           <img
-            src={frameSrc}
+            src={poster}
             alt="Twinklingz premium fashion jewellery"
             width={1536}
             height={1024}
-            className="absolute inset-0 h-full w-full object-cover transition-opacity duration-300"
-            style={{ transform: `scale(${1 + progress * 0.06})` }}
+            className="absolute inset-0 h-full w-full object-cover"
           />
         )}
 
@@ -114,12 +117,6 @@ export function CinematicHero() {
           </motion.div>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center text-[10px] tracking-[0.3em] text-primary-foreground">
-          <span>SCROLL TO DISCOVER</span>
-          <div className="mx-auto mt-3 h-12 w-px bg-primary-foreground/50">
-            <div className="w-px bg-champagne" style={{ height: `${progress * 100}%` }} />
-          </div>
-        </div>
       </div>
     </section>
   );
