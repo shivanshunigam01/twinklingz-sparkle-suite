@@ -14,6 +14,8 @@ import {
 } from "@/lib/catalog";
 import { SectionHeading } from "@/components/home/section-heading";
 import { useStore } from "@/components/store-provider";
+import { apiFetch } from "@/lib/api";
+import { toast } from "sonner";
 
 export function CategorySection() {
   return (
@@ -309,6 +311,26 @@ export function SocialSection() {
 }
 
 export function NewsletterSection() {
+  const [email, setEmail] = useState("");
+  const [sending, setSending] = useState(false);
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSending(true);
+    try {
+      await apiFetch("/submissions", {
+        method: "POST",
+        body: JSON.stringify({ type: "newsletter", email, sourcePath: "/" }),
+      });
+      toast.success("Welcome to the Twinklingz Circle!");
+      setEmail("");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not subscribe");
+    } finally {
+      setSending(false);
+    }
+  }
+
   return (
     <section className="bg-primary px-5 py-20 text-center text-primary-foreground">
       <p className="font-script text-2xl text-champagne">An invitation to sparkle</p>
@@ -318,16 +340,18 @@ export function NewsletterSection() {
       </p>
       <form
         className="mx-auto mt-8 flex max-w-xl border-b border-primary-foreground/50"
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={onSubmit}
       >
         <input
           type="email"
           required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder="Your email address"
           className="w-full bg-transparent px-2 py-4 outline-none placeholder:text-primary-foreground/50"
         />
-        <Button type="submit" variant="ghost" className="text-primary-foreground">
-          JOIN NOW <ArrowRight />
+        <Button type="submit" variant="ghost" className="text-primary-foreground" disabled={sending}>
+          {sending ? "…" : "JOIN NOW"} <ArrowRight />
         </Button>
       </form>
     </section>

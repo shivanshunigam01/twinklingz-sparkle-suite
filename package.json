@@ -4,7 +4,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
+    "dev": "node ./node_modules/vite/bin/vite.js dev",
     "catalog:generate": "node scripts/generate-catalog.mjs",
     "build": "npm run catalog:generate && vite build",
     "build:dev": "vite build --mode development",
@@ -59,6 +59,7 @@
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.575.0",
+    "magic-string": "^1.4.3",
     "motion": "^13.4.6",
     "react": "^19.2.0",
     "react-day-picker": "^9.14.0",
@@ -66,6 +67,7 @@
     "react-hook-form": "^7.71.2",
     "react-resizable-panels": "^4.6.5",
     "recharts": "^2.15.4",
+    "rolldown": "1.2.1",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.1",
@@ -99,5 +101,10 @@
     "typescript-eslint": "^8.56.1",
     "vite": "8.1.5",
     "vitest": "^4.1.10"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.18.20": true
   }
 }

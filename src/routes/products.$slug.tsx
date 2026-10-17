@@ -4,13 +4,15 @@ import { Heart, Minus, Plus, ShieldCheck, Truck, PackageCheck, Star, ZoomIn } fr
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ProductCard } from "@/components/product-card";
-import { formatPrice, getProductBySlug, products } from "@/lib/catalog";
+import { formatPrice, products as staticProducts } from "@/lib/catalog";
+import { fetchProductBySlug, usePublicProducts } from "@/lib/use-public-products";
 import { RETURN_REFUND_POLICY } from "@/lib/cms-settings";
 import { useStore } from "@/components/store-provider";
 
 export const Route = createFileRoute("/products/$slug")({
+  loader: ({ params }) => fetchProductBySlug(params.slug),
   head: ({ params }) => {
-    const p = getProductBySlug(params.slug);
+    const p = staticProducts.find((x) => x.slug === params.slug);
     const name = p?.name ?? "Jewellery";
     return {
       meta: [
@@ -28,7 +30,9 @@ export const Route = createFileRoute("/products/$slug")({
 
 function Page() {
   const { slug } = Route.useParams();
-  const product = getProductBySlug(slug) ?? products[0];
+  const loaderProduct = Route.useLoaderData();
+  const { data: catalog = staticProducts } = usePublicProducts();
+  const product = catalog.find((p) => p.slug === slug) ?? loaderProduct ?? catalog[0];
   const [qty, setQty] = useState(1);
   const [finish, setFinish] = useState("Rose Gold");
   const [activeImage, setActiveImage] = useState(0);
@@ -43,10 +47,10 @@ function Page() {
 
   const gallery = product.images.length > 0 ? product.images : [product.image, product.altImage];
   const hero = gallery[activeImage] ?? gallery[0];
-  const completeLook = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 3);
+  const completeLook = catalog.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 3);
   const recentProducts = recentlyViewed
-    .map((id) => products.find((p) => p.id === id))
-    .filter((p): p is (typeof products)[0] => Boolean(p) && p.id !== product.id)
+    .map((id) => catalog.find((p) => p.id === id))
+    .filter((p): p is (typeof catalog)[0] => Boolean(p) && p.id !== product.id)
     .slice(0, 4);
 
   return (
