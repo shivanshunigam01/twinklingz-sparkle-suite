@@ -22,10 +22,17 @@ function mapApiProduct(p: ApiProduct): Product {
   };
 }
 
+function normalizeCatalogKey(slug: string, sku?: string) {
+  const base = (sku || slug).trim().toLowerCase();
+  return base.replace(/^style-/, "");
+}
+
 function mergeCatalog(apiList: ApiProduct[]): Product[] {
   const fromApi = apiList.map(mapApiProduct);
-  const apiSlugs = new Set(fromApi.map((p) => p.slug));
-  const staticOnly = staticProducts.filter((p) => !apiSlugs.has(p.slug));
+  const apiKeys = new Set(fromApi.map((p) => normalizeCatalogKey(p.slug, p.sku)));
+  const staticOnly = staticProducts.filter(
+    (p) => !apiKeys.has(normalizeCatalogKey(p.slug, p.sku)),
+  );
   return [...fromApi, ...staticOnly];
 }
 
@@ -46,10 +53,23 @@ export function usePublicProducts() {
 }
 
 export async function fetchProductBySlug(slug: string): Promise<Product | undefined> {
+  const normalized = normalizeCatalogKey(slug);
   try {
     const res = await apiFetch<{ product: ApiProduct }>(`/products/${encodeURIComponent(slug)}`);
     return mapApiProduct(res.product);
   } catch {
-    return staticProducts.find((p) => p.slug === slug);
+    try {
+      if (slug !== normalized) {
+        const res = await apiFetch<{ product: ApiProduct }>(
+          `/products/${encodeURIComponent(normalized)}`,
+        );
+        return mapApiProduct(res.product);
+      }
+    } catch {
+      /* fall through to static catalog */
+    }
+    return staticProducts.find(
+      (p) => p.slug === slug || normalizeCatalogKey(p.slug, p.sku) === normalized,
+    );
   }
 }

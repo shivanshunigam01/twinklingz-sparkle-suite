@@ -6,7 +6,6 @@ import { useStore } from "@/components/store-provider";
 export function ProductCard({ product, showRating = false }: { product: Product; showRating?: boolean }) {
   const { addToBag, toggleWishlist, wishlist } = useStore();
   const wished = wishlist.includes(product.id);
-  const discount = product.mrp ? Math.round((1 - product.price / product.mrp) * 100) : 0;
   return <article className="group min-w-0">
     <div className="relative aspect-[4/5] overflow-hidden bg-muted">
       <Link to="/products/$slug" params={{ slug: product.slug }} aria-label={`View ${product.name}`}>
@@ -21,7 +20,12 @@ export function ProductCard({ product, showRating = false }: { product: Product;
     <div className="pt-4">
       {showRating && <div className="mb-1 flex items-center gap-1 text-xs text-muted-foreground"><Star className="size-3 fill-accent text-accent" /> {product.rating} <span>({product.reviews})</span></div>}
       <Link to="/products/$slug" params={{ slug: product.slug }} className="font-display text-lg text-foreground hover:text-primary">{product.name}</Link>
-      <div className="mt-1 flex flex-wrap items-center gap-2 text-sm"><strong>{formatPrice(product.price)}</strong>{product.mrp && <><span className="text-muted-foreground line-through">{formatPrice(product.mrp)}</span><span className="text-accent-foreground">{discount}% off</span></>}</div>
+      <div className="mt-1 flex flex-wrap items-center gap-2 text-sm">
+        <strong>{formatPrice(product.price)}</strong>
+        {product.mrp && (
+          <span className="text-muted-foreground line-through">{formatPrice(product.mrp)}</span>
+        )}
+      </div>
       <Button className="mt-3 w-full md:hidden" onClick={() => addToBag(product)}>Quick Add</Button>
     </div>
   </article>;

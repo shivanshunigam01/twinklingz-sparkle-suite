@@ -5,8 +5,8 @@ import { fileURLToPath } from "url";
 const root = path.dirname(fileURLToPath(import.meta.url));
 const catalogDir = path.join(root, "..", "public", "catalog");
 const outFile = path.join(root, "..", "src", "lib", "catalog-data.generated.ts");
+const categoriesFile = path.join(root, "..", "src", "lib", "product-categories.json");
 
-const categories = ["Necklaces", "Earrings", "Bracelets", "Rings", "Jewellery Sets"];
 const namePrefixes = ["Noor", "Gul", "Meher", "Ruhi", "Zarah", "Inaaya", "Mira", "Aabha", "Sana", "Kiara", "Riya", "Anya"];
 
 function slugify(s) {
@@ -22,17 +22,47 @@ function hash(s) {
   return h;
 }
 
-const entries = fs.readdirSync(catalogDir, { withFileTypes: true }).filter((d) => d.isDirectory());
+function loadSkuCategories() {
+  if (!fs.existsSync(categoriesFile)) return {};
+  try {
+    const data = JSON.parse(fs.readFileSync(categoriesFile, "utf8"));
+    const raw = data.skuCategories || {};
+    const out = {};
+    for (const [sku, meta] of Object.entries(raw)) {
+      out[sku] = typeof meta === "string" ? meta : meta.category;
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+const skuCategories = loadSkuCategories();
+const defaultCategory = "Earrings";
+
+if (!fs.existsSync(catalogDir)) {
+  console.warn(`Catalog folder missing (${catalogDir}); categories will still come from product-categories.json when present.`);
+}
+
+const entries = fs.existsSync(catalogDir)
+  ? fs.readdirSync(catalogDir, { withFileTypes: true }).filter((d) => d.isDirectory())
+  : Object.keys(skuCategories).map((name) => ({ name, isDirectory: () => true }));
+
 const skus = entries.map((d) => d.name).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
 const catalogEntries = skus.map((sku, index) => {
   const dir = path.join(catalogDir, sku);
-  const files = fs
-    .readdirSync(dir)
-    .filter((f) => /\.png$/i.test(f))
-    .sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+  let files = [];
+  if (fs.existsSync(dir)) {
+    files = fs
+      .readdirSync(dir)
+      .filter((f) => /\.png$/i.test(f))
+      .sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+  } else {
+    files = ["1.png", "2.png", "3.png", "4.png"];
+  }
   const images = files.map((f) => `/catalog/${encodeURIComponent(sku)}/${f}`);
-  const category = categories[index % categories.length];
+  const category = skuCategories[sku] || defaultCategory;
   const prefix = namePrefixes[index % namePrefixes.length];
   const style = sku.replace(/-/g, " ");
   const name = `${prefix} · Style ${style}`;
