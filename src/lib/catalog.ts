@@ -23,7 +23,6 @@ export const products: Product[] = catalogEntries.map((entry, i) => ({
   name: entry.name,
   category: entry.category,
   price: entry.price,
-  mrp: entry.mrp,
   badge: entry.badge,
   rating: entry.rating,
   reviews: entry.reviews,

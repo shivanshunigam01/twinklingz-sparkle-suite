@@ -97,7 +97,7 @@ function SettingsPage() {
       <section className="space-y-4 border border-border bg-background p-6">
         <h3 className="font-display text-xl">Policies & story</h3>
         <div>
-          <Label className="text-xs">Return / refund policy</Label>
+          <Label className="text-xs">Sales policy (all sales final)</Label>
           <Textarea
             className="mt-1 min-h-24"
             value={form.returnRefundPolicy}

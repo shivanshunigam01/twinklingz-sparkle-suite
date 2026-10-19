@@ -12,7 +12,6 @@ function mapApiProduct(p: ApiProduct): Product {
     name: p.name,
     category: p.category,
     price: p.price,
-    mrp: p.mrp,
     badge: p.badge ?? undefined,
     rating: p.rating ?? 4.8,
     reviews: p.reviews ?? 0,

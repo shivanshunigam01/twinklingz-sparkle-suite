@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { CheckCircle2, Mail, MapPin, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/catalog";
 import { useStore } from "@/components/store-provider";
@@ -45,34 +46,153 @@ const emptyForm: FormState = {
   pinCode: "",
 };
 
-function Page() {
-  const [confirmed, setConfirmed] = useState(false);
-  const [orderNumber, setOrderNumber] = useState("");
-  const [form, setForm] = useState<FormState>(emptyForm);
-  const [paying, setPaying] = useState(false);
-  const { cart, subtotal } = useStore();
+type OrderSummary = {
+  orderNumber: string;
+  fullName: string;
+  email: string;
+  mobile: string;
+  shipping: {
+    address: string;
+    landmark: string;
+    city: string;
+    state: string;
+    pinCode: string;
+  };
+  items: { name: string; quantity: number; lineTotal: number }[];
+  total: number;
+  emailPending?: boolean;
+};
 
-  if (confirmed) {
-    return (
-      <main className="flex min-h-screen items-center justify-center px-5 text-center">
-        <div>
-          <p className="text-5xl">✦</p>
-          <h1 className="mt-4 font-display text-5xl">Your sparkle is on its way ✨</h1>
-          {orderNumber && <p className="mt-2 font-medium">Order {orderNumber}</p>}
-          <p className="mt-4 text-muted-foreground">
-            Your order confirmation and tracking details will be sent after payment is verified.
-          </p>
-          <div className="mt-8 flex justify-center gap-3">
-            <Button asChild variant="outline">
-              <Link to="/track-order">TRACK ORDER</Link>
-            </Button>
-            <Button asChild>
-              <Link to="/shop">CONTINUE SHOPPING</Link>
-            </Button>
+function OrderSuccess({ summary }: { summary: OrderSummary }) {
+  const addressLine = [
+    summary.shipping.address,
+    summary.shipping.landmark,
+    `${summary.shipping.city}, ${summary.shipping.state} ${summary.shipping.pinCode}`,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  return (
+    <main className="min-h-screen bg-secondary px-5 pb-24 pt-32">
+      <div className="mx-auto max-w-2xl">
+        <div className="overflow-hidden border border-border bg-background shadow-sm">
+          <div className="bg-primary px-6 py-10 text-center text-primary-foreground sm:px-10">
+            <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-primary-foreground/15">
+              <CheckCircle2 className="size-8" strokeWidth={1.5} />
+            </div>
+            <p className="mt-6 text-xs tracking-[0.28em] text-primary-foreground/80">ORDER CONFIRMED</p>
+            <h1 className="mt-3 font-display text-4xl sm:text-5xl">Your sparkle is on its way</h1>
+            <p className="mt-2 inline-flex items-center gap-1 text-lg">
+              <Sparkles className="size-5 text-accent" aria-hidden />
+            </p>
+            <p className="mt-4 text-sm text-primary-foreground/90">
+              Thank you, <span className="font-medium">{summary.fullName}</span>
+            </p>
+          </div>
+
+          <div className="space-y-8 px-6 py-8 sm:px-10">
+            <div className="flex flex-col gap-2 border-b border-border pb-6 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs tracking-[0.2em] text-muted-foreground">ORDER NUMBER</p>
+                <p className="mt-1 font-display text-2xl text-primary">{summary.orderNumber}</p>
+              </div>
+              <p className="text-lg font-semibold">{formatPrice(summary.total)}</p>
+            </div>
+
+            <div className="flex gap-3 rounded-md bg-secondary/80 p-4 text-sm leading-relaxed">
+              <Mail className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden />
+              <p className="text-muted-foreground">
+                {summary.emailPending
+                  ? "Complete payment to receive your confirmation email with order and tracking details."
+                  : (
+                    <>
+                      We&apos;ve sent a confirmation to{" "}
+                      <span className="font-medium text-foreground">{summary.email}</span> with your items,
+                      shipping address, and a link to track your order.
+                    </>
+                  )}
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-xs font-semibold tracking-[0.2em] text-muted-foreground">YOUR ITEMS</h2>
+              <ul className="mt-4 divide-y divide-border">
+                {summary.items.map((item) => (
+                  <li key={`${item.name}-${item.quantity}`} className="flex justify-between gap-4 py-3 text-sm">
+                    <span>
+                      {item.name} <span className="text-muted-foreground">× {item.quantity}</span>
+                    </span>
+                    <span className="shrink-0 font-medium">{formatPrice(item.lineTotal)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="flex gap-3 text-sm leading-relaxed">
+              <MapPin className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden />
+              <div>
+                <h2 className="text-xs font-semibold tracking-[0.2em] text-muted-foreground">DELIVERING TO</h2>
+                <p className="mt-2">{addressLine}</p>
+                <p className="mt-1 text-muted-foreground">{summary.mobile}</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+              <Button asChild className="flex-1">
+                <Link
+                  to="/track-order"
+                  search={{ orderNumber: summary.orderNumber, emailOrPhone: summary.email }}
+                >
+                  TRACK ORDER
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="flex-1">
+                <Link to="/shop">CONTINUE SHOPPING</Link>
+              </Button>
+            </div>
           </div>
         </div>
-      </main>
-    );
+      </div>
+    </main>
+  );
+}
+
+function Page() {
+  const [summary, setSummary] = useState<OrderSummary | null>(null);
+  const [form, setForm] = useState<FormState>(emptyForm);
+  const [paying, setPaying] = useState(false);
+  const { cart, subtotal, clearCart } = useStore();
+
+  if (summary) {
+    return <OrderSuccess summary={summary} />;
+  }
+
+  function buildSummary(orderNumber: string, emailPending = false): OrderSummary {
+    return {
+      orderNumber,
+      fullName: form.fullName,
+      email: form.email,
+      mobile: form.mobile,
+      shipping: {
+        address: form.address,
+        landmark: form.landmark,
+        city: form.city,
+        state: form.state,
+        pinCode: form.pinCode,
+      },
+      items: cart.map(({ product, quantity }) => ({
+        name: product.name,
+        quantity,
+        lineTotal: product.price * quantity,
+      })),
+      total: subtotal,
+      emailPending,
+    };
+  }
+
+  function finishCheckout(orderNumber: string, emailPending = false) {
+    setSummary(buildSummary(orderNumber, emailPending));
+    clearCart();
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -110,7 +230,7 @@ function Page() {
       });
 
       const orderId = created.order.id;
-      setOrderNumber(created.order.orderNumber);
+      const orderNum = created.order.orderNumber;
 
       const amountPaise = Math.max(100, Math.round(created.order.total * 100));
 
@@ -124,7 +244,7 @@ function Page() {
         body: JSON.stringify({
           amount: amountPaise,
           currency: "INR",
-          receipt: created.order.orderNumber,
+          receipt: orderNum,
           shopOrderId: orderId,
         }),
       });
@@ -134,7 +254,7 @@ function Page() {
         toast.message("Order saved", {
           description: "Add Razorpay keys to complete payment online. Order is pending payment.",
         });
-        setConfirmed(true);
+        finishCheckout(orderNum, true);
         return;
       }
 
@@ -144,7 +264,7 @@ function Page() {
         currency: rp.currency,
         orderId: rp.order_id,
         prefill: { name: form.fullName, email: form.email, contact: form.mobile },
-        description: `Order ${created.order.orderNumber}`,
+        description: `Order ${orderNum}`,
         onSuccess: async (response) => {
           try {
             const verified = await apiFetch<{ success: boolean }>("/verify-payment", {
@@ -156,7 +276,7 @@ function Page() {
               return;
             }
             toast.success("Payment successful");
-            setConfirmed(true);
+            finishCheckout(orderNum, false);
           } catch (err) {
             toast.error(err instanceof Error ? err.message : "Payment verification failed");
           }
@@ -213,8 +333,8 @@ function Page() {
               You will pay securely via Razorpay (UPI, cards, and more).
             </p>
             <label className="mt-7 flex items-start gap-3 text-sm">
-              <input required type="checkbox" className="mt-1" />I have read and agree to the Terms &amp; Conditions
-              and Return/Refund Policy.
+              <input required type="checkbox" className="mt-1" />I agree to the Terms &amp; Conditions and understand
+              all sales are final (no returns, refunds, or exchanges).
             </label>
             <Button type="submit" className="mt-7 w-full" disabled={!cart.length || paying}>
               {paying ? "Processing…" : "CONTINUE TO SECURE PAYMENT"}

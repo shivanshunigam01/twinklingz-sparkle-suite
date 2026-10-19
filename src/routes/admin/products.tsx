@@ -21,7 +21,6 @@ const emptyForm = {
   slug: "",
   category: "Necklaces",
   price: "",
-  mrp: "",
   description: "",
   published: true,
   inStock: true,
@@ -49,7 +48,6 @@ function ProductsPage() {
         category: form.category,
         description: form.description,
         price: Number(form.price),
-        mrp: form.mrp ? Number(form.mrp) : undefined,
         published: form.published,
         inStock: form.inStock,
         featured: form.featured,
@@ -102,7 +100,6 @@ function ProductsPage() {
       slug: p.slug,
       category: p.category,
       price: String(p.price),
-      mrp: p.mrp != null ? String(p.mrp) : "",
       description: p.description || "",
       published: p.published !== false,
       inStock: p.inStock !== false,
@@ -125,7 +122,6 @@ function ProductsPage() {
           <Field label="Slug (optional)" value={form.slug} onChange={(v) => setForm({ ...form, slug: v })} />
           <Field label="Category" value={form.category} onChange={(v) => setForm({ ...form, category: v })} />
           <Field label="Price (₹)" value={form.price} onChange={(v) => setForm({ ...form, price: v })} type="number" />
-          <Field label="MRP (₹)" value={form.mrp} onChange={(v) => setForm({ ...form, mrp: v })} type="number" />
         </div>
         <Label className="mt-4 block text-xs">Description</Label>
         <Textarea
@@ -216,7 +212,7 @@ function Field({
   return (
     <div>
       <Label className="text-xs">{label}</Label>
-      <Input className="mt-1" type={type} value={value} onChange={(e) => onChange(e.target.value)} required={label !== "Slug (optional)" && label !== "MRP (₹)"} />
+      <Input className="mt-1" type={type} value={value} onChange={(e) => onChange(e.target.value)} required={label !== "Slug (optional)"} />
     </div>
   );
 }

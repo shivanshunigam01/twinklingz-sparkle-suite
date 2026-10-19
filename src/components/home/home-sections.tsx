@@ -336,7 +336,7 @@ export function NewsletterSection() {
       <p className="font-script text-2xl text-champagne">An invitation to sparkle</p>
       <h2 className="mt-3 font-display text-5xl">Join the Twinklingz Circle</h2>
       <p className="mx-auto mt-4 max-w-xl text-primary-foreground/70">
-        Be the first to discover new drops, exclusive collections and special offers.
+        Be the first to discover new drops and exclusive collections.
       </p>
       <form
         className="mx-auto mt-8 flex max-w-xl border-b border-primary-foreground/50"

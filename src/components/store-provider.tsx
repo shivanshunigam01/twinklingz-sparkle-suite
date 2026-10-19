@@ -11,6 +11,7 @@ type StoreContextValue = {
   addToBag: (product: Product) => void;
   removeFromBag: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
+  clearCart: () => void;
   toggleWishlist: (id: string) => void;
   trackRecentlyViewed: (id: string) => void;
   subtotal: number;
@@ -45,6 +46,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     addToBag: (product: Product) => { setCart((items) => { const found = items.find((item) => item.product.id === product.id); return found ? items.map((item) => item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item) : [...items, { product, quantity: 1 }]; }); setBagOpen(true); },
     removeFromBag: (id: string) => setCart((items) => items.filter((item) => item.product.id !== id)),
     updateQuantity: (id: string, quantity: number) => setCart((items) => items.map((item) => item.product.id === id ? { ...item, quantity: Math.max(1, quantity) } : item)),
+    clearCart: () => setCart([]),
     toggleWishlist: (id: string) => setWishlist((ids) => ids.includes(id) ? ids.filter((item) => item !== id) : [...ids, id]),
     trackRecentlyViewed,
     subtotal: cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0),

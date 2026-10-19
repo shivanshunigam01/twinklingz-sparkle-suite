@@ -88,13 +88,11 @@ function Page() {
             {product.rating}{" "}
             <span className="text-muted-foreground">({product.reviews} reviews)</span>
           </div>
-          <div className="mt-6 flex items-center gap-3">
+          <div className="mt-6">
             <span className="text-xl font-semibold">{formatPrice(product.price)}</span>
-            {product.mrp && (
-              <span className="text-muted-foreground line-through">{formatPrice(product.mrp)}</span>
-            )}
           </div>
           <p className="mt-1 text-xs text-muted-foreground">Inclusive of applicable taxes</p>
+          <p className="mt-2 text-xs text-muted-foreground">{RETURN_REFUND_POLICY}</p>
           <div className="mt-8">
             <p className="text-xs font-semibold tracking-widest">FINISH</p>
             <div className="mt-3 flex gap-2">
@@ -155,12 +153,12 @@ function Page() {
             "SIZE & DIMENSIONS",
             "SHIPPING",
             "PAYMENT",
-            "RETURN / EXCHANGE POLICY",
+            "ALL SALES FINAL",
           ].map((x) => (
             <details key={x} className="border-b border-border py-5">
               <summary className="cursor-pointer text-xs font-semibold tracking-widest">{x}</summary>
               <p className="pt-4 text-sm leading-6 text-muted-foreground">
-                {x === "RETURN / EXCHANGE POLICY"
+                {x === "ALL SALES FINAL"
                   ? RETURN_REFUND_POLICY
                   : `Style ${product.sku} — premium fashion jewellery from Twinklingz. Product imagery shows the exact finish and silhouette you receive.`}
               </p>

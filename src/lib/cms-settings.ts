@@ -15,7 +15,8 @@ export const SOCIAL = {
   instagramUrl: "https://www.instagram.com/",
 } as const;
 
-export const RETURN_REFUND_POLICY = `All sales are final. We do not accept returns, refunds, or exchanges except where required by applicable law or where an incorrect or defective item is delivered.`;
+export const RETURN_REFUND_POLICY =
+  "All sales are final. No returns, refunds, or exchanges.";
 
 export const STORY_COPY = {
   headline: "Jewellery for the stories only you can tell.",

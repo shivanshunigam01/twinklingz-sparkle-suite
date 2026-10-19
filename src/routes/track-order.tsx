@@ -1,10 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { apiFetch } from "@/lib/api";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/track-order")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    orderNumber: typeof search.orderNumber === "string" ? search.orderNumber : "",
+    emailOrPhone: typeof search.emailOrPhone === "string" ? search.emailOrPhone : "",
+  }),
   head: () => ({
     meta: [
       { title: "Track Your Order | Twinklingz" },
@@ -30,10 +34,16 @@ type TrackResult = {
 };
 
 function Page() {
-  const [orderNumber, setOrderNumber] = useState("");
-  const [emailOrPhone, setEmailOrPhone] = useState("");
+  const search = Route.useSearch();
+  const [orderNumber, setOrderNumber] = useState(search.orderNumber);
+  const [emailOrPhone, setEmailOrPhone] = useState(search.emailOrPhone);
   const [result, setResult] = useState<TrackResult["order"] | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (search.orderNumber) setOrderNumber(search.orderNumber);
+    if (search.emailOrPhone) setEmailOrPhone(search.emailOrPhone);
+  }, [search.orderNumber, search.emailOrPhone]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
