@@ -78,7 +78,8 @@ function Page() {
 
   return (
     <main className="min-h-screen bg-background pb-28 pt-24 sm:pt-28 md:pt-32">
-      <div className="mx-auto grid max-w-[1500px] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-start lg:gap-2">
+      <div className="mx-auto flex max-w-[1500px] flex-col gap-6 px-4 lg:flex-row lg:items-start lg:gap-12 lg:px-10">
+        <div className="w-full shrink-0 lg:max-w-[min(100%,460px)]">
         <ProductImageGallery
           name={product.name}
           gallery={gallery}
@@ -87,7 +88,8 @@ function Page() {
           onSelect={setActiveImage}
           onZoom={() => setZoomOpen(true)}
         />
-        <div className="p-4 sm:p-6 lg:sticky lg:top-28 lg:h-fit lg:p-10">
+        </div>
+        <div className="min-w-0 flex-1 lg:sticky lg:top-28 lg:max-w-xl lg:self-start lg:py-2">
           <p className="text-xs tracking-[.2em] text-accent">{product.category.toUpperCase()}</p>
           <p className="mt-2 text-xs text-muted-foreground">Style {product.sku}</p>
           <h1 className="mt-3 font-display text-4xl lg:text-5xl">{product.name}</h1>
@@ -230,7 +232,7 @@ function Page() {
   );
 }
 
-/** Amazon / Flipkart-style gallery: thumbs + main image fit in viewport without scrolling. */
+/** Amazon-style: fixed-size thumb strip + compact square main preview. */
 function ProductImageGallery({
   name,
   gallery,
@@ -249,13 +251,11 @@ function ProductImageGallery({
   const multi = gallery.length > 1;
 
   return (
-    <section className="p-4 sm:p-6 lg:p-8 lg:pt-6" aria-label="Product images">
-      <div
-        className="flex gap-2 sm:gap-3 h-[min(42vh,360px)] sm:h-[min(48vh,440px)] lg:h-[min(72vh,640px)]"
-      >
+    <section className="pt-1" aria-label="Product images">
+      <div className="flex items-start gap-2 sm:gap-3">
         {multi && (
           <div
-            className="flex w-[52px] shrink-0 flex-col gap-1 sm:w-14 sm:gap-1.5 md:w-16"
+            className="flex max-h-[220px] shrink-0 flex-col gap-1.5 overflow-y-auto pr-0.5 sm:max-h-[260px] md:max-h-[300px] lg:max-h-[320px]"
             aria-label="Image thumbnails"
           >
             {gallery.map((src, i) => (
@@ -263,36 +263,51 @@ function ProductImageGallery({
                 key={`${src}-${i}`}
                 type="button"
                 onClick={() => onSelect(i)}
-                className={`min-h-0 flex-1 overflow-hidden border bg-muted transition ${
+                className={`size-11 shrink-0 overflow-hidden border-2 bg-white p-0.5 transition sm:size-12 ${
                   activeImage === i
-                    ? "border-accent ring-1 ring-accent/50"
-                    : "border-border hover:border-primary/50"
+                    ? "border-accent shadow-sm"
+                    : "border-border hover:border-muted-foreground/40"
                 }`}
               >
-                <img src={src} alt={`${name} view ${i + 1}`} className="size-full object-cover" loading="lazy" />
+                <img
+                  src={src}
+                  alt={`${name} view ${i + 1}`}
+                  className="size-full object-cover"
+                  loading="lazy"
+                />
               </button>
             ))}
           </div>
         )}
 
-        <button
-          type="button"
-          onClick={onZoom}
-          className="group relative min-w-0 flex-1 overflow-hidden bg-muted"
-          aria-label="Zoom product image"
-        >
-          <img src={hero} alt={name} className="size-full object-contain object-center" />
-          <span className="absolute bottom-2 right-2 flex items-center gap-1 bg-background/90 px-2 py-1 text-[10px] shadow-sm sm:bottom-3 sm:right-3">
-            <ZoomIn className="size-3" /> Tap to zoom
-          </span>
-          {multi && (
-            <span className="absolute left-2 top-2 rounded-full bg-background/90 px-2 py-0.5 text-[10px] tracking-wide shadow-sm sm:left-3 sm:top-3">
-              {activeImage + 1} / {gallery.length}
-            </span>
-          )}
-        </button>
+        <div className="min-w-0 flex-1">
+          <button
+            type="button"
+            onClick={onZoom}
+            className="relative flex h-[220px] w-full max-w-[min(100%,340px)] items-center justify-center overflow-hidden border border-border bg-white sm:h-[260px] md:h-[300px] lg:h-[320px] lg:max-w-[380px]"
+            aria-label="Zoom product image"
+          >
+            <img
+              src={hero}
+              alt={name}
+              className="max-h-full max-w-full object-contain p-2"
+            />
+            {multi && (
+              <span className="absolute left-2 top-2 rounded-sm bg-background/95 px-1.5 py-0.5 text-[10px] text-muted-foreground shadow-sm">
+                {activeImage + 1} / {gallery.length}
+              </span>
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={onZoom}
+            className="mt-2 flex items-center gap-1 text-xs text-accent hover:underline"
+          >
+            <ZoomIn className="size-3.5" />
+            Click to see full view
+          </button>
+        </div>
       </div>
-
     </section>
   );
 }
