@@ -78,8 +78,8 @@ export function NewArrivalsSection() {
         subtitle="Fresh sparkle, made for your next moment."
       />
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-3 gap-y-10 md:grid-cols-4 md:gap-6">
-        {shown.map((p) => (
-          <ProductCard key={p.id} product={p} />
+        {shown.map((p, i) => (
+          <ProductCard key={p.id} product={p} priority={i < 4} />
         ))}
       </div>
       <div className="mt-12 text-center">
@@ -130,7 +130,7 @@ export function BestsellersSection() {
       <div className="no-scrollbar flex snap-x gap-5 overflow-x-auto px-5 lg:px-[max(2.5rem,calc((100vw-80rem)/2))]">
         {picks.map((p) => (
           <div className="min-w-[72vw] snap-start sm:min-w-[40vw] lg:min-w-[280px]" key={p.id}>
-            <ProductCard product={p} showRating />
+            <ProductCard product={p} showRating priority={picks.indexOf(p) < 2} />
           </div>
         ))}
       </div>

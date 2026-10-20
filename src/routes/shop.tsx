@@ -59,7 +59,7 @@ function Filters() {
 
 function ShopPage() {
   const [sort, setSort] = useState<ProductSort>("featured");
-  const { data: products = [] } = usePublicProducts();
+  const { data: products = [], isFetching, isLoading } = usePublicProducts();
   const sorted = useMemo(() => sortPublicProducts(products, sort), [products, sort]);
 
   return (
@@ -112,10 +112,17 @@ function ShopPage() {
             <Filters />
           </aside>
           <div className="grid grid-cols-2 gap-x-3 gap-y-10 md:grid-cols-3">
-            {sorted.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
+            {isLoading && products.length === 0
+              ? Array.from({ length: 9 }).map((_, i) => (
+                  <div key={`sk-${i}`} className="aspect-[4/5] animate-pulse bg-muted" />
+                ))
+              : sorted.map((p, i) => (
+                  <ProductCard key={p.id} product={p} priority={i < 6} />
+                ))}
           </div>
+          {isFetching && products.length > 0 && (
+            <p className="mt-4 text-center text-xs text-muted-foreground">Refreshing catalogue…</p>
+          )}
         </div>
       </div>
     </main>

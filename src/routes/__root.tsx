@@ -14,6 +14,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { StoreProvider } from "@/components/store-provider";
+import { fetchPublicProducts } from "@/lib/use-public-products";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
@@ -127,6 +128,15 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const isAdmin = useRouterState({ select: (s) => s.location.pathname.startsWith("/admin") });
+
+  useEffect(() => {
+    if (isAdmin) return;
+    void queryClient.prefetchQuery({
+      queryKey: ["public", "products"],
+      queryFn: fetchPublicProducts,
+      staleTime: 5 * 60_000,
+    });
+  }, [isAdmin, queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>

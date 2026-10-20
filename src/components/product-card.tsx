@@ -1,37 +1,48 @@
-import { useState } from "react";
 import { Heart, Images, ShoppingBag, Star } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { formatPrice, type Product } from "@/lib/catalog";
 import { useStore } from "@/components/store-provider";
-export function ProductCard({ product, showRating = false }: { product: Product; showRating?: boolean }) {
+export function ProductCard({
+  product,
+  showRating = false,
+  priority = false,
+}: {
+  product: Product;
+  showRating?: boolean;
+  priority?: boolean;
+}) {
   const { addToBag, toggleWishlist, wishlist } = useStore();
   const wished = wishlist.includes(product.slug);
-  const [hover, setHover] = useState(false);
+  const hasAlt = Boolean(product.altImage && product.altImage !== product.image);
   return <article className="group min-w-0">
-    <div
-      className="relative aspect-[4/5] overflow-hidden bg-muted"
-      onMouseEnter={() => setHover(true)}
-      onFocus={() => setHover(true)}
-    >
-      <Link to="/products/$slug" params={{ slug: product.slug }} aria-label={`View ${product.name}`}>
+    <div className="relative aspect-[4/5] overflow-hidden bg-muted">
+      <Link
+        to="/products/$slug"
+        params={{ slug: product.slug }}
+        aria-label={`View ${product.name}`}
+        className="relative block h-full w-full"
+      >
         <LazyImage
           src={product.image}
           alt={product.name}
-          optimizeWidth={480}
-          width={480}
-          height={600}
-          className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03] group-hover:opacity-0"
+          optimizeWidth={400}
+          width={400}
+          height={500}
+          priority={priority}
+          sizes="(max-width: 768px) 50vw, 280px"
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
         />
-        {hover && product.altImage && product.altImage !== product.image ? (
+        {hasAlt ? (
           <LazyImage
             src={product.altImage}
             alt=""
-            optimizeWidth={480}
-            width={480}
-            height={600}
-            className="absolute inset-0 h-full w-full object-cover opacity-0 transition duration-700 group-hover:scale-[1.03] group-hover:opacity-100"
+            optimizeWidth={400}
+            width={400}
+            height={500}
+            sizes="(max-width: 768px) 50vw, 280px"
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-0 transition duration-500 group-hover:scale-[1.03] group-hover:opacity-100"
           />
         ) : null}
       </Link>

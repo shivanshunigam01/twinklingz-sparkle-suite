@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch, type ApiProduct } from "@/lib/api";
 import { products as staticProducts, type Product } from "@/lib/catalog";
+import { readCatalogCache, writeCatalogCache } from "@/lib/catalog-cache";
 import { collectImageUrls, isCloudinaryUrl } from "@/lib/product-images";
 
 const prefersRemoteApi = Boolean((import.meta.env.VITE_API_URL as string | undefined)?.trim());
@@ -69,21 +70,32 @@ export function sortPublicProducts(list: Product[], sort: ProductSort): Product[
   }
 }
 
+export async function fetchPublicProducts(): Promise<Product[]> {
+  try {
+    const res = await apiFetch<{ products: ApiProduct[] }>("/products");
+    const merged = mergeCatalog(res.products);
+    if (merged.length) writeCatalogCache(merged);
+    return merged;
+  } catch {
+    const cached = readCatalogCache();
+    if (cached?.length) return cached;
+    if (prefersRemoteApi) return [];
+    return staticProducts;
+  }
+}
+
 export function usePublicProducts() {
+  const cached = readCatalogCache();
+  const placeholder = cached ?? (prefersRemoteApi ? undefined : staticProducts);
+
   return useQuery({
     queryKey: ["public", "products"],
-    queryFn: async () => {
-      try {
-        const res = await apiFetch<{ products: ApiProduct[] }>("/products");
-        return mergeCatalog(res.products);
-      } catch {
-        return staticProducts;
-      }
-    },
+    queryFn: fetchPublicProducts,
+    placeholderData: placeholder,
     staleTime: 5 * 60_000,
     gcTime: 30 * 60_000,
     refetchOnWindowFocus: false,
-    retry: 1,
+    retry: 2,
   });
 }
 
