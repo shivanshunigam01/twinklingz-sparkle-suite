@@ -241,8 +241,8 @@ function Page() {
       <section className="px-5 py-20 lg:px-10">
         <h2 className="font-display text-4xl">You may also like</h2>
         <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-          {products
-            .filter((p) => p.id !== product.id)
+          {catalog
+            .filter((p) => p.id !== product.id && p.slug !== product.slug)
             .slice(0, 4)
             .map((p) => (
               <ProductCard key={p.id} product={p} />
