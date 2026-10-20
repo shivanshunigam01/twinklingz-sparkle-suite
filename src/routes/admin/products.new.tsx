@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ProductForm } from "@/components/admin/product-form";
+import { ProductsSubnav } from "@/components/admin/products-subnav";
 import { emptyProductForm } from "@/lib/admin-product-form";
 import type { ApiProduct } from "@/lib/api";
 
@@ -22,6 +23,7 @@ function NewProductPage() {
 
   return (
     <div className="space-y-6">
+      <ProductsSubnav />
       <div>
         <h2 className="font-display text-4xl">Add product</h2>
         <p className="mt-2 text-muted-foreground">Create a new catalogue item. You can upload images on the next screen.</p>

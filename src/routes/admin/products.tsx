@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { apiFetch, type ApiProduct } from "@/lib/api";
 import { getAdminToken } from "@/lib/admin-auth";
 import { isCloudinaryUrl } from "@/lib/product-images";
+import { ProductsSubnav } from "@/components/admin/products-subnav";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/products")({
@@ -49,6 +50,7 @@ function ProductsListPage() {
 
   return (
     <div className="space-y-8">
+      <ProductsSubnav />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className="font-display text-4xl">Products</h2>

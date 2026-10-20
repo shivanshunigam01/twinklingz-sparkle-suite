@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { ProductForm } from "@/components/admin/product-form";
+import { ProductsSubnav } from "@/components/admin/products-subnav";
 import { productToForm, type ProductFormState } from "@/lib/admin-product-form";
 import { apiFetch, type ApiProduct } from "@/lib/api";
 import { getAdminToken } from "@/lib/admin-auth";
@@ -54,6 +55,7 @@ function EditProductPage() {
 
   return (
     <div className="space-y-6">
+      <ProductsSubnav />
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 className="font-display text-4xl">Edit product</h2>

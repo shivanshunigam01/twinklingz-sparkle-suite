@@ -28,8 +28,26 @@ export function peopleAlsoSee(
     return s;
   };
 
-  return catalog
+  const ranked = catalog
     .filter((p) => !exclude.has(p.slug))
-    .sort((a, b) => score(b) - score(a) || b.reviews - a.reviews)
-    .slice(0, limit);
+    .sort((a, b) => score(b) - score(a) || b.reviews - a.reviews);
+
+  if (ranked.length >= limit) return ranked.slice(0, limit);
+
+  const more = catalog
+    .filter((p) => !exclude.has(p.slug) && !ranked.some((r) => r.slug === p.slug))
+    .slice(0, limit - ranked.length);
+
+  return [...ranked, ...more];
+}
+
+/** Fill remaining slots when category-based picks are sparse. */
+export function moreFromCatalog(
+  catalog: Product[],
+  current: Product,
+  excludeSlugs: string[],
+  limit = 4,
+): Product[] {
+  const exclude = new Set([current.slug, ...excludeSlugs]);
+  return catalog.filter((p) => !exclude.has(p.slug)).slice(0, limit);
 }

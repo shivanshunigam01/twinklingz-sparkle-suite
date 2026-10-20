@@ -6,7 +6,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { ProductCard } from "@/components/product-card";
 import { formatPrice, products as staticProducts, type Product } from "@/lib/catalog";
-import { peopleAlsoSee, similarProducts } from "@/lib/product-recommendations";
+import { moreFromCatalog, peopleAlsoSee, similarProducts } from "@/lib/product-recommendations";
 import { categoryToSlug, fetchProductBySlug, usePublicProducts } from "@/lib/use-public-products";
 import { RETURN_REFUND_POLICY } from "@/lib/cms-settings";
 import { useStore } from "@/components/store-provider";
@@ -64,7 +64,20 @@ function Page() {
 
   const alsoSee = useMemo(() => {
     if (!product) return [];
-    return peopleAlsoSee(catalog, product, similar.map((p) => p.slug), 4);
+    const picked = peopleAlsoSee(catalog, product, similar.map((p) => p.slug), 4);
+    if (picked.length >= 4) return picked;
+    const extra = moreFromCatalog(
+      catalog,
+      product,
+      [...similar.map((p) => p.slug), ...picked.map((p) => p.slug)],
+      4 - picked.length,
+    );
+    return [...picked, ...extra];
+  }, [catalog, product, similar]);
+
+  const similarDisplay = useMemo(() => {
+    if (!product || similar.length > 0) return similar;
+    return moreFromCatalog(catalog, product, [], 4);
   }, [catalog, product, similar]);
 
   if (!product) {
@@ -229,11 +242,15 @@ function Page() {
         </div>
       </div>
 
-      {similar.length > 0 ? (
+      {similarDisplay.length > 0 ? (
         <ProductRecommendations
           title="Similar products"
-          subtitle={`More ${product.category.toLowerCase()} you might love`}
-          products={similar}
+          subtitle={
+            similar.length > 0
+              ? `More ${product.category.toLowerCase()} you might love`
+              : "More styles picked for you"
+          }
+          products={similarDisplay}
           className="mt-16 border-t border-border"
         />
       ) : null}
