@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { LazyImage } from "@/components/ui/lazy-image";
 import { categoryHeroImage, galleryImages } from "@/lib/catalog";
 import { categoriesFromProducts, categoryToSlug, usePublicProducts } from "@/lib/use-public-products";
 
@@ -37,9 +38,10 @@ function Page() {
             params={{ slug: categoryToSlug(name) }}
             className="group relative aspect-[4/3] overflow-hidden"
           >
-            <img
+            <LazyImage
               src={products.find((p) => p.category === name)?.image || categoryHeroImage(name)}
               alt={`${name} collection`}
+              optimizeWidth={720}
               className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-card-shade" />
@@ -49,7 +51,7 @@ function Page() {
       </div>
       <div className="mx-auto mt-16 grid max-w-7xl grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-6">
         {galleryImages.slice(0, 12).map((src, i) => (
-          <img key={`${src}-${i}`} src={src} alt="" loading="lazy" className="aspect-square w-full object-cover" />
+          <LazyImage key={`${src}-${i}`} src={src} alt="" optimizeWidth={280} className="aspect-square w-full object-cover" />
         ))}
       </div>
     </main>

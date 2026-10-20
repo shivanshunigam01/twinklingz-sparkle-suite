@@ -1,16 +1,39 @@
+import { useState } from "react";
 import { Heart, Images, ShoppingBag, Star } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
+import { LazyImage } from "@/components/ui/lazy-image";
 import { formatPrice, type Product } from "@/lib/catalog";
 import { useStore } from "@/components/store-provider";
 export function ProductCard({ product, showRating = false }: { product: Product; showRating?: boolean }) {
   const { addToBag, toggleWishlist, wishlist } = useStore();
   const wished = wishlist.includes(product.slug);
+  const [hover, setHover] = useState(false);
   return <article className="group min-w-0">
-    <div className="relative aspect-[4/5] overflow-hidden bg-muted">
+    <div
+      className="relative aspect-[4/5] overflow-hidden bg-muted"
+      onMouseEnter={() => setHover(true)}
+      onFocus={() => setHover(true)}
+    >
       <Link to="/products/$slug" params={{ slug: product.slug }} aria-label={`View ${product.name}`}>
-        <img src={product.image} alt={product.name} width={800} height={1000} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03] group-hover:opacity-0" />
-        <img src={product.altImage} alt="" width={800} height={1000} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-0 transition duration-700 group-hover:scale-[1.03] group-hover:opacity-100" />
+        <LazyImage
+          src={product.image}
+          alt={product.name}
+          optimizeWidth={480}
+          width={480}
+          height={600}
+          className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03] group-hover:opacity-0"
+        />
+        {hover && product.altImage && product.altImage !== product.image ? (
+          <LazyImage
+            src={product.altImage}
+            alt=""
+            optimizeWidth={480}
+            width={480}
+            height={600}
+            className="absolute inset-0 h-full w-full object-cover opacity-0 transition duration-700 group-hover:scale-[1.03] group-hover:opacity-100"
+          />
+        ) : null}
       </Link>
       {product.badge && <span className="absolute left-3 top-3 bg-primary px-2.5 py-1 text-[10px] font-semibold tracking-[0.18em] text-primary-foreground">{product.badge}</span>}
       <Button variant="ghost" size="icon" className="absolute right-2 top-2 bg-background/85" onClick={() => toggleWishlist(product.slug)} aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}><Heart className={wished ? "fill-accent text-accent" : ""} /></Button>

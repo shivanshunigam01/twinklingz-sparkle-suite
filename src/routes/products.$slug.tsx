@@ -3,8 +3,10 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Heart, Minus, Plus, ShieldCheck, Truck, PackageCheck, Star, ZoomIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { LazyImage } from "@/components/ui/lazy-image";
 import { ProductCard } from "@/components/product-card";
-import { formatPrice, products as staticProducts } from "@/lib/catalog";
+import { formatPrice, products as staticProducts, type Product } from "@/lib/catalog";
+import { peopleAlsoSee, similarProducts } from "@/lib/product-recommendations";
 import { categoryToSlug, fetchProductBySlug, usePublicProducts } from "@/lib/use-public-products";
 import { RETURN_REFUND_POLICY } from "@/lib/cms-settings";
 import { useStore } from "@/components/store-provider";
@@ -55,6 +57,16 @@ function Page() {
     return [...new Set([product.image, product.altImage].filter(Boolean))];
   }, [product]);
 
+  const similar = useMemo(() => {
+    if (!product) return [];
+    return similarProducts(catalog, product, 4);
+  }, [catalog, product]);
+
+  const alsoSee = useMemo(() => {
+    if (!product) return [];
+    return peopleAlsoSee(catalog, product, similar.map((p) => p.slug), 4);
+  }, [catalog, product, similar]);
+
   if (!product) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center px-5 pb-24 pt-36 text-center">
@@ -70,7 +82,6 @@ function Page() {
   }
 
   const hero = gallery[activeImage] ?? gallery[0];
-  const completeLook = catalog.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 3);
   const recentProducts = recentlyViewed
     .map((s) => catalog.find((p) => p.slug === s))
     .filter((p): p is (typeof catalog)[0] => Boolean(p) && p.slug !== product.slug)
@@ -218,39 +229,31 @@ function Page() {
         </div>
       </div>
 
-      {completeLook.length > 0 ? (
-        <section className="mx-auto mt-16 max-w-6xl border-t border-border px-4 py-16 lg:px-8">
-          <h2 className="font-display text-4xl">Complete the look</h2>
-          <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3">
-            {completeLook.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        </section>
+      {similar.length > 0 ? (
+        <ProductRecommendations
+          title="Similar products"
+          subtitle={`More ${product.category.toLowerCase()} you might love`}
+          products={similar}
+          className="mt-16 border-t border-border"
+        />
+      ) : null}
+
+      {alsoSee.length > 0 ? (
+        <ProductRecommendations
+          title="People also see"
+          subtitle="Trending picks from across the collection"
+          products={alsoSee}
+          className="border-t border-border bg-secondary"
+        />
       ) : null}
 
       {recentProducts.length > 0 ? (
-        <section className="mx-auto mt-0 max-w-6xl border-t border-border bg-secondary px-4 py-16 lg:px-8">
-          <h2 className="font-display text-4xl">Recently viewed</h2>
-          <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-            {recentProducts.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        </section>
+        <ProductRecommendations
+          title="Recently viewed"
+          products={recentProducts}
+          className="border-t border-border"
+        />
       ) : null}
-
-      <section className="mx-auto max-w-6xl px-4 py-20 lg:px-8">
-        <h2 className="font-display text-4xl">You may also like</h2>
-        <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-          {catalog
-            .filter((p) => p.id !== product.id && p.slug !== product.slug)
-            .slice(0, 4)
-            .map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-        </div>
-      </section>
       <div className="fixed inset-x-0 bottom-16 z-30 flex gap-2 border-t border-border bg-background p-3 md:hidden">
         <Button className="flex-1" onClick={() => addToBag(product)}>
           ADD TO BAG · {formatPrice(product.price)}
@@ -259,10 +262,34 @@ function Page() {
 
       <Dialog open={zoomOpen} onOpenChange={setZoomOpen}>
         <DialogContent className="max-w-4xl border-none bg-transparent p-0 shadow-none">
-          <img src={hero} alt={product.name} className="max-h-[85vh] w-full object-contain" />
+          <LazyImage src={hero} alt={product.name} optimizeWidth={1200} priority className="max-h-[85vh] w-full object-contain" />
         </DialogContent>
       </Dialog>
     </main>
+  );
+}
+
+function ProductRecommendations({
+  title,
+  subtitle,
+  products,
+  className = "",
+}: {
+  title: string;
+  subtitle?: string;
+  products: Product[];
+  className?: string;
+}) {
+  return (
+    <section className={`mx-auto max-w-6xl px-4 py-16 lg:px-8 ${className}`}>
+      <h2 className="font-display text-3xl sm:text-4xl">{title}</h2>
+      {subtitle ? <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p> : null}
+      <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
+        {products.map((p) => (
+          <ProductCard key={p.id} product={p} />
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -320,11 +347,13 @@ function ProductImageGallery({
                     : "border-border hover:border-primary/30"
                 }`}
               >
-                <img
+                <LazyImage
                   src={src}
                   alt={`${name} view ${i + 1}`}
+                  optimizeWidth={120}
+                  width={52}
+                  height={52}
                   className="size-full rounded-[4px] object-cover"
-                  loading="lazy"
                 />
               </button>
             ))}
@@ -338,7 +367,13 @@ function ProductImageGallery({
             className={`relative flex ${mainSize} items-center justify-center overflow-hidden rounded-lg bg-white`}
             aria-label="Zoom product image"
           >
-            <img src={hero} alt={name} className="max-h-[92%] max-w-[92%] object-contain" />
+            <LazyImage
+              src={hero}
+              alt={name}
+              optimizeWidth={900}
+              priority
+              className="max-h-[92%] max-w-[92%] object-contain"
+            />
             {multi && (
               <span className="absolute right-2 top-2 rounded-full bg-foreground/75 px-2 py-0.5 text-[10px] font-medium text-background">
                 {activeImage + 1} / {gallery.length}

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { Button } from "@/components/ui/button";
+import { LazyImage } from "@/components/ui/lazy-image";
 import { HERO_SCROLL_VIDEO_SRC } from "@/lib/cms-settings";
 import { media } from "@/lib/catalog";
 
@@ -73,11 +74,13 @@ export function CinematicHero() {
             onError={() => setUseVideo(false)}
           />
         ) : (
-          <img
+          <LazyImage
             src={poster}
             alt="Twinklingz premium fashion jewellery"
-            width={1536}
-            height={1024}
+            optimizeWidth={1600}
+            width={1600}
+            height={900}
+            priority
             className="absolute inset-0 h-full w-full object-cover"
           />
         )}

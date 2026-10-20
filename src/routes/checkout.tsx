@@ -9,6 +9,7 @@ import {
 } from "@/lib/checkout-validation";
 import { fetchPostOfficesByPincode, type PostOffice } from "@/lib/india-pincode";
 import { Button } from "@/components/ui/button";
+import { LazyImage } from "@/components/ui/lazy-image";
 import { formatPrice } from "@/lib/catalog";
 import { useStore } from "@/components/store-provider";
 import { apiFetch } from "@/lib/api";
@@ -60,9 +61,10 @@ const CHECKOUT_BG_IMAGE =
 function CheckoutBackdrop() {
   return (
     <div className="pointer-events-none fixed inset-0 z-0" aria-hidden>
-      <img
+      <LazyImage
         src={CHECKOUT_BG_IMAGE}
         alt=""
+        optimizeWidth={1600}
         className="h-full w-full scale-105 object-cover object-center motion-safe:animate-[checkout-pan_28s_ease-in-out_infinite_alternate]"
       />
       <div className="absolute inset-0 bg-gradient-to-br from-[#2c1810]/92 via-[#3d2420]/88 to-[#f7f3ef]/95" />
@@ -619,7 +621,7 @@ function Page() {
             {cart.map(({ product, quantity }) => (
               <li key={product.id} className="flex gap-3">
                 <div className="size-16 shrink-0 overflow-hidden border border-border bg-muted">
-                  <img src={product.image} alt="" className="size-full object-cover" loading="lazy" />
+                  <LazyImage src={product.image} alt="" optimizeWidth={128} className="size-full object-cover" />
                 </div>
                 <div className="min-w-0 flex-1 text-sm">
                   <p className="truncate font-medium leading-snug">{product.name}</p>

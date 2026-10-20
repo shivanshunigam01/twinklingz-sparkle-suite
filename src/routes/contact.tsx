@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { LazyImage } from "@/components/ui/lazy-image";
 import { galleryImages, media } from "@/lib/catalog";
 import { apiFetch } from "@/lib/api";
 import { formatContactAddress, useSiteSettings } from "@/lib/use-site-settings";
@@ -120,15 +121,16 @@ function Page() {
             </Button>
           </form>
         </div>
-        <img
+        <LazyImage
           src={media.campaignImage}
           alt="Twinklingz jewellery"
+          optimizeWidth={720}
           className="aspect-[4/5] w-full object-cover"
         />
       </div>
       <div className="mx-auto mt-16 grid max-w-6xl grid-cols-3 gap-2 sm:grid-cols-6">
         {galleryImages.slice(0, 6).map((src, i) => (
-          <img key={src} src={src} alt={`Catalogue ${i + 1}`} loading="lazy" className="aspect-square object-cover" />
+          <LazyImage key={src} src={src} alt={`Catalogue ${i + 1}`} optimizeWidth={240} className="aspect-square object-cover" />
         ))}
       </div>
     </main>

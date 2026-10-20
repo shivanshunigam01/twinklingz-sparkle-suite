@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
+import { LazyImage } from "@/components/ui/lazy-image";
 import { galleryImages, media } from "@/lib/catalog";
 import { STORY_COPY } from "@/lib/cms-settings";
 
@@ -29,11 +30,13 @@ function Page() {
   return (
     <main className="min-h-screen bg-background pb-24 pt-40">
       <div className="mx-auto grid max-w-6xl gap-12 px-5 lg:grid-cols-2 lg:items-center lg:px-10">
-        <img
+        <LazyImage
           src={media.heroImage}
           alt="Twinklingz jewellery collection"
-          width={1200}
-          height={1500}
+          optimizeWidth={800}
+          width={800}
+          height={1000}
+          priority
           className="aspect-[4/5] w-full object-cover"
         />
         <div>
@@ -52,11 +55,11 @@ function Page() {
         <h2 className="mt-3 text-center font-display text-4xl">The full sparkle catalog</h2>
         <div className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {galleryImages.map((src, i) => (
-            <img
+            <LazyImage
               key={`${src}-${i}`}
               src={src}
               alt={`Twinklingz catalogue ${i + 1}`}
-              loading="lazy"
+              optimizeWidth={280}
               className="aspect-square w-full object-cover"
             />
           ))}

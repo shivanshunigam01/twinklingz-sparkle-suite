@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight, CreditCard, Gem, Gift, HeartHandshake, PackageCheck, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LazyImage } from "@/components/ui/lazy-image";
 import { ProductCard } from "@/components/product-card";
 import { SOCIAL, STORY_COPY } from "@/lib/cms-settings";
 import {
@@ -26,12 +27,12 @@ export function CategorySection() {
         {categoryNames.map((name) => {
           const body = (
             <>
-              <img
+              <LazyImage
                 src={categoryHeroImage(name)}
                 alt={`${name} sample collection`}
-                width={1536}
-                height={1024}
-                loading="lazy"
+                optimizeWidth={640}
+                width={640}
+                height={853}
                 className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-card-shade" />
@@ -95,12 +96,12 @@ export function NewArrivalsSection() {
 export function CampaignSection() {
   return (
     <section className="relative min-h-[75vh] overflow-hidden">
-      <img
+      <LazyImage
         src={media.campaignImage}
         alt="Rose gold statement jewellery on burgundy velvet"
-        width={1536}
-        height={1024}
-        loading="lazy"
+        optimizeWidth={1200}
+        width={1200}
+        height={800}
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-campaign-shade" />
@@ -156,12 +157,12 @@ export function ShopTheLookSection() {
   return (
     <section className="grid bg-secondary lg:grid-cols-[1.35fr_0.65fr]">
       <div className="relative">
-        <img
+        <LazyImage
           src={media.lookImage}
           alt="Model wearing the Twinklingz occasion edit"
-          width={1536}
-          height={1024}
-          loading="lazy"
+          optimizeWidth={1000}
+          width={1000}
+          height={667}
           className="h-full min-h-[560px] w-full object-cover"
         />
         {hotspots.map((h, i) => (
@@ -222,12 +223,12 @@ export function EditSection() {
             key={e}
             className={`group relative overflow-hidden ${i === 0 || i === 5 ? "col-span-2 row-span-2 aspect-[4/3]" : "aspect-square"}`}
           >
-            <img
+            <LazyImage
               src={products[i % products.length]?.image ?? media.campaignImage}
               alt={`${e} sample edit`}
-              loading="lazy"
-              width={1536}
-              height={1024}
+              optimizeWidth={640}
+              width={640}
+              height={480}
               className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-card-shade" />
@@ -244,12 +245,12 @@ export function EditSection() {
 export function BrandStorySection() {
   return (
     <section className="grid bg-blush lg:grid-cols-2">
-      <img
+      <LazyImage
         src={media.storyImage}
         alt="Twinklingz brand story"
-        width={1536}
-        height={1024}
-        loading="lazy"
+        optimizeWidth={900}
+        width={900}
+        height={600}
         className="h-full min-h-[480px] w-full object-cover"
       />
       <div className="flex items-center px-6 py-20 lg:px-20">
@@ -296,13 +297,13 @@ export function SocialSection() {
       <p className="-mt-6 mb-10 text-center text-sm text-muted-foreground">Wear it. Style it. Make it yours.</p>
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
         {galleryImages.map((src, i) => (
-          <img
+          <LazyImage
             key={`${src}-${i}`}
             src={src}
             alt={`Twinklingz style inspiration ${i + 1}`}
-            width={600}
-            height={600}
-            loading="lazy"
+            optimizeWidth={320}
+            width={320}
+            height={320}
             className="aspect-square w-full object-cover"
           />
         ))}

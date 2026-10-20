@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api";
 import { getAdminToken } from "@/lib/admin-auth";
 import { Button } from "@/components/ui/button";
+import { LazyImage } from "@/components/ui/lazy-image";
 import { toast } from "sonner";
 
 type OrderItem = {
@@ -73,11 +74,11 @@ function OrdersPage() {
                         title={item.name}
                       >
                         {item.image ? (
-                          <img
+                          <LazyImage
                             src={item.image}
                             alt={item.name}
+                            optimizeWidth={160}
                             className="size-full object-cover"
-                            loading="lazy"
                           />
                         ) : (
                           <span className="flex size-full items-center justify-center px-1 text-center text-[9px] leading-tight text-muted-foreground">

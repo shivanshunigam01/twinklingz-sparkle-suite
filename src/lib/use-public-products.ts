@@ -80,8 +80,10 @@ export function usePublicProducts() {
         return staticProducts;
       }
     },
-    staleTime: 60_000,
-    retry: 2,
+    staleTime: 5 * 60_000,
+    gcTime: 30 * 60_000,
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
 }
 
