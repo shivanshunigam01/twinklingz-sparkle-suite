@@ -278,8 +278,16 @@ function Page() {
       </div>
 
       <Dialog open={zoomOpen} onOpenChange={setZoomOpen}>
-        <DialogContent className="max-w-4xl border-none bg-transparent p-0 shadow-none">
-          <LazyImage src={hero} alt={product.name} optimizeWidth={1200} priority className="max-h-[85vh] w-full object-contain" />
+        <DialogContent
+          className="flex max-h-[92vh] w-[min(calc(100vw-1.5rem),48rem)] items-center justify-center border-none bg-black/85 p-3 shadow-none sm:p-6"
+        >
+          <LazyImage
+            src={hero}
+            alt={product.name}
+            optimizeWidth={1400}
+            priority
+            className="max-h-[85vh] w-full max-w-full object-contain"
+          />
         </DialogContent>
       </Dialog>
     </main>
@@ -342,15 +350,16 @@ function ProductImageGallery({
 }) {
   const multi = gallery.length > 1;
 
-  const mainSize =
-    "h-[240px] w-full max-w-[360px] sm:h-[280px] lg:h-[300px]";
+  /** Shared height for thumb column + main preview */
+  const previewHeight =
+    "min-h-[280px] h-[min(70vw,420px)] max-h-[480px] sm:min-h-[320px] sm:h-[min(55vw,480px)]";
 
   return (
     <section className="rounded-xl border border-border bg-card p-3 shadow-sm sm:p-4" aria-label="Product images">
       <div className="flex items-stretch gap-3">
         {multi && (
           <div
-            className={`flex shrink-0 flex-col gap-2 overflow-y-auto pr-1 ${mainSize}`}
+            className={`flex shrink-0 flex-col gap-2 overflow-y-auto pr-1 ${previewHeight}`}
             aria-label="Image thumbnails"
           >
             {gallery.map((src, i) => (
@@ -381,7 +390,7 @@ function ProductImageGallery({
           <button
             type="button"
             onClick={onZoom}
-            className={`relative flex ${mainSize} items-center justify-center overflow-hidden rounded-lg bg-white`}
+            className={`relative w-full overflow-hidden rounded-lg bg-white ${previewHeight}`}
             aria-label="Zoom product image"
           >
             <LazyImage
@@ -389,10 +398,10 @@ function ProductImageGallery({
               alt={name}
               optimizeWidth={900}
               priority
-              className="max-h-[92%] max-w-[92%] object-contain"
+              className="absolute inset-0 m-auto h-full w-full object-contain p-2 sm:p-4"
             />
             {multi && (
-              <span className="absolute right-2 top-2 rounded-full bg-foreground/75 px-2 py-0.5 text-[10px] font-medium text-background">
+              <span className="absolute right-2 top-2 z-10 rounded-full bg-foreground/75 px-2 py-0.5 text-[10px] font-medium text-background">
                 {activeImage + 1} / {gallery.length}
               </span>
             )}
