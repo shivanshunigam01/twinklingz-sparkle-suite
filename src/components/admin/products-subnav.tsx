@@ -2,18 +2,25 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
 const tabs = [
-  { to: "/admin/products", label: "All products", exact: true },
+  { to: "/admin/products/", label: "All products", exact: true },
   { to: "/admin/products/new", label: "Add product", exact: false },
 ] as const;
 
+function isProductsListPath(pathname: string) {
+  return pathname === "/admin/products" || pathname === "/admin/products/";
+}
+
 export function ProductsSubnav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const editing = pathname.startsWith("/admin/products/") && pathname !== "/admin/products/new";
+  const editing =
+    pathname.startsWith("/admin/products/") &&
+    pathname !== "/admin/products/new" &&
+    !isProductsListPath(pathname);
 
   return (
     <nav className="mb-8 flex flex-wrap gap-2 border-b border-border pb-3" aria-label="Products">
       {tabs.map(({ to, label, exact }) => {
-        const active = exact ? pathname === to : pathname === to;
+        const active = exact ? isProductsListPath(pathname) : pathname === to;
         return (
           <Link
             key={to}
