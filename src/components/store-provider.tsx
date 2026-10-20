@@ -12,8 +12,8 @@ type StoreContextValue = {
   removeFromBag: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
-  toggleWishlist: (id: string) => void;
-  trackRecentlyViewed: (id: string) => void;
+  toggleWishlist: (productSlug: string) => void;
+  trackRecentlyViewed: (productSlug: string) => void;
   subtotal: number;
 };
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -37,7 +37,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, [recentlyViewed]);
 
   const trackRecentlyViewed = useCallback(
-    (id: string) => setRecentlyViewed((ids) => [id, ...ids.filter((x) => x !== id)].slice(0, 8)),
+    (slug: string) => setRecentlyViewed((ids) => [slug, ...ids.filter((x) => x !== slug)].slice(0, 8)),
     [],
   );
 
@@ -47,7 +47,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     removeFromBag: (id: string) => setCart((items) => items.filter((item) => item.product.id !== id)),
     updateQuantity: (id: string, quantity: number) => setCart((items) => items.map((item) => item.product.id === id ? { ...item, quantity: Math.max(1, quantity) } : item)),
     clearCart: () => setCart([]),
-    toggleWishlist: (id: string) => setWishlist((ids) => ids.includes(id) ? ids.filter((item) => item !== id) : [...ids, id]),
+    toggleWishlist: (slug: string) =>
+      setWishlist((ids) => (ids.includes(slug) ? ids.filter((item) => item !== slug) : [...ids, slug])),
     trackRecentlyViewed,
     subtotal: cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
   }), [cart, wishlist, recentlyViewed, bagOpen, trackRecentlyViewed]);

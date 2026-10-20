@@ -160,11 +160,25 @@ function ProductsPage() {
             const id = p._id || p.id!;
             return (
               <li key={id} className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="font-medium">{p.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {p.sku} · ₹{p.price} · {p.published === false ? "Draft" : "Live"}
-                  </p>
+                <div className="flex min-w-0 gap-3">
+                  <div className="flex shrink-0 gap-1">
+                    {(p.images?.length ? p.images : [p.image]).filter(Boolean).slice(0, 4).map((src, i) => (
+                      <img
+                        key={`${id}-img-${i}`}
+                        src={src}
+                        alt=""
+                        className="size-12 border border-border object-cover"
+                        loading="lazy"
+                      />
+                    ))}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-medium">{p.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {p.sku} · {p.category} · ₹{p.price} · {(p.images?.length ?? 0) || 1} image(s) ·{" "}
+                      {p.published === false ? "Draft" : "Live"}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Button size="sm" variant="outline" onClick={() => startEdit(p)}>

@@ -28,11 +28,39 @@ function normalizeCatalogKey(slug: string, sku?: string) {
 
 function mergeCatalog(apiList: ApiProduct[]): Product[] {
   const fromApi = apiList.map(mapApiProduct);
-  const apiKeys = new Set(fromApi.map((p) => normalizeCatalogKey(p.slug, p.sku)));
-  const staticOnly = staticProducts.filter(
-    (p) => !apiKeys.has(normalizeCatalogKey(p.slug, p.sku)),
-  );
-  return [...fromApi, ...staticOnly];
+  if (fromApi.length > 0) return fromApi;
+  return staticProducts;
+}
+
+export function categoryToSlug(category: string): string {
+  return category.toLowerCase().replace(/\s+/g, "-");
+}
+
+export function productMatchesCategorySlug(product: Product, slug: string): boolean {
+  return categoryToSlug(product.category) === slug.toLowerCase();
+}
+
+export function categoriesFromProducts(list: Product[]): string[] {
+  const set = new Set(list.map((p) => p.category).filter(Boolean));
+  return [...set].sort((a, b) => a.localeCompare(b));
+}
+
+export type ProductSort = "featured" | "new" | "low" | "high" | "best";
+
+export function sortPublicProducts(list: Product[], sort: ProductSort): Product[] {
+  const copy = [...list];
+  switch (sort) {
+    case "low":
+      return copy.sort((a, b) => a.price - b.price);
+    case "high":
+      return copy.sort((a, b) => b.price - a.price);
+    case "new":
+      return copy.sort((a, b) => b.slug.localeCompare(a.slug));
+    case "best":
+      return copy.sort((a, b) => (b.reviews ?? 0) - (a.reviews ?? 0) || b.rating - a.rating);
+    default:
+      return copy.sort((a, b) => a.name.localeCompare(b.name));
+  }
 }
 
 export function usePublicProducts() {

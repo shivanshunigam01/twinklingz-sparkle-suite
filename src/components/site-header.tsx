@@ -5,19 +5,28 @@ import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useStore } from "@/components/store-provider";
-import { formatPrice, products } from "@/lib/catalog";
+import { formatPrice } from "@/lib/catalog";
 import { ANNOUNCEMENT_BAR } from "@/lib/cms-settings";
+import { usePublicProducts } from "@/lib/use-public-products";
 const nav = [
-  { label: "NEW IN", to: "/new-arrivals" as const }, { label: "NECKLACES", to: "/collections/$slug" as const, slug: "necklaces" }, { label: "EARRINGS", to: "/collections/$slug" as const, slug: "earrings" },
-  { label: "BRACELETS", to: "/collections/$slug" as const, slug: "bracelets" }, { label: "RINGS", to: "/collections/$slug" as const, slug: "rings" }, { label: "SETS", to: "/collections/$slug" as const, slug: "jewellery-sets" },
-  { label: "BESTSELLERS", to: "/bestsellers" as const }, { label: "COLLECTIONS", to: "/collections" as const }, { label: "ABOUT", to: "/about" as const },
+  { label: "NEW IN", to: "/new-arrivals" as const },
+  { label: "NECKLACES", to: "/collections/$slug" as const, slug: "necklaces" },
+  { label: "EARRINGS", to: "/collections/$slug" as const, slug: "earrings" },
+  { label: "BRACELETS", to: "/collections/$slug" as const, slug: "bracelets" },
+  { label: "SHOP ALL", to: "/shop" as const },
+  { label: "BESTSELLERS", to: "/bestsellers" as const },
+  { label: "COLLECTIONS", to: "/collections" as const },
+  { label: "ABOUT", to: "/about" as const },
 ];
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false); const [menu, setMenu] = useState(false); const [search, setSearch] = useState(false); const [term, setTerm] = useState("");
   const path = useRouterState({ select: (state) => state.location.pathname }); const hero = path === "/" && !scrolled;
   const { cart, bagOpen, setBagOpen, subtotal, removeFromBag } = useStore();
+  const { data: catalog = [] } = usePublicProducts();
   useEffect(() => { const onScroll = () => setScrolled(window.scrollY > 48); onScroll(); window.addEventListener("scroll", onScroll, { passive: true }); return () => window.removeEventListener("scroll", onScroll); }, []);
-  const results = term.trim() ? products.filter((p) => `${p.name} ${p.category}`.toLowerCase().includes(term.toLowerCase())).slice(0, 5) : [];
+  const results = term.trim()
+    ? catalog.filter((p) => `${p.name} ${p.category} ${p.sku}`.toLowerCase().includes(term.toLowerCase())).slice(0, 8)
+    : [];
   return <>
     <div className="fixed inset-x-0 top-0 z-50 bg-primary py-2 text-center text-[10px] tracking-[0.16em] text-primary-foreground sm:text-xs">{ANNOUNCEMENT_BAR}</div>
     <header className={`fixed inset-x-0 top-8 z-40 transition-all duration-500 ${hero ? "border-transparent bg-transparent text-primary-foreground" : "border-b border-border bg-background/95 text-foreground shadow-sm backdrop-blur"}`}>

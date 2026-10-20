@@ -10,18 +10,19 @@ import {
   formatPrice,
   galleryImages,
   media,
-  products,
 } from "@/lib/catalog";
+import { categoryToSlug, usePublicProducts } from "@/lib/use-public-products";
 import { SectionHeading } from "@/components/home/section-heading";
 import { useStore } from "@/components/store-provider";
 import { apiFetch } from "@/lib/api";
 import { toast } from "sonner";
 
 export function CategorySection() {
+  const { data: products = [] } = usePublicProducts();
   return (
     <section className="bg-background px-5 py-24 lg:px-10">
       <SectionHeading eyebrow="DISCOVER" title="Shop by Category" />
-      <div className="no-scrollbar mx-auto flex max-w-7xl snap-x gap-4 overflow-x-auto pb-4 lg:grid lg:grid-cols-6">
+      <div className="no-scrollbar mx-auto flex max-w-7xl snap-x gap-4 overflow-x-auto pb-4 lg:grid lg:grid-cols-4">
         {categoryNames.map((name) => {
           const body = (
             <>
@@ -52,7 +53,7 @@ export function CategorySection() {
             <Link
               key={name}
               to="/collections/$slug"
-              params={{ slug: name.toLowerCase().replaceAll(" ", "-") }}
+              params={{ slug: categoryToSlug(name) }}
               className={cls}
             >
               {body}
@@ -65,6 +66,9 @@ export function CategorySection() {
 }
 
 export function NewArrivalsSection() {
+  const { data: products = [] } = usePublicProducts();
+  const picks = products.filter((p) => p.badge === "NEW").slice(0, 4);
+  const shown = picks.length ? picks : products.slice(0, 4);
   return (
     <section className="bg-secondary px-5 py-24 lg:px-10">
       <SectionHeading
@@ -73,7 +77,7 @@ export function NewArrivalsSection() {
         subtitle="Fresh sparkle, made for your next moment."
       />
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-3 gap-y-10 md:grid-cols-4 md:gap-6">
-        {products.slice(0, 4).map((p) => (
+        {shown.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}
       </div>
@@ -117,11 +121,13 @@ export function CampaignSection() {
 }
 
 export function BestsellersSection() {
+  const { data: products = [] } = usePublicProducts();
+  const picks = products.slice(0, 8);
   return (
     <section className="bg-background py-24">
       <SectionHeading eyebrow="LOVED BY OUR CUSTOMERS" title="Most Loved" />
       <div className="no-scrollbar flex snap-x gap-5 overflow-x-auto px-5 lg:px-[max(2.5rem,calc((100vw-80rem)/2))]">
-        {products.slice(1, 7).map((p) => (
+        {picks.map((p) => (
           <div className="min-w-[72vw] snap-start sm:min-w-[40vw] lg:min-w-[280px]" key={p.id}>
             <ProductCard product={p} showRating />
           </div>
@@ -134,6 +140,7 @@ export function BestsellersSection() {
 export function ShopTheLookSection() {
   const [active, setActive] = useState(0);
   const { addToBag } = useStore();
+  const { data: products = [] } = usePublicProducts();
   const lookProducts = products.slice(0, 4);
   const hotspots = [
     { x: "28%", y: "25%", product: lookProducts[0] },
@@ -196,6 +203,7 @@ export function ShopTheLookSection() {
 }
 
 export function EditSection() {
+  const { data: products = [] } = usePublicProducts();
   const edits = [
     "Everyday Elegance",
     "Date Night",

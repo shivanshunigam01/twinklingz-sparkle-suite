@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { Heart, Minus, Plus, ShieldCheck, Truck, PackageCheck, Star, ZoomIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -32,52 +32,93 @@ function Page() {
   const { slug } = Route.useParams();
   const loaderProduct = Route.useLoaderData();
   const { data: catalog = staticProducts } = usePublicProducts();
-  const product = catalog.find((p) => p.slug === slug) ?? loaderProduct ?? catalog[0];
+  const product = catalog.find((p) => p.slug === slug) ?? loaderProduct;
   const [qty, setQty] = useState(1);
   const [finish, setFinish] = useState("Rose Gold");
   const [activeImage, setActiveImage] = useState(0);
   const [zoomOpen, setZoomOpen] = useState(false);
+  const navigate = useNavigate();
   const { addToBag, toggleWishlist, wishlist, trackRecentlyViewed, recentlyViewed } = useStore();
 
   useEffect(() => {
-    if (product?.id) trackRecentlyViewed(product.id);
-  }, [product?.id, trackRecentlyViewed]);
+    if (product?.slug) trackRecentlyViewed(product.slug);
+  }, [product?.slug, trackRecentlyViewed]);
 
-  if (!product) return null;
+  useEffect(() => {
+    setActiveImage(0);
+  }, [product?.id]);
 
-  const gallery = product.images.length > 0 ? product.images : [product.image, product.altImage];
+  const gallery = useMemo(() => {
+    if (!product) return [];
+    const raw = [...(product.images || []), product.image, product.altImage].filter(Boolean);
+    return [...new Set(raw)];
+  }, [product]);
+
+  if (!product) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center px-5 pb-24 pt-36 text-center">
+        <h1 className="font-display text-4xl">Product not found</h1>
+        <p className="mt-3 max-w-md text-muted-foreground">
+          This style may have been updated. Browse the full collection to find your sparkle.
+        </p>
+        <Button asChild className="mt-8">
+          <Link to="/shop">SHOP ALL JEWELLERY</Link>
+        </Button>
+      </main>
+    );
+  }
+
   const hero = gallery[activeImage] ?? gallery[0];
   const completeLook = catalog.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 3);
   const recentProducts = recentlyViewed
-    .map((id) => catalog.find((p) => p.id === id))
-    .filter((p): p is (typeof catalog)[0] => Boolean(p) && p.id !== product.id)
+    .map((s) => catalog.find((p) => p.slug === s))
+    .filter((p): p is (typeof catalog)[0] => Boolean(p) && p.slug !== product.slug)
     .slice(0, 4);
 
   return (
     <main className="min-h-screen bg-background pb-28 pt-28 md:pt-32">
       <div className="mx-auto grid max-w-[1500px] lg:grid-cols-[60%_40%]">
-        <div className="grid gap-1 sm:grid-cols-2">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-stretch">
+          {gallery.length > 1 && (
+            <div
+              className="order-2 flex gap-2 overflow-x-auto pb-1 lg:order-1 lg:w-[92px] lg:flex-col lg:overflow-y-auto lg:overflow-x-hidden lg:pb-0"
+              aria-label="Product image gallery"
+            >
+              {gallery.map((src, i) => (
+                <button
+                  key={`${src}-${i}`}
+                  type="button"
+                  onClick={() => setActiveImage(i)}
+                  className={`size-[72px] shrink-0 overflow-hidden border-2 bg-muted transition sm:size-20 lg:size-[88px] ${
+                    activeImage === i ? "border-accent ring-1 ring-accent/40" : "border-border hover:border-primary/40"
+                  }`}
+                >
+                  <img
+                    src={src}
+                    alt={`${product.name} view ${i + 1}`}
+                    className="size-full object-cover"
+                    loading="lazy"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
           <button
             type="button"
             onClick={() => setZoomOpen(true)}
-            className="group relative aspect-[4/5] sm:col-span-2"
+            className="group relative order-1 aspect-[4/5] w-full overflow-hidden bg-muted lg:order-2 lg:flex-1"
             aria-label="Zoom product image"
           >
-            <img src={hero} alt={product.name} className="h-full w-full object-cover" />
+            <img src={hero} alt={product.name} className="size-full object-cover" />
             <span className="absolute bottom-4 right-4 flex items-center gap-1 bg-background/85 px-2 py-1 text-[10px] opacity-0 transition group-hover:opacity-100">
               <ZoomIn className="size-3" /> Zoom
             </span>
+            {gallery.length > 1 && (
+              <span className="absolute left-4 top-4 rounded-full bg-background/90 px-2.5 py-1 text-[10px] tracking-wider">
+                {activeImage + 1} / {gallery.length}
+              </span>
+            )}
           </button>
-          {gallery.map((src, i) => (
-            <button
-              key={src}
-              type="button"
-              onClick={() => setActiveImage(i)}
-              className={`aspect-square overflow-hidden border-2 transition ${activeImage === i ? "border-accent" : "border-transparent"}`}
-            >
-              <img src={src} alt={`${product.name} view ${i + 1}`} className="h-full w-full object-cover" />
-            </button>
-          ))}
         </div>
         <div className="p-6 lg:sticky lg:top-28 lg:h-fit lg:p-12">
           <p className="text-xs tracking-[.2em] text-accent">{product.category.toUpperCase()}</p>
@@ -125,12 +166,19 @@ function Page() {
               variant="outline"
               size="icon"
               className="h-11 w-11"
-              onClick={() => toggleWishlist(product.id)}
+              onClick={() => toggleWishlist(product.slug)}
             >
-              <Heart className={wishlist.includes(product.id) ? "fill-accent text-accent" : ""} />
+              <Heart className={wishlist.includes(product.slug) ? "fill-accent text-accent" : ""} />
             </Button>
           </div>
-          <Button variant="outline" className="mt-3 h-11 w-full">
+          <Button
+            variant="outline"
+            className="mt-3 h-11 w-full"
+            onClick={() => {
+              for (let i = 0; i < qty; i++) addToBag(product);
+              navigate({ to: "/checkout" });
+            }}
+          >
             BUY NOW
           </Button>
           <div className="mt-7 grid grid-cols-3 gap-3 border-y border-border py-5 text-center text-[10px]">

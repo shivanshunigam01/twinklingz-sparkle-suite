@@ -1,369 +1,377 @@
 {
-  "generatedAt": "2026-10-17T16:59:55.967Z",
-  "sources": [
-    "wetransfer_necklace_2026-10-14_1034.zip",
-    "wetransfer_first-lot_2026-10-14_1041.zip"
-  ],
   "skuCategories": {
-    "51105": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "51155": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "51355": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "51485": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "52905": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "52985": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "53355": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "53655": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "54105": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "54155": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "54355": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "56255": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "56485": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "57165": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "01": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "1-325": {
+    "BRA-04": {
       "category": "Bracelets",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "04"
     },
-    "1-360": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "1-800": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "02": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "2-425": {
+    "BRA-51105": {
       "category": "Bracelets",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "51105"
     },
-    "2-550": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "2-1100": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "03": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "3-425": {
+    "BRA-51155": {
       "category": "Bracelets",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "51155"
     },
-    "3-675": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "04": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
-    },
-    "4-425": {
+    "BRA-1-325": {
       "category": "Bracelets",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "1-325"
     },
-    "4-700": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "4-875": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "5-450": {
+    "BRA-2-425": {
       "category": "Bracelets",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "2-425"
     },
-    "5-500": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "5-600": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "6-525": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "6-800": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "6-1200": {
+    "BRA-3-425": {
       "category": "Bracelets",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "3-425"
     },
-    "7-300": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "7-575": {
+    "BRA-4-425": {
       "category": "Bracelets",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "4-425"
     },
-    "7-600": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "8-375": {
+    "BRA-5-450": {
       "category": "Bracelets",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "5-450"
     },
-    "8-550": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "8-600": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "9-625": {
+    "BRA-6-1200": {
       "category": "Bracelets",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "6-1200"
     },
-    "9-800": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "9-850": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "10-650": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "10-850": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "11-450": {
+    "BRA-7-575": {
       "category": "Bracelets",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "7-575"
     },
-    "11-550": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "11-875": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "12-320": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "12-575": {
+    "BRA-8-375": {
       "category": "Bracelets",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "8-375"
     },
-    "12-800": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "13-375": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "13-400": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "14-320": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "14-600": {
+    "BRA-9-625": {
       "category": "Bracelets",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "9-625"
     },
-    "14-650": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "15-530": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "15-625": {
+    "BRA-10-850": {
       "category": "Bracelets",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "10-850"
     },
-    "15-725": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "16-375": {
+    "BRA-11-450": {
       "category": "Bracelets",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "11-450"
     },
-    "16-725": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "16-800": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "17-": {
-      "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
-    },
-    "17-325": {
+    "BRA-12-575": {
       "category": "Bracelets",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "12-575"
     },
-    "18-800": {
+    "BRA-13-375": {
+      "category": "Bracelets",
+      "folder": "13-375"
+    },
+    "BRA-14-600": {
+      "category": "Bracelets",
+      "folder": "14-600"
+    },
+    "BRA-15-625": {
+      "category": "Bracelets",
+      "folder": "15-625"
+    },
+    "BRA-16-375": {
+      "category": "Bracelets",
+      "folder": "16-375"
+    },
+    "BRA-17-325": {
+      "category": "Bracelets",
+      "folder": "17-325"
+    },
+    "EAR-1-360": {
+      "category": "Earrings",
+      "folder": "1-360"
+    },
+    "EAR-2-1100": {
+      "category": "Earrings",
+      "folder": "2-1100"
+    },
+    "EAR-3-675": {
+      "category": "Earrings",
+      "folder": "3-675"
+    },
+    "EAR-4-875": {
+      "category": "Earrings",
+      "folder": "4-875"
+    },
+    "EAR-5-600": {
+      "category": "Earrings",
+      "folder": "5-600"
+    },
+    "EAR-6-525": {
+      "category": "Earrings",
+      "folder": "6-525"
+    },
+    "EAR-7-600": {
+      "category": "Earrings",
+      "folder": "7-600"
+    },
+    "EAR-8-600": {
+      "category": "Earrings",
+      "folder": "8-600"
+    },
+    "EAR-9-850": {
+      "category": "Earrings",
+      "folder": "9-850"
+    },
+    "EAR-10-850": {
+      "category": "Earrings",
+      "folder": "10-850"
+    },
+    "EAR-11-875": {
+      "category": "Earrings",
+      "folder": "11-875"
+    },
+    "EAR-12-320": {
+      "category": "Earrings",
+      "folder": "12-320"
+    },
+    "EAR-13-375": {
+      "category": "Earrings",
+      "folder": "13-375"
+    },
+    "EAR-14-320": {
+      "category": "Earrings",
+      "folder": "14-320"
+    },
+    "EAR-15-725": {
+      "category": "Earrings",
+      "folder": "15-725"
+    },
+    "EAR-16-725": {
+      "category": "Earrings",
+      "folder": "16-725"
+    },
+    "NEC-01": {
       "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "01"
     },
-    "19-800": {
+    "NEC-02": {
       "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "02"
     },
-    "20-800": {
+    "NEC-03": {
       "category": "Necklaces",
-      "zipBasename": "wetransfer_necklace_2026-10-14_1034.zip"
+      "folder": "03"
     },
-    "113 - 1350rs": {
-      "category": "Rings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-17": {
+      "category": "Necklaces",
+      "folder": "17-"
     },
-    "140 - 2100rs": {
-      "category": "Rings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-113-1350rs": {
+      "category": "Necklaces",
+      "folder": "113 - 1350rs"
     },
-    "142 - 1700rs": {
-      "category": "Rings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-140-2100rs": {
+      "category": "Necklaces",
+      "folder": "140 - 2100rs"
     },
-    "143 - 1700": {
-      "category": "Rings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-142-1700rs": {
+      "category": "Necklaces",
+      "folder": "142 - 1700rs"
     },
-    "150 -1900rs": {
-      "category": "Rings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-143-1700": {
+      "category": "Necklaces",
+      "folder": "143 - 1700"
     },
-    "206 - 2300rs": {
-      "category": "Rings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-150-1900rs": {
+      "category": "Necklaces",
+      "folder": "150 -1900rs"
     },
-    "218 - 2500rs": {
-      "category": "Rings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-206-2300rs": {
+      "category": "Necklaces",
+      "folder": "206 - 2300rs"
     },
-    "225 - 2650rs": {
-      "category": "Rings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-218-2500rs": {
+      "category": "Necklaces",
+      "folder": "218 - 2500rs"
     },
-    "327 - 2900rs": {
-      "category": "Rings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-225-2650rs": {
+      "category": "Necklaces",
+      "folder": "225 - 2650rs"
     },
-    "442 - 2500rs": {
-      "category": "Rings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-327-2900rs": {
+      "category": "Necklaces",
+      "folder": "327 - 2900rs"
     },
-    "51355-1": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-442-2500rs": {
+      "category": "Necklaces",
+      "folder": "442 - 2500rs"
     },
-    "51355-2": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-51355": {
+      "category": "Necklaces",
+      "folder": "51355"
     },
-    "51355-3": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-51485": {
+      "category": "Necklaces",
+      "folder": "51485"
     },
-    "51485-1": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-52905": {
+      "category": "Necklaces",
+      "folder": "52905"
     },
-    "53355-1": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-52985": {
+      "category": "Necklaces",
+      "folder": "52985"
     },
-    "53655-1": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-53355": {
+      "category": "Necklaces",
+      "folder": "53355"
     },
-    "53655-2": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-53655": {
+      "category": "Necklaces",
+      "folder": "53655"
     },
-    "53655-3": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-54105": {
+      "category": "Necklaces",
+      "folder": "54105"
     },
-    "53655-4": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-54155": {
+      "category": "Necklaces",
+      "folder": "54155"
     },
-    "54155-1": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-54355": {
+      "category": "Necklaces",
+      "folder": "54355"
     },
-    "56485-1": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-56255": {
+      "category": "Necklaces",
+      "folder": "56255"
     },
-    "57165-1": {
-      "category": "Earrings",
-      "zipBasename": "wetransfer_first-lot_2026-10-14_1041.zip"
+    "NEC-56485": {
+      "category": "Necklaces",
+      "folder": "56485"
+    },
+    "NEC-57165": {
+      "category": "Necklaces",
+      "folder": "57165"
+    },
+    "NEC-1-800": {
+      "category": "Necklaces",
+      "folder": "1-800"
+    },
+    "NEC-2-550": {
+      "category": "Necklaces",
+      "folder": "2-550"
+    },
+    "NEC-3-425": {
+      "category": "Necklaces",
+      "folder": "3-425"
+    },
+    "NEC-4-700": {
+      "category": "Necklaces",
+      "folder": "4-700"
+    },
+    "NEC-5-500": {
+      "category": "Necklaces",
+      "folder": "5-500"
+    },
+    "NEC-6-800": {
+      "category": "Necklaces",
+      "folder": "6-800"
+    },
+    "NEC-7-300": {
+      "category": "Necklaces",
+      "folder": "7-300"
+    },
+    "NEC-8-550": {
+      "category": "Necklaces",
+      "folder": "8-550"
+    },
+    "NEC-9-800": {
+      "category": "Necklaces",
+      "folder": "9-800"
+    },
+    "NEC-10-650": {
+      "category": "Necklaces",
+      "folder": "10-650"
+    },
+    "NEC-11-550": {
+      "category": "Necklaces",
+      "folder": "11-550"
+    },
+    "NEC-12-800": {
+      "category": "Necklaces",
+      "folder": "12-800"
+    },
+    "NEC-13-400": {
+      "category": "Necklaces",
+      "folder": "13-400"
+    },
+    "NEC-14-650": {
+      "category": "Necklaces",
+      "folder": "14-650"
+    },
+    "NEC-15-530": {
+      "category": "Necklaces",
+      "folder": "15-530"
+    },
+    "NEC-16-800": {
+      "category": "Necklaces",
+      "folder": "16-800"
+    },
+    "NEC-18-800": {
+      "category": "Necklaces",
+      "folder": "18-800"
+    },
+    "NEC-19-800": {
+      "category": "Necklaces",
+      "folder": "19-800"
+    },
+    "NEC-20-800": {
+      "category": "Necklaces",
+      "folder": "20-800"
+    },
+    "NEC-51355-1": {
+      "category": "Necklaces",
+      "folder": "51355-1"
+    },
+    "NEC-51355-2": {
+      "category": "Necklaces",
+      "folder": "51355-2"
+    },
+    "NEC-51355-3": {
+      "category": "Necklaces",
+      "folder": "51355-3"
+    },
+    "NEC-51485-1": {
+      "category": "Necklaces",
+      "folder": "51485-1"
+    },
+    "NEC-53355-1": {
+      "category": "Necklaces",
+      "folder": "53355-1"
+    },
+    "NEC-53655-1": {
+      "category": "Necklaces",
+      "folder": "53655-1"
+    },
+    "NEC-53655-2": {
+      "category": "Necklaces",
+      "folder": "53655-2"
+    },
+    "NEC-53655-3": {
+      "category": "Necklaces",
+      "folder": "53655-3"
+    },
+    "NEC-53655-4": {
+      "category": "Necklaces",
+      "folder": "53655-4"
+    },
+    "NEC-54155-1": {
+      "category": "Necklaces",
+      "folder": "54155-1"
+    },
+    "NEC-56485-1": {
+      "category": "Necklaces",
+      "folder": "56485-1"
+    },
+    "NEC-57165-1": {
+      "category": "Necklaces",
+      "folder": "57165-1"
     }
-  }
+  },
+  "updatedAt": "2026-10-20T08:27:42.471Z"
 }
