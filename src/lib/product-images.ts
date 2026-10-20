@@ -14,8 +14,18 @@ export function collectImageUrls(input: {
   image?: string;
   altImage?: string;
 }): string[] {
-  const merged = [...(input.images ?? []), input.image, input.altImage].filter(Boolean) as string[];
+  const merged = productGalleryUrls(input);
   const cloud = filterCloudinaryUrls(merged);
   if (cloud.length > 0) return [...new Set(cloud)];
+  return merged;
+}
+
+/** Unique gallery order: extra images, then primary, then alt. */
+export function productGalleryUrls(input: {
+  images?: string[];
+  image?: string;
+  altImage?: string;
+}): string[] {
+  const merged = [...(input.images ?? []), input.image, input.altImage].filter(Boolean) as string[];
   return [...new Set(merged)];
 }

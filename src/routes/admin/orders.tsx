@@ -1,18 +1,41 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiFetch } from "@/lib/api";
+import { FileDown } from "lucide-react";
+import { useState } from "react";
+import { apiDownload, apiFetch } from "@/lib/api";
 import { getAdminToken } from "@/lib/admin-auth";
 import { Button } from "@/components/ui/button";
 import { LazyImage } from "@/components/ui/lazy-image";
+import { collectImageUrls, isCloudinaryUrl } from "@/lib/product-images";
+import { usePublicProducts } from "@/lib/use-public-products";
 import { toast } from "sonner";
 
 type OrderItem = {
   name: string;
   quantity: number;
   image?: string;
+  slug?: string;
   sku?: string;
   unitPrice?: number;
 };
+
+function resolveOrderItemImage(
+  item: OrderItem,
+  catalog: ReturnType<typeof usePublicProducts>["data"],
+): string {
+  const fromApi = item.image?.trim();
+  if (fromApi && isCloudinaryUrl(fromApi)) return fromApi;
+
+  const product = catalog?.find(
+    (p) => (item.slug && p.slug === item.slug) || (item.sku && p.sku === item.sku),
+  );
+  if (product) {
+    const urls = collectImageUrls(product);
+    if (urls[0]) return urls[0];
+  }
+
+  return fromApi || "";
+}
 
 type OrderRow = {
   _id: string;
@@ -34,7 +57,9 @@ export const Route = createFileRoute("/admin/orders")({
 
 function OrdersPage() {
   const token = getAdminToken();
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const qc = useQueryClient();
+  const { data: catalog } = usePublicProducts();
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin", "orders"],
     queryFn: () => apiFetch<{ orders: OrderRow[] }>("/admin/orders", { token }),
@@ -54,6 +79,21 @@ function OrdersPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  async function downloadInvoice(order: OrderRow) {
+    setDownloadingId(order._id);
+    try {
+      await apiDownload(`/admin/orders/${order._id}/invoice`, {
+        token,
+        filename: `Twinklingz-Invoice-${order.orderNumber}.pdf`,
+      });
+      toast.success("Invoice downloaded");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not download invoice");
+    } finally {
+      setDownloadingId(null);
+    }
+  }
+
   return (
     <div>
       <h2 className="font-display text-4xl">Orders</h2>
@@ -67,17 +107,20 @@ function OrdersPage() {
               <div className="flex min-w-0 flex-1 gap-4">
                 {o.items?.length > 0 && (
                   <div className="flex shrink-0 flex-wrap gap-2">
-                    {o.items.map((item, index) => (
+                    {o.items.map((item, index) => {
+                      const imageSrc = resolveOrderItemImage(item, catalog);
+                      return (
                       <div
                         key={`${item.sku ?? item.name}-${index}`}
                         className="relative size-16 overflow-hidden border border-border bg-muted sm:size-20"
                         title={item.name}
                       >
-                        {item.image ? (
+                        {imageSrc ? (
                           <LazyImage
-                            src={item.image}
+                            src={imageSrc}
                             alt={item.name}
                             optimizeWidth={160}
+                            priority
                             className="size-full object-cover"
                           />
                         ) : (
@@ -91,7 +134,8 @@ function OrdersPage() {
                           </span>
                         )}
                       </div>
-                    ))}
+                    );
+                    })}
                   </div>
                 )}
                 <div className="min-w-0">
@@ -118,6 +162,17 @@ function OrdersPage() {
                   <p className="mt-2 text-sm">
                     ₹{o.total.toLocaleString("en-IN")} · Payment: <strong>{o.paymentStatus}</strong>
                   </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="mt-3"
+                    disabled={downloadingId === o._id}
+                    onClick={() => downloadInvoice(o)}
+                  >
+                    <FileDown className="size-4" />
+                    {downloadingId === o._id ? "Preparing PDF…" : "Download invoice (PDF)"}
+                  </Button>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2 lg:max-w-md lg:justify-end">

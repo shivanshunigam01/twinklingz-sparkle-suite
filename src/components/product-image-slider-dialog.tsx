@@ -4,11 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { LazyImage } from "@/components/ui/lazy-image";
 import type { Product } from "@/lib/catalog";
-
-function galleryUrls(product: Product): string[] {
-  const merged = [...(product.images ?? []), product.image, product.altImage].filter(Boolean) as string[];
-  return [...new Set(merged)];
-}
+import { productGalleryUrls } from "@/lib/product-images";
 
 type ProductImageSliderDialogProps = {
   product: Product;
@@ -23,7 +19,7 @@ export function ProductImageSliderDialog({
   onOpenChange,
   initialIndex = 0,
 }: ProductImageSliderDialogProps) {
-  const images = useMemo(() => galleryUrls(product), [product]);
+  const images = useMemo(() => productGalleryUrls(product), [product]);
   const [index, setIndex] = useState(initialIndex);
 
   useEffect(() => {
@@ -112,5 +108,5 @@ export function ProductImageSliderDialog({
 }
 
 export function productGalleryCount(product: Product): number {
-  return galleryUrls(product).length;
+  return productGalleryUrls(product).length;
 }

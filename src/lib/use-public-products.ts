@@ -3,6 +3,14 @@ import { apiFetch, type ApiProduct } from "@/lib/api";
 import { products as staticProducts, type Product } from "@/lib/catalog";
 import { readCatalogCache, writeCatalogCache } from "@/lib/catalog-cache";
 import { collectImageUrls, isCloudinaryUrl } from "@/lib/product-images";
+import {
+  categoriesFromProducts,
+  categoryToSlug,
+  displayCategoryLabel,
+  productMatchesCategorySlug,
+} from "@/lib/product-categories";
+
+export { categoriesFromProducts, categoryToSlug, productMatchesCategorySlug };
 
 const prefersRemoteApi = Boolean((import.meta.env.VITE_API_URL as string | undefined)?.trim());
 
@@ -16,14 +24,17 @@ function mapApiProduct(p: ApiProduct): Product {
     slug: p.slug,
     sku: p.sku,
     name: p.name,
-    category: p.category,
+    category: displayCategoryLabel(p.category),
     price: p.price,
+    mrp: p.mrp,
     badge: p.badge ?? undefined,
     rating: p.rating ?? 4.8,
     reviews: p.reviews ?? 0,
     image: isCloudinaryUrl(p.image) ? p.image : primary,
     altImage: isCloudinaryUrl(p.altImage) ? p.altImage : secondary,
     images,
+    inStock: p.inStock ?? true,
+    featured: p.featured ?? false,
   };
 }
 
@@ -37,19 +48,6 @@ function mergeCatalog(apiList: ApiProduct[]): Product[] {
   if (fromApi.length > 0) return fromApi;
   if (prefersRemoteApi) return [];
   return staticProducts;
-}
-
-export function categoryToSlug(category: string): string {
-  return category.toLowerCase().replace(/\s+/g, "-");
-}
-
-export function productMatchesCategorySlug(product: Product, slug: string): boolean {
-  return categoryToSlug(product.category) === slug.toLowerCase();
-}
-
-export function categoriesFromProducts(list: Product[]): string[] {
-  const set = new Set(list.map((p) => p.category).filter(Boolean));
-  return [...set].sort((a, b) => a.localeCompare(b));
 }
 
 export type ProductSort = "featured" | "new" | "low" | "high" | "best";

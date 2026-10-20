@@ -1,4 +1,5 @@
 import type { Product } from "@/lib/catalog";
+import { productMatchesCategoryLabels } from "@/lib/product-categories";
 import { isCloudinaryUrl } from "@/lib/product-images";
 
 /** Safe fallback when static `/catalog/` assets are not on the CDN. */
@@ -15,7 +16,7 @@ export function categoryImageFromProducts(products: Product[], category: string,
     const newPick = products.find((p) => p.badge === "NEW" && isCloudinaryUrl(p.image));
     if (newPick) return newPick.image;
   }
-  const match = products.find((p) => p.category === category && isCloudinaryUrl(p.image));
+  const match = products.find((p) => productMatchesCategoryLabels(p, [category]) && isCloudinaryUrl(p.image));
   return match?.image || pickCloudinaryImage(products, staticFallback);
 }
 

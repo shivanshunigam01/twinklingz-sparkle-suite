@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { categoryHeroImage, galleryImages } from "@/lib/catalog";
+import { displayCategoryLabel } from "@/lib/product-categories";
 import { categoriesFromProducts, categoryToSlug, usePublicProducts } from "@/lib/use-public-products";
 
 export const Route = createFileRoute("/collections/")({
@@ -39,7 +40,10 @@ function Page() {
             className="group relative aspect-[4/3] overflow-hidden"
           >
             <LazyImage
-              src={products.find((p) => p.category === name)?.image || categoryHeroImage(name)}
+              src={
+                products.find((p) => displayCategoryLabel(p.category) === name)?.image ||
+                categoryHeroImage(name)
+              }
               alt={`${name} collection`}
               optimizeWidth={720}
               className="h-full w-full object-cover transition duration-700 group-hover:scale-105"

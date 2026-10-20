@@ -4,6 +4,7 @@ import { Heart, Minus, Plus, ShieldCheck, Truck, PackageCheck, Star, ZoomIn } fr
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { LazyImage } from "@/components/ui/lazy-image";
+import { optimizePdpHeroUrl } from "@/lib/cloudinary-url";
 import { ProductCard } from "@/components/product-card";
 import { formatPrice, products as staticProducts, type Product } from "@/lib/catalog";
 import { moreFromCatalog, peopleAlsoSee, similarProducts } from "@/lib/product-recommendations";
@@ -121,8 +122,8 @@ function Page() {
           <span className="text-foreground">{product.sku}</span>
         </nav>
 
-        <div className="flex flex-col gap-8 lg:flex-row lg:gap-14">
-          <div className="w-full lg:w-[min(100%,420px)] lg:shrink-0">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)] lg:items-start lg:gap-12 xl:gap-16">
+          <div className="w-full min-w-0 lg:max-w-xl xl:max-w-2xl">
             <ProductImageGallery
               name={product.name}
               gallery={gallery}
@@ -133,7 +134,7 @@ function Page() {
             />
           </div>
 
-          <div className="min-w-0 flex-1 lg:sticky lg:top-28 lg:max-w-md lg:self-start">
+          <div className="min-w-0 lg:sticky lg:top-28 lg:max-w-lg lg:self-start">
             <div className="space-y-6">
               <header>
                 <p className="text-sm font-medium text-accent">{product.category}</p>
@@ -282,7 +283,7 @@ function Page() {
           className="flex max-h-[92vh] w-[min(calc(100vw-1.5rem),48rem)] items-center justify-center border-none bg-black/85 p-3 shadow-none sm:p-6"
         >
           <LazyImage
-            src={hero}
+            src={optimizePdpHeroUrl(hero, 1400)}
             alt={product.name}
             optimizeWidth={1400}
             priority
@@ -332,7 +333,6 @@ function PdpAccordion({ title, children }: { title: string; children: ReactNode 
   );
 }
 
-/** Amazon-style: fixed-size thumb strip + compact square main preview. */
 function ProductImageGallery({
   name,
   gallery,
@@ -349,17 +349,14 @@ function ProductImageGallery({
   onZoom: () => void;
 }) {
   const multi = gallery.length > 1;
-
-  /** Shared height for thumb column + main preview */
-  const previewHeight =
-    "min-h-[280px] h-[min(70vw,420px)] max-h-[480px] sm:min-h-[320px] sm:h-[min(55vw,480px)]";
+  const heroSrc = optimizePdpHeroUrl(hero, 1100);
 
   return (
-    <section className="rounded-xl border border-border bg-card p-3 shadow-sm sm:p-4" aria-label="Product images">
-      <div className="flex items-stretch gap-3">
+    <section className="space-y-3" aria-label="Product images">
+      <div className="flex gap-3 sm:gap-4">
         {multi && (
           <div
-            className={`flex shrink-0 flex-col gap-2 overflow-y-auto pr-1 ${previewHeight}`}
+            className="hidden max-h-[min(72vw,36rem)] shrink-0 flex-col gap-2 overflow-y-auto sm:flex"
             aria-label="Image thumbnails"
           >
             {gallery.map((src, i) => (
@@ -367,55 +364,87 @@ function ProductImageGallery({
                 key={`${src}-${i}`}
                 type="button"
                 onClick={() => onSelect(i)}
-                className={`size-[52px] shrink-0 overflow-hidden rounded-md border bg-white p-0.5 transition ${
+                className={`size-14 shrink-0 overflow-hidden rounded-md border-2 bg-secondary/30 transition ${
                   activeImage === i
-                    ? "border-primary ring-1 ring-primary/20"
-                    : "border-border hover:border-primary/30"
+                    ? "border-primary shadow-sm"
+                    : "border-transparent opacity-80 hover:border-border hover:opacity-100"
                 }`}
               >
                 <LazyImage
-                  src={src}
+                  src={optimizePdpHeroUrl(src, 160)}
                   alt={`${name} view ${i + 1}`}
-                  optimizeWidth={120}
-                  width={52}
-                  height={52}
-                  className="size-full rounded-[4px] object-cover"
+                  optimizeWidth={160}
+                  width={56}
+                  height={70}
+                  className="size-full object-cover object-center"
                 />
               </button>
             ))}
           </div>
         )}
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          <button
-            type="button"
-            onClick={onZoom}
-            className={`relative w-full overflow-hidden rounded-lg bg-white ${previewHeight}`}
-            aria-label="Zoom product image"
+        <button
+          type="button"
+          onClick={onZoom}
+          className="group relative aspect-[4/5] w-full min-w-0 overflow-hidden rounded-xl border border-border/80 bg-gradient-to-b from-secondary/50 to-secondary/20 shadow-[0_1px_0_rgba(0,0,0,0.04)]"
+          aria-label="Zoom product image"
+        >
+          <LazyImage
+            src={heroSrc}
+            alt={name}
+            optimizeWidth={1100}
+            priority
+            sizes="(min-width: 1024px) 42vw, 100vw"
+            className="absolute inset-0 size-full object-cover object-[center_22%] transition duration-500 ease-out group-hover:scale-[1.02]"
+          />
+          <span
+            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 transition group-hover:opacity-100"
+            aria-hidden
+          />
+          {multi && (
+            <span className="absolute right-3 top-3 z-10 rounded-full bg-background/90 px-2.5 py-1 text-[11px] font-medium tabular-nums text-foreground shadow-sm backdrop-blur-sm">
+              {activeImage + 1} / {gallery.length}
+            </span>
+          )}
+          <span
+            className="absolute bottom-3 right-3 z-10 flex size-9 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm backdrop-blur-sm opacity-0 transition group-hover:opacity-100"
+            aria-hidden
           >
-            <LazyImage
-              src={hero}
-              alt={name}
-              optimizeWidth={900}
-              priority
-              className="absolute inset-0 m-auto h-full w-full object-contain p-2 sm:p-4"
-            />
-            {multi && (
-              <span className="absolute right-2 top-2 z-10 rounded-full bg-foreground/75 px-2 py-0.5 text-[10px] font-medium text-background">
-                {activeImage + 1} / {gallery.length}
-              </span>
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={onZoom}
-            className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground transition hover:text-foreground"
-          >
-            <ZoomIn className="size-3.5" />
-            Click to see full view
-          </button>
-        </div>
+            <ZoomIn className="size-4" />
+          </span>
+        </button>
       </div>
+
+      {multi && (
+        <div className="flex gap-2 overflow-x-auto pb-1 sm:hidden" aria-label="Image thumbnails">
+          {gallery.map((src, i) => (
+            <button
+              key={`m-${src}-${i}`}
+              type="button"
+              onClick={() => onSelect(i)}
+              className={`size-16 shrink-0 overflow-hidden rounded-md border-2 ${
+                activeImage === i ? "border-primary" : "border-border"
+              }`}
+            >
+              <LazyImage
+                src={optimizePdpHeroUrl(src, 160)}
+                alt={`${name} view ${i + 1}`}
+                optimizeWidth={160}
+                className="size-full object-cover"
+              />
+            </button>
+          ))}
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={onZoom}
+        className="flex w-full items-center justify-center gap-1.5 rounded-md py-1 text-xs text-muted-foreground transition hover:text-foreground"
+      >
+        <ZoomIn className="size-3.5" />
+        Tap for full-screen view
+      </button>
     </section>
   );
 }

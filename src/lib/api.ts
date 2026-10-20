@@ -45,6 +45,31 @@ export function getApiBaseUrl() {
   return API_BASE;
 }
 
+/** Download a binary response (e.g. PDF invoice) with admin auth. */
+export async function apiDownload(
+  path: string,
+  options: { token?: string | null; filename?: string } = {},
+): Promise<void> {
+  const { token, filename = "download" } = options;
+  const res = await fetch(`${API_BASE}${path}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  if (!res.ok) {
+    const data = await parseJson(res);
+    throw new ApiError(String(data.error || res.statusText), res.status, data.details);
+  }
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.rel = "noopener";
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
 export async function apiUploadForm<T>(
   path: string,
   formData: FormData,

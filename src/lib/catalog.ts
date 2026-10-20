@@ -1,4 +1,5 @@
 import { catalogEntries } from "@/lib/catalog-data.generated";
+import { displayCategoryLabel } from "@/lib/product-categories";
 
 export type Product = {
   id: string;
@@ -14,6 +15,8 @@ export type Product = {
   image: string;
   altImage: string;
   images: readonly string[];
+  inStock?: boolean;
+  featured?: boolean;
 };
 
 export const products: Product[] = catalogEntries.map((entry, i) => ({
@@ -21,7 +24,7 @@ export const products: Product[] = catalogEntries.map((entry, i) => ({
   slug: entry.slug,
   sku: entry.sku,
   name: entry.name,
-  category: entry.category,
+  category: displayCategoryLabel(entry.category),
   price: entry.price,
   badge: entry.badge,
   rating: entry.rating,
@@ -62,7 +65,7 @@ export const allCatalogImages: string[] = catalogEntries.flatMap((e) => [...e.im
 export const galleryImages: string[] = allCatalogImages.slice(0, 24);
 
 export function categoryHeroImage(category: string): string {
-  const match = products.find((p) => p.category === category);
+  const match = products.find((p) => displayCategoryLabel(p.category) === displayCategoryLabel(category));
   return match?.image ?? media.categoriesImage;
 }
 

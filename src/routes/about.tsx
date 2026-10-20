@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { LazyImage } from "@/components/ui/lazy-image";
-import { galleryImages, media } from "@/lib/catalog";
+import { galleryImages } from "@/lib/catalog";
+
+const FOUNDER_PORTRAIT = "/priya-kaur-founder.jpg";
 import { STORY_COPY } from "@/lib/cms-settings";
 
 export const Route = createFileRoute("/about")({
@@ -31,8 +33,8 @@ function Page() {
     <main className="min-h-screen bg-background pb-24 pt-40">
       <div className="mx-auto grid max-w-6xl gap-12 px-5 lg:grid-cols-2 lg:items-center lg:px-10">
         <LazyImage
-          src={media.heroImage}
-          alt="Twinklingz jewellery collection"
+          src={FOUNDER_PORTRAIT}
+          alt="Priya Kaur, Founder of Twinklingz"
           optimizeWidth={800}
           width={800}
           height={1000}
