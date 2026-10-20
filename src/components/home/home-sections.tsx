@@ -12,6 +12,11 @@ import {
   galleryImages,
   media,
 } from "@/lib/catalog";
+import {
+  categoryImageFromProducts,
+  galleryFromProducts,
+  pickCloudinaryImage,
+} from "@/lib/marketing-images";
 import { categoryToSlug, usePublicProducts } from "@/lib/use-public-products";
 import { SectionHeading } from "@/components/home/section-heading";
 import { useStore } from "@/components/store-provider";
@@ -28,7 +33,7 @@ export function CategorySection() {
           const body = (
             <>
               <LazyImage
-                src={categoryHeroImage(name)}
+                src={categoryImageFromProducts(products, name, categoryHeroImage(name))}
                 alt={`${name} sample collection`}
                 optimizeWidth={640}
                 width={640}
@@ -94,10 +99,12 @@ export function NewArrivalsSection() {
 }
 
 export function CampaignSection() {
+  const { data: products = [] } = usePublicProducts();
+  const hero = pickCloudinaryImage(products, media.campaignImage);
   return (
     <section className="relative min-h-[75vh] overflow-hidden">
       <LazyImage
-        src={media.campaignImage}
+        src={hero}
         alt="Rose gold statement jewellery on burgundy velvet"
         optimizeWidth={1200}
         width={1200}
@@ -152,13 +159,14 @@ export function ShopTheLookSection() {
     Boolean(h.product),
   );
   const selected = hotspots[active]?.product ?? lookProducts[0];
+  const lookHero = pickCloudinaryImage(lookProducts, media.lookImage);
   if (!selected) return null;
 
   return (
     <section className="grid bg-secondary lg:grid-cols-[1.35fr_0.65fr]">
       <div className="relative">
         <LazyImage
-          src={media.lookImage}
+          src={lookHero}
           alt="Model wearing the Twinklingz occasion edit"
           optimizeWidth={1000}
           width={1000}
@@ -224,7 +232,10 @@ export function EditSection() {
             className={`group relative overflow-hidden ${i === 0 || i === 5 ? "col-span-2 row-span-2 aspect-[4/3]" : "aspect-square"}`}
           >
             <LazyImage
-              src={products[i % products.length]?.image ?? media.campaignImage}
+              src={
+                products[i % products.length]?.image ||
+                pickCloudinaryImage(products, media.campaignImage)
+              }
               alt={`${e} sample edit`}
               optimizeWidth={640}
               width={640}
@@ -243,10 +254,12 @@ export function EditSection() {
 }
 
 export function BrandStorySection() {
+  const { data: products = [] } = usePublicProducts();
+  const story = pickCloudinaryImage(products, media.storyImage);
   return (
     <section className="grid bg-blush lg:grid-cols-2">
       <LazyImage
-        src={media.storyImage}
+        src={story}
         alt="Twinklingz brand story"
         optimizeWidth={900}
         width={900}
@@ -291,12 +304,14 @@ export function WhyTwinklingzSection() {
 }
 
 export function SocialSection() {
+  const { data: products = [] } = usePublicProducts();
+  const grid = galleryFromProducts(products, 24);
   return (
     <section className="bg-secondary px-5 py-24">
       <SectionHeading eyebrow="WEAR IT · STYLE IT · MAKE IT YOURS" title={SOCIAL.instagramHandle} />
       <p className="-mt-6 mb-10 text-center text-sm text-muted-foreground">Wear it. Style it. Make it yours.</p>
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-        {galleryImages.map((src, i) => (
+        {grid.map((src, i) => (
           <LazyImage
             key={`${src}-${i}`}
             src={src}
