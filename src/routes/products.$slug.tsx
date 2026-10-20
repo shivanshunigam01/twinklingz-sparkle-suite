@@ -37,7 +37,6 @@ function Page() {
   const { data: catalog = staticProducts } = usePublicProducts();
   const product = catalog.find((p) => p.slug === slug) ?? loaderProduct;
   const [qty, setQty] = useState(1);
-  const [finish, setFinish] = useState("Rose Gold");
   const [activeImage, setActiveImage] = useState(0);
   const [zoomOpen, setZoomOpen] = useState(false);
   const navigate = useNavigate();
@@ -158,25 +157,7 @@ function Page() {
               </div>
 
               <div className="rounded-lg border border-border bg-secondary/40 p-5">
-                <p className="text-sm font-medium">Metal finish (display)</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {["Rose Gold", "Gold", "Silver"].map((v) => (
-                    <button
-                      key={v}
-                      type="button"
-                      onClick={() => setFinish(v)}
-                      className={`rounded-full border px-4 py-2 text-sm transition ${
-                        finish === v
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border bg-background hover:border-primary/40"
-                      }`}
-                    >
-                      {v}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                   <div className="flex h-11 w-fit items-center rounded-md border border-border bg-background">
                     <Button variant="ghost" size="icon" className="size-11" onClick={() => setQty(Math.max(1, qty - 1))}>
                       <Minus className="size-4" />
