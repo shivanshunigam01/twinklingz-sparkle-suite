@@ -1,7 +1,12 @@
+import { useState } from "react";
 import { Heart, Images, ShoppingBag, Star } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { LazyImage } from "@/components/ui/lazy-image";
+import {
+  ProductImageSliderDialog,
+  productGalleryCount,
+} from "@/components/product-image-slider-dialog";
 import { formatPrice, type Product } from "@/lib/catalog";
 import { useStore } from "@/components/store-provider";
 export function ProductCard({
@@ -16,6 +21,8 @@ export function ProductCard({
   const { addToBag, toggleWishlist, wishlist } = useStore();
   const wished = wishlist.includes(product.slug);
   const hasAlt = Boolean(product.altImage && product.altImage !== product.image);
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const photoCount = productGalleryCount(product);
   return <article className="group min-w-0">
     <div className="relative aspect-[4/5] overflow-hidden bg-muted">
       <Link
@@ -48,7 +55,21 @@ export function ProductCard({
       </Link>
       {product.badge && <span className="absolute left-3 top-3 bg-primary px-2.5 py-1 text-[10px] font-semibold tracking-[0.18em] text-primary-foreground">{product.badge}</span>}
       <Button variant="ghost" size="icon" className="absolute right-2 top-2 bg-background/85" onClick={() => toggleWishlist(product.slug)} aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}><Heart className={wished ? "fill-accent text-accent" : ""} /></Button>
-      <span className="absolute bottom-3 left-3 flex items-center gap-1 bg-background/80 px-2 py-1 text-[10px]"><Images className="size-3" /> {product.images.length}</span>
+      {photoCount > 0 && (
+        <button
+          type="button"
+          className="absolute bottom-3 left-3 z-10 flex cursor-pointer items-center gap-1 rounded-sm bg-background/90 px-2 py-1 text-[10px] font-medium shadow-sm transition hover:bg-background"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setGalleryOpen(true);
+          }}
+          aria-label={`View all ${photoCount} photos of ${product.name}`}
+        >
+          <Images className="size-3" /> {photoCount}
+        </button>
+      )}
+      <ProductImageSliderDialog product={product} open={galleryOpen} onOpenChange={setGalleryOpen} />
       <Button className="absolute bottom-3 right-3 translate-y-3 opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100" onClick={() => addToBag(product)}><ShoppingBag /> Quick Add</Button>
     </div>
     <div className="pt-4">
