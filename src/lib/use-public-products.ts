@@ -1,10 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch, type ApiProduct } from "@/lib/api";
 import { products as staticProducts, type Product } from "@/lib/catalog";
+import { collectImageUrls, isCloudinaryUrl } from "@/lib/product-images";
+
+const prefersRemoteApi = Boolean((import.meta.env.VITE_API_URL as string | undefined)?.trim());
 
 function mapApiProduct(p: ApiProduct): Product {
   const id = p.id || p._id || p.slug;
-  const images = p.images?.length ? p.images : [p.image, p.altImage].filter(Boolean);
+  const images = collectImageUrls(p);
+  const primary = images[0] || "";
+  const secondary = images[1] || primary;
   return {
     id,
     slug: p.slug,
@@ -15,8 +20,8 @@ function mapApiProduct(p: ApiProduct): Product {
     badge: p.badge ?? undefined,
     rating: p.rating ?? 4.8,
     reviews: p.reviews ?? 0,
-    image: p.image || images[0] || "",
-    altImage: p.altImage || images[1] || images[0] || "",
+    image: isCloudinaryUrl(p.image) ? p.image : primary,
+    altImage: isCloudinaryUrl(p.altImage) ? p.altImage : secondary,
     images,
   };
 }
@@ -27,8 +32,9 @@ function normalizeCatalogKey(slug: string, sku?: string) {
 }
 
 function mergeCatalog(apiList: ApiProduct[]): Product[] {
-  const fromApi = apiList.map(mapApiProduct);
+  const fromApi = apiList.map(mapApiProduct).filter((p) => p.images.length > 0 || p.image);
   if (fromApi.length > 0) return fromApi;
+  if (prefersRemoteApi) return [];
   return staticProducts;
 }
 
@@ -75,7 +81,7 @@ export function usePublicProducts() {
       }
     },
     staleTime: 60_000,
-    initialData: staticProducts,
+    retry: 2,
   });
 }
 
@@ -95,8 +101,11 @@ export async function fetchProductBySlug(slug: string): Promise<Product | undefi
     } catch {
       /* fall through to static catalog */
     }
-    return staticProducts.find(
-      (p) => p.slug === slug || normalizeCatalogKey(p.slug, p.sku) === normalized,
-    );
+    if (!prefersRemoteApi) {
+      return staticProducts.find(
+        (p) => p.slug === slug || normalizeCatalogKey(p.slug, p.sku) === normalized,
+      );
+    }
+    return undefined;
   }
 }

@@ -68,7 +68,7 @@ const catalogEntries = skus.map((sku, index) => {
 
   return {
     sku,
-    slug: slugify(`${category}-${folder}`),
+    slug: slugify(sku),
     name,
     category,
     price,

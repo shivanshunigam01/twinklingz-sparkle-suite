@@ -45,6 +45,24 @@ export function getApiBaseUrl() {
   return API_BASE;
 }
 
+export async function apiUploadForm<T>(
+  path: string,
+  formData: FormData,
+  options: { token?: string | null; method?: string } = {},
+): Promise<T> {
+  const { token, method = "POST" } = options;
+  const res = await fetch(`${API_BASE}${path}`, {
+    method,
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: formData,
+  });
+  const data = await parseJson(res);
+  if (!res.ok) {
+    throw new ApiError(String(data.error || res.statusText), res.status, data.details);
+  }
+  return data as T;
+}
+
 export type PublicSiteSettings = {
   brandName: string;
   subBrand: string;

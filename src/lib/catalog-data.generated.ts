@@ -15,7 +15,7 @@ export type CatalogEntry = {
 export const catalogEntries: readonly CatalogEntry[] = [
   {
     "sku": "BRA-1-325",
-    "slug": "bracelets-1-325",
+    "slug": "bra-1-325",
     "name": "Bracelet · Style 1-325",
     "category": "Bracelets",
     "price": 325,
@@ -32,7 +32,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-2-425",
-    "slug": "bracelets-2-425",
+    "slug": "bra-2-425",
     "name": "Bracelet · Style 2-425",
     "category": "Bracelets",
     "price": 425,
@@ -49,7 +49,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-3-425",
-    "slug": "bracelets-3-425",
+    "slug": "bra-3-425",
     "name": "Bracelet · Style 3-425",
     "category": "Bracelets",
     "price": 425,
@@ -66,7 +66,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-04",
-    "slug": "bracelets-04",
+    "slug": "bra-04",
     "name": "Bracelet · Style 04",
     "category": "Bracelets",
     "price": 999,
@@ -85,7 +85,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-4-425",
-    "slug": "bracelets-4-425",
+    "slug": "bra-4-425",
     "name": "Bracelet · Style 4-425",
     "category": "Bracelets",
     "price": 425,
@@ -102,7 +102,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-5-450",
-    "slug": "bracelets-5-450",
+    "slug": "bra-5-450",
     "name": "Bracelet · Style 5-450",
     "category": "Bracelets",
     "price": 450,
@@ -119,7 +119,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-6-1200",
-    "slug": "bracelets-6-1200",
+    "slug": "bra-6-1200",
     "name": "Bracelet · Style 6-1200",
     "category": "Bracelets",
     "price": 1200,
@@ -135,7 +135,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-7-575",
-    "slug": "bracelets-7-575",
+    "slug": "bra-7-575",
     "name": "Bracelet · Style 7-575",
     "category": "Bracelets",
     "price": 575,
@@ -151,7 +151,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-8-375",
-    "slug": "bracelets-8-375",
+    "slug": "bra-8-375",
     "name": "Bracelet · Style 8-375",
     "category": "Bracelets",
     "price": 375,
@@ -167,7 +167,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-9-625",
-    "slug": "bracelets-9-625",
+    "slug": "bra-9-625",
     "name": "Bracelet · Style 9-625",
     "category": "Bracelets",
     "price": 625,
@@ -183,7 +183,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-10-850",
-    "slug": "bracelets-10-850",
+    "slug": "bra-10-850",
     "name": "Bracelet · Style 10-850",
     "category": "Bracelets",
     "price": 850,
@@ -198,7 +198,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-11-450",
-    "slug": "bracelets-11-450",
+    "slug": "bra-11-450",
     "name": "Bracelet · Style 11-450",
     "category": "Bracelets",
     "price": 450,
@@ -213,7 +213,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-12-575",
-    "slug": "bracelets-12-575",
+    "slug": "bra-12-575",
     "name": "Bracelet · Style 12-575",
     "category": "Bracelets",
     "price": 575,
@@ -228,7 +228,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-13-375",
-    "slug": "bracelets-13-375",
+    "slug": "bra-13-375",
     "name": "Bracelet · Style 13-375",
     "category": "Bracelets",
     "price": 375,
@@ -244,7 +244,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-14-600",
-    "slug": "bracelets-14-600",
+    "slug": "bra-14-600",
     "name": "Bracelet · Style 14-600",
     "category": "Bracelets",
     "price": 600,
@@ -260,7 +260,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-15-625",
-    "slug": "bracelets-15-625",
+    "slug": "bra-15-625",
     "name": "Bracelet · Style 15-625",
     "category": "Bracelets",
     "price": 625,
@@ -276,7 +276,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-16-375",
-    "slug": "bracelets-16-375",
+    "slug": "bra-16-375",
     "name": "Bracelet · Style 16-375",
     "category": "Bracelets",
     "price": 375,
@@ -292,7 +292,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-17-325",
-    "slug": "bracelets-17-325",
+    "slug": "bra-17-325",
     "name": "Bracelet · Style 17-325",
     "category": "Bracelets",
     "price": 325,
@@ -308,7 +308,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-51105",
-    "slug": "bracelets-51105",
+    "slug": "bra-51105",
     "name": "Bracelet · Style 51105",
     "category": "Bracelets",
     "price": 999,
@@ -325,7 +325,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "BRA-51155",
-    "slug": "bracelets-51155",
+    "slug": "bra-51155",
     "name": "Bracelet · Style 51155",
     "category": "Bracelets",
     "price": 999,
@@ -343,7 +343,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-1-360",
-    "slug": "earrings-1-360",
+    "slug": "ear-1-360",
     "name": "Earring · Style 1-360",
     "category": "Earrings",
     "price": 360,
@@ -359,7 +359,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-2-1100",
-    "slug": "earrings-2-1100",
+    "slug": "ear-2-1100",
     "name": "Earring · Style 2-1100",
     "category": "Earrings",
     "price": 1100,
@@ -375,7 +375,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-3-675",
-    "slug": "earrings-3-675",
+    "slug": "ear-3-675",
     "name": "Earring · Style 3-675",
     "category": "Earrings",
     "price": 675,
@@ -391,7 +391,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-4-875",
-    "slug": "earrings-4-875",
+    "slug": "ear-4-875",
     "name": "Earring · Style 4-875",
     "category": "Earrings",
     "price": 875,
@@ -407,7 +407,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-5-600",
-    "slug": "earrings-5-600",
+    "slug": "ear-5-600",
     "name": "Earring · Style 5-600",
     "category": "Earrings",
     "price": 600,
@@ -423,7 +423,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-6-525",
-    "slug": "earrings-6-525",
+    "slug": "ear-6-525",
     "name": "Earring · Style 6-525",
     "category": "Earrings",
     "price": 525,
@@ -439,7 +439,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-7-600",
-    "slug": "earrings-7-600",
+    "slug": "ear-7-600",
     "name": "Earring · Style 7-600",
     "category": "Earrings",
     "price": 600,
@@ -455,7 +455,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-8-600",
-    "slug": "earrings-8-600",
+    "slug": "ear-8-600",
     "name": "Earring · Style 8-600",
     "category": "Earrings",
     "price": 600,
@@ -471,7 +471,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-9-850",
-    "slug": "earrings-9-850",
+    "slug": "ear-9-850",
     "name": "Earring · Style 9-850",
     "category": "Earrings",
     "price": 850,
@@ -487,7 +487,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-10-850",
-    "slug": "earrings-10-850",
+    "slug": "ear-10-850",
     "name": "Earring · Style 10-850",
     "category": "Earrings",
     "price": 850,
@@ -503,7 +503,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-11-875",
-    "slug": "earrings-11-875",
+    "slug": "ear-11-875",
     "name": "Earring · Style 11-875",
     "category": "Earrings",
     "price": 875,
@@ -519,7 +519,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-12-320",
-    "slug": "earrings-12-320",
+    "slug": "ear-12-320",
     "name": "Earring · Style 12-320",
     "category": "Earrings",
     "price": 320,
@@ -535,7 +535,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-13-375",
-    "slug": "earrings-13-375",
+    "slug": "ear-13-375",
     "name": "Earring · Style 13-375",
     "category": "Earrings",
     "price": 375,
@@ -551,7 +551,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-14-320",
-    "slug": "earrings-14-320",
+    "slug": "ear-14-320",
     "name": "Earring · Style 14-320",
     "category": "Earrings",
     "price": 320,
@@ -567,7 +567,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-15-725",
-    "slug": "earrings-15-725",
+    "slug": "ear-15-725",
     "name": "Earring · Style 15-725",
     "category": "Earrings",
     "price": 725,
@@ -582,7 +582,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "EAR-16-725",
-    "slug": "earrings-16-725",
+    "slug": "ear-16-725",
     "name": "Earring · Style 16-725",
     "category": "Earrings",
     "price": 725,
@@ -597,7 +597,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-01",
-    "slug": "necklaces-01",
+    "slug": "nec-01",
     "name": "Necklace · Style 01",
     "category": "Necklaces",
     "price": 999,
@@ -613,7 +613,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-1-800",
-    "slug": "necklaces-1-800",
+    "slug": "nec-1-800",
     "name": "Necklace · Style 1-800",
     "category": "Necklaces",
     "price": 800,
@@ -629,7 +629,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-02",
-    "slug": "necklaces-02",
+    "slug": "nec-02",
     "name": "Necklace · Style 02",
     "category": "Necklaces",
     "price": 999,
@@ -645,7 +645,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-2-550",
-    "slug": "necklaces-2-550",
+    "slug": "nec-2-550",
     "name": "Necklace · Style 2-550",
     "category": "Necklaces",
     "price": 550,
@@ -661,7 +661,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-03",
-    "slug": "necklaces-03",
+    "slug": "nec-03",
     "name": "Necklace · Style 03",
     "category": "Necklaces",
     "price": 999,
@@ -677,7 +677,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-3-425",
-    "slug": "necklaces-3-425",
+    "slug": "nec-3-425",
     "name": "Necklace · Style 3-425",
     "category": "Necklaces",
     "price": 425,
@@ -693,7 +693,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-4-700",
-    "slug": "necklaces-4-700",
+    "slug": "nec-4-700",
     "name": "Necklace · Style 4-700",
     "category": "Necklaces",
     "price": 700,
@@ -709,7 +709,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-5-500",
-    "slug": "necklaces-5-500",
+    "slug": "nec-5-500",
     "name": "Necklace · Style 5-500",
     "category": "Necklaces",
     "price": 500,
@@ -725,7 +725,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-6-800",
-    "slug": "necklaces-6-800",
+    "slug": "nec-6-800",
     "name": "Necklace · Style 6-800",
     "category": "Necklaces",
     "price": 800,
@@ -741,7 +741,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-7-300",
-    "slug": "necklaces-7-300",
+    "slug": "nec-7-300",
     "name": "Necklace · Style 7-300",
     "category": "Necklaces",
     "price": 300,
@@ -757,7 +757,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-8-550",
-    "slug": "necklaces-8-550",
+    "slug": "nec-8-550",
     "name": "Necklace · Style 8-550",
     "category": "Necklaces",
     "price": 550,
@@ -773,7 +773,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-9-800",
-    "slug": "necklaces-9-800",
+    "slug": "nec-9-800",
     "name": "Necklace · Style 9-800",
     "category": "Necklaces",
     "price": 800,
@@ -789,7 +789,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-10-650",
-    "slug": "necklaces-10-650",
+    "slug": "nec-10-650",
     "name": "Necklace · Style 10-650",
     "category": "Necklaces",
     "price": 650,
@@ -805,7 +805,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-11-550",
-    "slug": "necklaces-11-550",
+    "slug": "nec-11-550",
     "name": "Necklace · Style 11-550",
     "category": "Necklaces",
     "price": 550,
@@ -821,7 +821,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-12-800",
-    "slug": "necklaces-12-800",
+    "slug": "nec-12-800",
     "name": "Necklace · Style 12-800",
     "category": "Necklaces",
     "price": 800,
@@ -837,7 +837,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-13-400",
-    "slug": "necklaces-13-400",
+    "slug": "nec-13-400",
     "name": "Necklace · Style 13-400",
     "category": "Necklaces",
     "price": 400,
@@ -853,7 +853,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-14-650",
-    "slug": "necklaces-14-650",
+    "slug": "nec-14-650",
     "name": "Necklace · Style 14-650",
     "category": "Necklaces",
     "price": 650,
@@ -869,7 +869,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-15-530",
-    "slug": "necklaces-15-530",
+    "slug": "nec-15-530",
     "name": "Necklace · Style 15-530",
     "category": "Necklaces",
     "price": 530,
@@ -885,7 +885,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-16-800",
-    "slug": "necklaces-16-800",
+    "slug": "nec-16-800",
     "name": "Necklace · Style 16-800",
     "category": "Necklaces",
     "price": 800,
@@ -901,7 +901,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-17",
-    "slug": "necklaces-17",
+    "slug": "nec-17",
     "name": "Necklace · Style 17-",
     "category": "Necklaces",
     "price": 999,
@@ -917,7 +917,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-18-800",
-    "slug": "necklaces-18-800",
+    "slug": "nec-18-800",
     "name": "Necklace · Style 18-800",
     "category": "Necklaces",
     "price": 800,
@@ -933,7 +933,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-19-800",
-    "slug": "necklaces-19-800",
+    "slug": "nec-19-800",
     "name": "Necklace · Style 19-800",
     "category": "Necklaces",
     "price": 800,
@@ -949,7 +949,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-20-800",
-    "slug": "necklaces-20-800",
+    "slug": "nec-20-800",
     "name": "Necklace · Style 20-800",
     "category": "Necklaces",
     "price": 800,
@@ -965,7 +965,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-113-1350rs",
-    "slug": "necklaces-113-1350rs",
+    "slug": "nec-113-1350rs",
     "name": "Necklace · Style 113 - 1350rs",
     "category": "Necklaces",
     "price": 1350,
@@ -983,7 +983,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-140-2100rs",
-    "slug": "necklaces-140-2100rs",
+    "slug": "nec-140-2100rs",
     "name": "Necklace · Style 140 - 2100rs",
     "category": "Necklaces",
     "price": 2100,
@@ -999,7 +999,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-142-1700rs",
-    "slug": "necklaces-142-1700rs",
+    "slug": "nec-142-1700rs",
     "name": "Necklace · Style 142 - 1700rs",
     "category": "Necklaces",
     "price": 1700,
@@ -1016,7 +1016,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-143-1700",
-    "slug": "necklaces-143-1700",
+    "slug": "nec-143-1700",
     "name": "Necklace · Style 143 - 1700",
     "category": "Necklaces",
     "price": 999,
@@ -1032,7 +1032,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-150-1900rs",
-    "slug": "necklaces-150-1900rs",
+    "slug": "nec-150-1900rs",
     "name": "Necklace · Style 150 -1900rs",
     "category": "Necklaces",
     "price": 1900,
@@ -1048,7 +1048,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-206-2300rs",
-    "slug": "necklaces-206-2300rs",
+    "slug": "nec-206-2300rs",
     "name": "Necklace · Style 206 - 2300rs",
     "category": "Necklaces",
     "price": 2300,
@@ -1066,7 +1066,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-218-2500rs",
-    "slug": "necklaces-218-2500rs",
+    "slug": "nec-218-2500rs",
     "name": "Necklace · Style 218 - 2500rs",
     "category": "Necklaces",
     "price": 2500,
@@ -1083,7 +1083,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-225-2650rs",
-    "slug": "necklaces-225-2650rs",
+    "slug": "nec-225-2650rs",
     "name": "Necklace · Style 225 - 2650rs",
     "category": "Necklaces",
     "price": 2650,
@@ -1100,7 +1100,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-327-2900rs",
-    "slug": "necklaces-327-2900rs",
+    "slug": "nec-327-2900rs",
     "name": "Necklace · Style 327 - 2900rs",
     "category": "Necklaces",
     "price": 2900,
@@ -1116,7 +1116,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-442-2500rs",
-    "slug": "necklaces-442-2500rs",
+    "slug": "nec-442-2500rs",
     "name": "Necklace · Style 442 - 2500rs",
     "category": "Necklaces",
     "price": 2500,
@@ -1132,7 +1132,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-51355",
-    "slug": "necklaces-51355",
+    "slug": "nec-51355",
     "name": "Necklace · Style 51355",
     "category": "Necklaces",
     "price": 999,
@@ -1148,7 +1148,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-51355-1",
-    "slug": "necklaces-51355-1",
+    "slug": "nec-51355-1",
     "name": "Necklace · Style 51355-1",
     "category": "Necklaces",
     "price": 1,
@@ -1164,7 +1164,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-51355-2",
-    "slug": "necklaces-51355-2",
+    "slug": "nec-51355-2",
     "name": "Necklace · Style 51355-2",
     "category": "Necklaces",
     "price": 2,
@@ -1180,7 +1180,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-51355-3",
-    "slug": "necklaces-51355-3",
+    "slug": "nec-51355-3",
     "name": "Necklace · Style 51355-3",
     "category": "Necklaces",
     "price": 3,
@@ -1196,7 +1196,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-51485",
-    "slug": "necklaces-51485",
+    "slug": "nec-51485",
     "name": "Necklace · Style 51485",
     "category": "Necklaces",
     "price": 999,
@@ -1212,7 +1212,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-51485-1",
-    "slug": "necklaces-51485-1",
+    "slug": "nec-51485-1",
     "name": "Necklace · Style 51485-1",
     "category": "Necklaces",
     "price": 1,
@@ -1228,7 +1228,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-52905",
-    "slug": "necklaces-52905",
+    "slug": "nec-52905",
     "name": "Necklace · Style 52905",
     "category": "Necklaces",
     "price": 999,
@@ -1244,7 +1244,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-52985",
-    "slug": "necklaces-52985",
+    "slug": "nec-52985",
     "name": "Necklace · Style 52985",
     "category": "Necklaces",
     "price": 999,
@@ -1259,7 +1259,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-53355",
-    "slug": "necklaces-53355",
+    "slug": "nec-53355",
     "name": "Necklace · Style 53355",
     "category": "Necklaces",
     "price": 999,
@@ -1275,7 +1275,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-53355-1",
-    "slug": "necklaces-53355-1",
+    "slug": "nec-53355-1",
     "name": "Necklace · Style 53355-1",
     "category": "Necklaces",
     "price": 1,
@@ -1291,7 +1291,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-53655",
-    "slug": "necklaces-53655",
+    "slug": "nec-53655",
     "name": "Necklace · Style 53655",
     "category": "Necklaces",
     "price": 999,
@@ -1308,7 +1308,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-53655-1",
-    "slug": "necklaces-53655-1",
+    "slug": "nec-53655-1",
     "name": "Necklace · Style 53655-1",
     "category": "Necklaces",
     "price": 1,
@@ -1324,7 +1324,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-53655-2",
-    "slug": "necklaces-53655-2",
+    "slug": "nec-53655-2",
     "name": "Necklace · Style 53655-2",
     "category": "Necklaces",
     "price": 2,
@@ -1339,7 +1339,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-53655-3",
-    "slug": "necklaces-53655-3",
+    "slug": "nec-53655-3",
     "name": "Necklace · Style 53655-3",
     "category": "Necklaces",
     "price": 3,
@@ -1355,7 +1355,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-53655-4",
-    "slug": "necklaces-53655-4",
+    "slug": "nec-53655-4",
     "name": "Necklace · Style 53655-4",
     "category": "Necklaces",
     "price": 4,
@@ -1372,7 +1372,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-54105",
-    "slug": "necklaces-54105",
+    "slug": "nec-54105",
     "name": "Necklace · Style 54105",
     "category": "Necklaces",
     "price": 999,
@@ -1388,7 +1388,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-54155",
-    "slug": "necklaces-54155",
+    "slug": "nec-54155",
     "name": "Necklace · Style 54155",
     "category": "Necklaces",
     "price": 999,
@@ -1404,7 +1404,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-54155-1",
-    "slug": "necklaces-54155-1",
+    "slug": "nec-54155-1",
     "name": "Necklace · Style 54155-1",
     "category": "Necklaces",
     "price": 1,
@@ -1421,7 +1421,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-54355",
-    "slug": "necklaces-54355",
+    "slug": "nec-54355",
     "name": "Necklace · Style 54355",
     "category": "Necklaces",
     "price": 999,
@@ -1438,7 +1438,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-56255",
-    "slug": "necklaces-56255",
+    "slug": "nec-56255",
     "name": "Necklace · Style 56255",
     "category": "Necklaces",
     "price": 999,
@@ -1454,7 +1454,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-56485",
-    "slug": "necklaces-56485",
+    "slug": "nec-56485",
     "name": "Necklace · Style 56485",
     "category": "Necklaces",
     "price": 999,
@@ -1470,7 +1470,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-56485-1",
-    "slug": "necklaces-56485-1",
+    "slug": "nec-56485-1",
     "name": "Necklace · Style 56485-1",
     "category": "Necklaces",
     "price": 1,
@@ -1486,7 +1486,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-57165",
-    "slug": "necklaces-57165",
+    "slug": "nec-57165",
     "name": "Necklace · Style 57165",
     "category": "Necklaces",
     "price": 999,
@@ -1502,7 +1502,7 @@ export const catalogEntries: readonly CatalogEntry[] = [
   },
   {
     "sku": "NEC-57165-1",
-    "slug": "necklaces-57165-1",
+    "slug": "nec-57165-1",
     "name": "Necklace · Style 57165-1",
     "category": "Necklaces",
     "price": 1,

@@ -50,8 +50,9 @@ function Page() {
 
   const gallery = useMemo(() => {
     if (!product) return [];
-    const raw = [...(product.images || []), product.image, product.altImage].filter(Boolean);
-    return [...new Set(raw)];
+    const fromArray = (product.images ?? []).filter(Boolean);
+    if (fromArray.length > 0) return [...new Set(fromArray)];
+    return [...new Set([product.image, product.altImage].filter(Boolean))];
   }, [product]);
 
   if (!product) {

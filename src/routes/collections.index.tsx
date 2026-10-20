@@ -38,7 +38,7 @@ function Page() {
             className="group relative aspect-[4/3] overflow-hidden"
           >
             <img
-              src={categoryHeroImage(name)}
+              src={products.find((p) => p.category === name)?.image || categoryHeroImage(name)}
               alt={`${name} collection`}
               className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
             />
