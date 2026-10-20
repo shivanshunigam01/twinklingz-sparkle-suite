@@ -1,11 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Heart, Minus, Plus, ShieldCheck, Truck, PackageCheck, Star, ZoomIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ProductCard } from "@/components/product-card";
 import { formatPrice, products as staticProducts } from "@/lib/catalog";
-import { fetchProductBySlug, usePublicProducts } from "@/lib/use-public-products";
+import { categoryToSlug, fetchProductBySlug, usePublicProducts } from "@/lib/use-public-products";
 import { RETURN_REFUND_POLICY } from "@/lib/cms-settings";
 import { useStore } from "@/components/store-provider";
 
@@ -76,116 +76,150 @@ function Page() {
     .filter((p): p is (typeof catalog)[0] => Boolean(p) && p.slug !== product.slug)
     .slice(0, 4);
 
+  const categorySlug = categoryToSlug(product.category);
+  const reviewLabel =
+    product.reviews > 0 ? `${product.reviews} review${product.reviews === 1 ? "" : "s"}` : "New arrival";
+
+  function addToCart() {
+    for (let i = 0; i < qty; i++) addToBag(product);
+  }
+
   return (
     <main className="min-h-screen bg-background pb-28 pt-24 sm:pt-28 md:pt-32">
-      <div className="mx-auto flex max-w-[1500px] flex-col gap-6 px-4 lg:flex-row lg:items-start lg:gap-12 lg:px-10">
-        <div className="w-full shrink-0 lg:max-w-[min(100%,460px)]">
-        <ProductImageGallery
-          name={product.name}
-          gallery={gallery}
-          hero={hero}
-          activeImage={activeImage}
-          onSelect={setActiveImage}
-          onZoom={() => setZoomOpen(true)}
-        />
-        </div>
-        <div className="min-w-0 flex-1 lg:sticky lg:top-28 lg:max-w-xl lg:self-start lg:py-2">
-          <p className="text-xs tracking-[.2em] text-accent">{product.category.toUpperCase()}</p>
-          <p className="mt-2 text-xs text-muted-foreground">Style {product.sku}</p>
-          <h1 className="mt-3 font-display text-4xl lg:text-5xl">{product.name}</h1>
-          <div className="mt-3 flex items-center gap-2 text-sm">
-            <Star className="size-4 fill-accent text-accent" />
-            {product.rating}{" "}
-            <span className="text-muted-foreground">({product.reviews} reviews)</span>
+      <div className="mx-auto max-w-6xl px-4 lg:px-8">
+        <nav className="mb-6 text-xs text-muted-foreground" aria-label="Breadcrumb">
+          <Link to="/" className="hover:text-foreground">Home</Link>
+          <span className="mx-1.5">/</span>
+          <Link to="/collections/$slug" params={{ slug: categorySlug }} className="hover:text-foreground">
+            {product.category}
+          </Link>
+          <span className="mx-1.5">/</span>
+          <span className="text-foreground">{product.sku}</span>
+        </nav>
+
+        <div className="flex flex-col gap-8 lg:flex-row lg:gap-14">
+          <div className="w-full lg:w-[min(100%,420px)] lg:shrink-0">
+            <ProductImageGallery
+              name={product.name}
+              gallery={gallery}
+              hero={hero}
+              activeImage={activeImage}
+              onSelect={setActiveImage}
+              onZoom={() => setZoomOpen(true)}
+            />
           </div>
-          <div className="mt-6">
-            <span className="text-xl font-semibold">{formatPrice(product.price)}</span>
-          </div>
-          <p className="mt-1 text-xs text-muted-foreground">Inclusive of applicable taxes</p>
-          <p className="mt-2 text-xs text-muted-foreground">{RETURN_REFUND_POLICY}</p>
-          <div className="mt-8">
-            <p className="text-xs font-semibold tracking-widest">FINISH</p>
-            <div className="mt-3 flex gap-2">
-              {["Rose Gold", "Gold", "Silver"].map((v) => (
-                <Button key={v} variant={finish === v ? "default" : "outline"} onClick={() => setFinish(v)}>
-                  {v}
+
+          <div className="min-w-0 flex-1 lg:sticky lg:top-28 lg:max-w-md lg:self-start">
+            <div className="space-y-6">
+              <header>
+                <p className="text-sm font-medium text-accent">{product.category}</p>
+                <h1 className="mt-2 font-display text-3xl leading-tight text-foreground sm:text-[2rem]">
+                  {product.name}
+                </h1>
+                <p className="mt-2 text-sm text-muted-foreground">SKU {product.sku}</p>
+                <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1 text-foreground">
+                    <Star className="size-4 fill-accent text-accent" aria-hidden />
+                    <span className="font-medium">{product.rating}</span>
+                  </div>
+                  <span aria-hidden>·</span>
+                  <span>{reviewLabel}</span>
+                </div>
+              </header>
+
+              <div className="border-y border-border py-5">
+                <p className="text-3xl font-semibold tracking-tight">{formatPrice(product.price)}</p>
+                <p className="mt-1 text-sm text-muted-foreground">Inclusive of all taxes</p>
+              </div>
+
+              <div className="rounded-lg border border-border bg-secondary/40 p-5">
+                <p className="text-sm font-medium">Metal finish (display)</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {["Rose Gold", "Gold", "Silver"].map((v) => (
+                    <button
+                      key={v}
+                      type="button"
+                      onClick={() => setFinish(v)}
+                      className={`rounded-full border px-4 py-2 text-sm transition ${
+                        finish === v
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-background hover:border-primary/40"
+                      }`}
+                    >
+                      {v}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <div className="flex h-11 w-fit items-center rounded-md border border-border bg-background">
+                    <Button variant="ghost" size="icon" className="size-11" onClick={() => setQty(Math.max(1, qty - 1))}>
+                      <Minus className="size-4" />
+                    </Button>
+                    <span className="min-w-10 text-center text-sm font-medium">{qty}</span>
+                    <Button variant="ghost" size="icon" className="size-11" onClick={() => setQty(qty + 1)}>
+                      <Plus className="size-4" />
+                    </Button>
+                  </div>
+                  <Button className="h-11 flex-1 text-sm font-semibold tracking-wide" onClick={addToCart}>
+                    Add to bag
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="size-11 shrink-0"
+                    onClick={() => toggleWishlist(product.slug)}
+                    aria-label="Save to wishlist"
+                  >
+                    <Heart className={wishlist.includes(product.slug) ? "fill-accent text-accent" : ""} />
+                  </Button>
+                </div>
+
+                <Button
+                  variant="outline"
+                  className="mt-3 h-11 w-full border-primary/30 text-sm font-semibold"
+                  onClick={() => {
+                    addToCart();
+                    navigate({ to: "/checkout" });
+                  }}
+                >
+                  Buy now
                 </Button>
-              ))}
+              </div>
+
+              <ul className="grid grid-cols-3 gap-2 rounded-lg border border-border bg-background p-4 text-center text-[11px] leading-snug text-muted-foreground">
+                <li>
+                  <ShieldCheck className="mx-auto mb-2 size-5 text-foreground" />
+                  Secure payment
+                </li>
+                <li>
+                  <PackageCheck className="mx-auto mb-2 size-5 text-foreground" />
+                  Careful packing
+                </li>
+                <li>
+                  <Truck className="mx-auto mb-2 size-5 text-foreground" />
+                  Order tracking
+                </li>
+              </ul>
+
+              <div className="divide-y divide-border rounded-lg border border-border">
+                <PdpAccordion title="About this piece">
+                  Premium fashion jewellery from Twinklingz. Photos show the exact style {product.sku} — multiple
+                  angles are available in the gallery above.
+                </PdpAccordion>
+                <PdpAccordion title="Shipping & delivery">
+                  Orders are packed with care. You will receive tracking details by SMS and email after your order is
+                  confirmed.
+                </PdpAccordion>
+                <PdpAccordion title="Sales policy">{RETURN_REFUND_POLICY}</PdpAccordion>
+              </div>
             </div>
           </div>
-          <div className="mt-7 flex items-center gap-3">
-            <div className="flex h-11 items-center border border-input">
-              <Button variant="ghost" size="icon" onClick={() => setQty(Math.max(1, qty - 1))}>
-                <Minus />
-              </Button>
-              <span className="w-8 text-center">{qty}</span>
-              <Button variant="ghost" size="icon" onClick={() => setQty(qty + 1)}>
-                <Plus />
-              </Button>
-            </div>
-            <Button
-              className="h-11 flex-1"
-              onClick={() => {
-                for (let i = 0; i < qty; i++) addToBag(product);
-              }}
-            >
-              ADD TO BAG
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-11 w-11"
-              onClick={() => toggleWishlist(product.slug)}
-            >
-              <Heart className={wishlist.includes(product.slug) ? "fill-accent text-accent" : ""} />
-            </Button>
-          </div>
-          <Button
-            variant="outline"
-            className="mt-3 h-11 w-full"
-            onClick={() => {
-              for (let i = 0; i < qty; i++) addToBag(product);
-              navigate({ to: "/checkout" });
-            }}
-          >
-            BUY NOW
-          </Button>
-          <div className="mt-7 grid grid-cols-3 gap-3 border-y border-border py-5 text-center text-[10px]">
-            <span>
-              <ShieldCheck className="mx-auto mb-2 size-5" />
-              Secure Online Payment
-            </span>
-            <span>
-              <PackageCheck className="mx-auto mb-2 size-5" />
-              Carefully Packed
-            </span>
-            <span>
-              <Truck className="mx-auto mb-2 size-5" />
-              Order Tracking Available
-            </span>
-          </div>
-          {[
-            "PRODUCT DETAILS",
-            "MATERIAL & CARE",
-            "SIZE & DIMENSIONS",
-            "SHIPPING",
-            "PAYMENT",
-            "ALL SALES FINAL",
-          ].map((x) => (
-            <details key={x} className="border-b border-border py-5">
-              <summary className="cursor-pointer text-xs font-semibold tracking-widest">{x}</summary>
-              <p className="pt-4 text-sm leading-6 text-muted-foreground">
-                {x === "ALL SALES FINAL"
-                  ? RETURN_REFUND_POLICY
-                  : `Style ${product.sku} — premium fashion jewellery from Twinklingz. Product imagery shows the exact finish and silhouette you receive.`}
-              </p>
-            </details>
-          ))}
         </div>
       </div>
 
       {completeLook.length > 0 ? (
-        <section className="border-t border-border px-5 py-16 lg:px-10">
+        <section className="mx-auto mt-16 max-w-6xl border-t border-border px-4 py-16 lg:px-8">
           <h2 className="font-display text-4xl">Complete the look</h2>
           <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3">
             {completeLook.map((p) => (
@@ -196,7 +230,7 @@ function Page() {
       ) : null}
 
       {recentProducts.length > 0 ? (
-        <section className="border-t border-border bg-secondary px-5 py-16 lg:px-10">
+        <section className="mx-auto mt-0 max-w-6xl border-t border-border bg-secondary px-4 py-16 lg:px-8">
           <h2 className="font-display text-4xl">Recently viewed</h2>
           <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
             {recentProducts.map((p) => (
@@ -206,7 +240,7 @@ function Page() {
         </section>
       ) : null}
 
-      <section className="px-5 py-20 lg:px-10">
+      <section className="mx-auto max-w-6xl px-4 py-20 lg:px-8">
         <h2 className="font-display text-4xl">You may also like</h2>
         <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
           {catalog
@@ -232,6 +266,20 @@ function Page() {
   );
 }
 
+function PdpAccordion({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <details className="group px-4 py-4">
+      <summary className="cursor-pointer list-none text-sm font-medium marker:content-none [&::-webkit-details-marker]:hidden">
+        <span className="flex items-center justify-between gap-2">
+          {title}
+          <span className="text-muted-foreground transition group-open:rotate-45">+</span>
+        </span>
+      </summary>
+      <p className="pt-3 text-sm leading-relaxed text-muted-foreground">{children}</p>
+    </details>
+  );
+}
+
 /** Amazon-style: fixed-size thumb strip + compact square main preview. */
 function ProductImageGallery({
   name,
@@ -250,12 +298,15 @@ function ProductImageGallery({
 }) {
   const multi = gallery.length > 1;
 
+  const mainSize =
+    "h-[240px] w-full max-w-[360px] sm:h-[280px] lg:h-[300px]";
+
   return (
-    <section className="pt-1" aria-label="Product images">
-      <div className="flex items-start gap-2 sm:gap-3">
+    <section className="rounded-xl border border-border bg-card p-3 shadow-sm sm:p-4" aria-label="Product images">
+      <div className="flex items-stretch gap-3">
         {multi && (
           <div
-            className="flex max-h-[220px] shrink-0 flex-col gap-1.5 overflow-y-auto pr-0.5 sm:max-h-[260px] md:max-h-[300px] lg:max-h-[320px]"
+            className={`flex shrink-0 flex-col gap-2 overflow-y-auto pr-1 ${mainSize}`}
             aria-label="Image thumbnails"
           >
             {gallery.map((src, i) => (
@@ -263,16 +314,16 @@ function ProductImageGallery({
                 key={`${src}-${i}`}
                 type="button"
                 onClick={() => onSelect(i)}
-                className={`size-11 shrink-0 overflow-hidden border-2 bg-white p-0.5 transition sm:size-12 ${
+                className={`size-[52px] shrink-0 overflow-hidden rounded-md border bg-white p-0.5 transition ${
                   activeImage === i
-                    ? "border-accent shadow-sm"
-                    : "border-border hover:border-muted-foreground/40"
+                    ? "border-primary ring-1 ring-primary/20"
+                    : "border-border hover:border-primary/30"
                 }`}
               >
                 <img
                   src={src}
                   alt={`${name} view ${i + 1}`}
-                  className="size-full object-cover"
+                  className="size-full rounded-[4px] object-cover"
                   loading="lazy"
                 />
               </button>
@@ -280,20 +331,16 @@ function ProductImageGallery({
           </div>
         )}
 
-        <div className="min-w-0 flex-1">
+        <div className="flex min-w-0 flex-1 flex-col">
           <button
             type="button"
             onClick={onZoom}
-            className="relative flex h-[220px] w-full max-w-[min(100%,340px)] items-center justify-center overflow-hidden border border-border bg-white sm:h-[260px] md:h-[300px] lg:h-[320px] lg:max-w-[380px]"
+            className={`relative flex ${mainSize} items-center justify-center overflow-hidden rounded-lg bg-white`}
             aria-label="Zoom product image"
           >
-            <img
-              src={hero}
-              alt={name}
-              className="max-h-full max-w-full object-contain p-2"
-            />
+            <img src={hero} alt={name} className="max-h-[92%] max-w-[92%] object-contain" />
             {multi && (
-              <span className="absolute left-2 top-2 rounded-sm bg-background/95 px-1.5 py-0.5 text-[10px] text-muted-foreground shadow-sm">
+              <span className="absolute right-2 top-2 rounded-full bg-foreground/75 px-2 py-0.5 text-[10px] font-medium text-background">
                 {activeImage + 1} / {gallery.length}
               </span>
             )}
@@ -301,7 +348,7 @@ function ProductImageGallery({
           <button
             type="button"
             onClick={onZoom}
-            className="mt-2 flex items-center gap-1 text-xs text-accent hover:underline"
+            className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground transition hover:text-foreground"
           >
             <ZoomIn className="size-3.5" />
             Click to see full view
