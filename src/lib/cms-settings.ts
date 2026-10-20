@@ -32,5 +32,9 @@ Our mission is to offer beautiful jewellery that combines quality, affordability
 export const HERO_SCROLL_VIDEO_SRC =
   (import.meta.env.VITE_HERO_SCROLL_VIDEO as string | undefined)?.trim() || "/hero-fashion-film.mp4";
 
+/** Optional separate clip for `/admin/login` (defaults to hero video). */
+export const ADMIN_LOGIN_VIDEO_SRC =
+  (import.meta.env.VITE_ADMIN_LOGIN_VIDEO as string | undefined)?.trim() || HERO_SCROLL_VIDEO_SRC;
+
 export const CATALOG_DEMO_NOTICE =
   "Styles and pricing shown use catalogue photography from Priya Kaur’s shoot. Final product titles and specs can be updated from admin.";
