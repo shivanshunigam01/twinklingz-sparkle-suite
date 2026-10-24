@@ -148,7 +148,7 @@ export function ProductCard({
         </Button>
       </div>
       <div className="pt-4">
-        {showRating && (
+        {showRating && product.reviews > 0 && (
           <div className="mb-1 flex items-center gap-1 text-xs text-muted-foreground">
             <Star className="size-3 fill-accent text-accent" /> {product.rating}{" "}
             <span>({product.reviews})</span>

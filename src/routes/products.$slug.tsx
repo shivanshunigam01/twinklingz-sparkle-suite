@@ -11,6 +11,8 @@ import { moreFromCatalog, peopleAlsoSee, similarProducts } from "@/lib/product-r
 import { categoryToSlug, fetchProductBySlug, usePublicProducts } from "@/lib/use-public-products";
 import { RETURN_REFUND_POLICY } from "@/lib/cms-settings";
 import { useStore } from "@/components/store-provider";
+import { JewelleryCareGuide } from "@/components/product/jewellery-care-guide";
+import { ProductReviewsSection } from "@/components/product/product-reviews-section";
 
 export const Route = createFileRoute("/products/$slug")({
   loader: ({ params }) => fetchProductBySlug(params.slug),
@@ -142,12 +144,18 @@ function Page() {
                 </h1>
                 <p className="mt-2 text-sm text-muted-foreground">SKU {product.sku}</p>
                 <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1 text-foreground">
-                    <Star className="size-4 fill-accent text-accent" aria-hidden />
-                    <span className="font-medium">{product.rating}</span>
-                  </div>
-                  <span aria-hidden>·</span>
-                  <span>{reviewLabel}</span>
+                  {product.reviews > 0 ? (
+                    <>
+                      <div className="flex items-center gap-1 text-foreground">
+                        <Star className="size-4 fill-accent text-accent" aria-hidden />
+                        <span className="font-medium">{product.rating}</span>
+                      </div>
+                      <span aria-hidden>·</span>
+                      <span>{reviewLabel}</span>
+                    </>
+                  ) : (
+                    <span>{reviewLabel}</span>
+                  )}
                 </div>
               </header>
 
@@ -208,20 +216,27 @@ function Page() {
                 </li>
               </ul>
 
-              <div className="divide-y divide-border rounded-lg border border-border">
-                <PdpAccordion title="About this piece">
-                  Premium fashion jewellery from Twinklingz. Photos show the exact style {product.sku} — multiple
-                  angles are available in the gallery above.
-                </PdpAccordion>
-                <PdpAccordion title="Shipping & delivery">
-                  Orders are packed with care. You will receive tracking details by SMS and email after your order is
-                  confirmed.
-                </PdpAccordion>
-                <PdpAccordion title="Sales policy">{RETURN_REFUND_POLICY}</PdpAccordion>
+              <div className="space-y-5">
+                <div className="divide-y divide-border rounded-lg border border-border">
+                  <PdpAccordion title="About this piece">
+                    Premium fashion jewellery from Twinklingz. Photos show the exact style {product.sku} — multiple
+                    angles are available in the gallery above.
+                  </PdpAccordion>
+                </div>
+                <JewelleryCareGuide />
+                <div className="divide-y divide-border rounded-lg border border-border">
+                  <PdpAccordion title="Shipping & delivery">
+                    Orders are packed with care. You will receive tracking details by SMS and email after your order is
+                    confirmed.
+                  </PdpAccordion>
+                  <PdpAccordion title="Sales policy">{RETURN_REFUND_POLICY}</PdpAccordion>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        <ProductReviewsSection productSlug={product.slug} />
       </div>
 
       {similarDisplay.length > 0 ? (

@@ -14,6 +14,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { StoreProvider } from "@/components/store-provider";
+import { CustomerAuthProvider } from "@/components/customer-auth-provider";
 import { fetchPublicProducts } from "@/lib/use-public-products";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -140,12 +141,14 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <StoreProvider>
-        {!isAdmin && <SiteHeader />}
-        <Outlet />
-        {!isAdmin && <SiteFooter />}
-        <Toaster richColors position="top-center" />
-      </StoreProvider>
+      <CustomerAuthProvider>
+        <StoreProvider>
+          {!isAdmin && <SiteHeader />}
+          <Outlet />
+          {!isAdmin && <SiteFooter />}
+          <Toaster richColors position="top-center" />
+        </StoreProvider>
+      </CustomerAuthProvider>
     </QueryClientProvider>
   );
 }

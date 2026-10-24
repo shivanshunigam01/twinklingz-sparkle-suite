@@ -1,6 +1,8 @@
 import type { ApiProduct } from "@/lib/api";
 
-export const PRODUCT_CATEGORIES = ["Necklaces", "Earrings", "Bracelets"] as const;
+import { STOREFRONT_CATEGORIES } from "@/lib/product-categories";
+
+export const PRODUCT_CATEGORIES = [...STOREFRONT_CATEGORIES] as const;
 export const PRODUCT_BADGES = ["", "NEW", "BESTSELLER"] as const;
 
 export type ProductFormState = {

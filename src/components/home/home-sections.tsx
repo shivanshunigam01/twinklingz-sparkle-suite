@@ -5,13 +5,8 @@ import { Button } from "@/components/ui/button";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { ProductCard } from "@/components/product-card";
 import { SOCIAL, STORY_COPY } from "@/lib/cms-settings";
-import {
-  categoryHeroImage,
-  categoryNames,
-  formatPrice,
-  galleryImages,
-  media,
-} from "@/lib/catalog";
+import { categoryHeroImage, formatPrice, galleryImages, media } from "@/lib/catalog";
+import { categoryNames } from "@/lib/product-categories";
 import {
   categoryImageFromProducts,
   galleryFromProducts,

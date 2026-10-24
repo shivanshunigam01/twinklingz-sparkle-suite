@@ -109,6 +109,15 @@ export type PublicSiteSettings = {
   storyCopy: { headline: string; body: string; highlight: string };
 };
 
+export type ProductReview = {
+  id: string;
+  rating: number;
+  title: string;
+  body: string;
+  authorName: string;
+  createdAt: string;
+};
+
 export type ApiProduct = {
   _id?: string;
   id?: string;

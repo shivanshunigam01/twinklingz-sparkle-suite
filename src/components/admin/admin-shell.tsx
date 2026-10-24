@@ -1,5 +1,16 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Package, ShoppingBag, Inbox, Settings, BarChart3, LogOut, ExternalLink } from "lucide-react";
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingBag,
+  Inbox,
+  Settings,
+  BarChart3,
+  LogOut,
+  ExternalLink,
+  MessageSquareQuote,
+  ListChecks,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { clearAdminToken } from "@/lib/admin-auth";
 import { cn } from "@/lib/utils";
@@ -9,6 +20,8 @@ const nav = [
   { to: "/admin/reports", label: "Reports", icon: BarChart3 },
   { to: "/admin/products", label: "Products", icon: Package },
   { to: "/admin/orders", label: "Orders", icon: ShoppingBag },
+  { to: "/admin/reviews", label: "Review queue", icon: MessageSquareQuote },
+  { to: "/admin/manage-reviews", label: "Manage reviews", icon: ListChecks },
   { to: "/admin/submissions", label: "Form submissions", icon: Inbox },
   { to: "/admin/settings", label: "Site settings", icon: Settings },
 ] as const;

@@ -69,7 +69,7 @@ export function categoryHeroImage(category: string): string {
   return match?.image ?? media.categoriesImage;
 }
 
-export const categoryNames = ["Necklaces", "Earrings", "Bracelets", "New Arrivals"] as const;
+export { categoryNames } from "@/lib/product-categories";
 
 export function getProductBySlug(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);

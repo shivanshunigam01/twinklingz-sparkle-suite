@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
+import { collectionTitleFromSlug } from "@/lib/product-categories";
 import { productMatchesCategorySlug, usePublicProducts } from "@/lib/use-public-products";
 
 export const Route = createFileRoute("/collections/$slug")({
   head: ({ params }) => {
-    const title = titleCase(params.slug);
+    const title = collectionTitleFromSlug(params.slug);
     return {
       meta: [
         { title: `${title} | Twinklingz` },
@@ -20,12 +21,9 @@ export const Route = createFileRoute("/collections/$slug")({
   component: Page,
 });
 
-const titleCase = (value: string) =>
-  value.split("-").map((x) => x.charAt(0).toUpperCase() + x.slice(1)).join(" ");
-
 function Page() {
   const { slug } = Route.useParams();
-  const title = titleCase(slug);
+  const title = collectionTitleFromSlug(slug);
   const { data: products = [], isLoading } = usePublicProducts();
   const matches = products.filter((p) => productMatchesCategorySlug(p, slug));
 
@@ -42,7 +40,7 @@ function Page() {
         <div className="mx-auto mt-16 max-w-lg text-center">
           <p className="font-display text-2xl">No pieces in this category yet</p>
           <p className="mt-3 text-sm text-muted-foreground">
-            Explore our full catalogue of necklaces, earrings, and bracelets.
+            New pieces are added regularly — browse all collections or check back soon.
           </p>
           <Button asChild className="mt-8">
             <Link to="/collections">VIEW ALL COLLECTIONS</Link>

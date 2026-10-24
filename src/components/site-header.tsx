@@ -14,6 +14,7 @@ const nav = [
   { label: "NECKLACES", to: "/collections/$slug" as const, slug: "necklaces" },
   { label: "EARRINGS", to: "/collections/$slug" as const, slug: "earrings" },
   { label: "BRACELETS", to: "/collections/$slug" as const, slug: "bracelets" },
+  { label: "TRADITIONAL WEAR", to: "/collections/$slug" as const, slug: "traditional-wear" },
   { label: "SHOP ALL", to: "/shop" as const },
   { label: "BESTSELLERS", to: "/bestsellers" as const },
   { label: "COLLECTIONS", to: "/collections" as const },
