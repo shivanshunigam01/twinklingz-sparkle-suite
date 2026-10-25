@@ -9,6 +9,7 @@ import { apiFetch, type ApiProduct } from "@/lib/api";
 import { getAdminToken } from "@/lib/admin-auth";
 import { isCloudinaryUrl } from "@/lib/product-images";
 import { ProductsSubnav } from "@/components/admin/products-subnav";
+import { adminCategoryOptions } from "@/lib/admin-product-form";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/products/")({
@@ -34,6 +35,21 @@ function ProductsListPage() {
     mutationFn: (id: string) => apiFetch(`/admin/products/${id}`, { method: "DELETE", token }),
     onSuccess: () => {
       toast.success("Product deleted");
+      qc.invalidateQueries({ queryKey: ["admin", "products"] });
+      qc.invalidateQueries({ queryKey: ["public", "products"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const categoryMutation = useMutation({
+    mutationFn: ({ id, category }: { id: string; category: string }) =>
+      apiFetch<{ product: ApiProduct }>(`/admin/products/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({ category }),
+        token,
+      }),
+    onSuccess: () => {
+      toast.success("Category updated");
       qc.invalidateQueries({ queryKey: ["admin", "products"] });
       qc.invalidateQueries({ queryKey: ["public", "products"] });
     },
@@ -129,7 +145,23 @@ function ProductsListPage() {
                         </div>
                       </td>
                       <td className="px-4 py-3 text-muted-foreground">{p.sku}</td>
-                      <td className="px-4 py-3">{p.category}</td>
+                      <td className="px-4 py-3">
+                        <select
+                          className="max-w-[11rem] border border-input bg-background px-2 py-1.5 text-xs"
+                          value={p.category}
+                          disabled={categoryMutation.isPending}
+                          aria-label={`Category for ${p.name}`}
+                          onChange={(e) =>
+                            categoryMutation.mutate({ id: String(id), category: e.target.value })
+                          }
+                        >
+                          {adminCategoryOptions(p.category).map((c) => (
+                            <option key={c} value={c}>
+                              {c}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
                       <td className="px-4 py-3">₹{p.price}</td>
                       <td className="px-4 py-3">
                         <span

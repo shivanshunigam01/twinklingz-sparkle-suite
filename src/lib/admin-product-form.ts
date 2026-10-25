@@ -5,6 +5,16 @@ import { STOREFRONT_CATEGORIES } from "@/lib/product-categories";
 export const PRODUCT_CATEGORIES = [...STOREFRONT_CATEGORIES] as const;
 export const PRODUCT_BADGES = ["", "NEW", "BESTSELLER"] as const;
 
+/** All selectable categories, including the product's current label if it is legacy/custom. */
+export function adminCategoryOptions(current?: string): string[] {
+  const base = [...PRODUCT_CATEGORIES];
+  const trimmed = current?.trim();
+  if (trimmed && !base.includes(trimmed as (typeof PRODUCT_CATEGORIES)[number])) {
+    return [trimmed, ...base];
+  }
+  return base;
+}
+
 export type ProductFormState = {
   name: string;
   sku: string;

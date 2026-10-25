@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ExternalLink, Star, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink, Star, Trash2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { LazyImage } from "@/components/ui/lazy-image";
@@ -11,10 +11,11 @@ import { apiFetch, apiUploadForm, type ApiProduct } from "@/lib/api";
 import { getAdminToken } from "@/lib/admin-auth";
 import {
   PRODUCT_BADGES,
-  PRODUCT_CATEGORIES,
+  adminCategoryOptions,
   type ProductFormState,
   formToApiBody,
 } from "@/lib/admin-product-form";
+import { categoryToSlug } from "@/lib/product-categories";
 import { isCloudinaryUrl } from "@/lib/product-images";
 import { toast } from "sonner";
 
@@ -84,19 +85,36 @@ export function ProductForm({
     qc.invalidateQueries({ queryKey: ["public", "products"] });
   }
 
-  async function setCover(url: string, images: string[]) {
-    if (!productId) return;
-    const rest = images.filter((u) => u !== url);
-    const reordered = [url, ...rest];
+  async function saveImageOrder(reordered: string[]) {
+    if (!productId || !reordered.length) return;
+    const cover = reordered[0];
     await apiFetch(`/admin/products/${productId}/images`, {
       method: "PUT",
-      body: JSON.stringify({ images: reordered, image: url, altImage: reordered[1] || url }),
+      body: JSON.stringify({
+        images: reordered,
+        image: cover,
+        altImage: reordered[1] || cover,
+      }),
       token,
     });
-    toast.success("Cover image updated");
     qc.invalidateQueries({ queryKey: ["admin", "products"] });
     qc.invalidateQueries({ queryKey: ["admin", "product", productId] });
     qc.invalidateQueries({ queryKey: ["public", "products"] });
+  }
+
+  async function setCover(url: string, images: string[]) {
+    const rest = images.filter((u) => u !== url);
+    await saveImageOrder([url, ...rest]);
+    toast.success("Primary image updated (position 1)");
+  }
+
+  async function moveImage(index: number, direction: -1 | 1, images: string[]) {
+    const next = index + direction;
+    if (next < 0 || next >= images.length) return;
+    const copy = [...images];
+    [copy[index], copy[next]] = [copy[next], copy[index]];
+    await saveImageOrder(copy);
+    toast.success(`Image moved to position ${next + 1}`);
   }
 
   const gallery = (product?.images?.length ? product.images : [product?.image]).filter(Boolean) as string[];
@@ -107,17 +125,25 @@ export function ProductForm({
         <Field label="Name" value={form.name} onChange={(v) => onFormChange({ ...form, name: v })} />
         <Field label="SKU" value={form.sku} onChange={(v) => onFormChange({ ...form, sku: v })} />
         <Field label="Slug" value={form.slug} onChange={(v) => onFormChange({ ...form, slug: v })} />
-        <div>
-          <Label className="text-xs">Category</Label>
+        <div className="sm:col-span-2">
+          <Label className="text-xs">Storefront category</Label>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">
+            Controls shop filters and collection URL (e.g. Traditional Wear → /collections/traditional-wear).
+          </p>
           <select
-            className="mt-1 w-full border border-input bg-background px-3 py-2 text-sm"
+            className="mt-2 w-full max-w-md border border-input bg-background px-3 py-2 text-sm"
             value={form.category}
             onChange={(e) => onFormChange({ ...form, category: e.target.value })}
           >
-            {PRODUCT_CATEGORIES.map((c) => (
-              <option key={c} value={c}>{c}</option>
+            {adminCategoryOptions(form.category).map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
             ))}
           </select>
+          <p className="mt-1.5 text-[11px] text-muted-foreground">
+            Collection: /collections/{categoryToSlug(form.category || "Necklaces")}
+          </p>
         </div>
         <Field
           label="Price (₹)"
@@ -172,17 +198,21 @@ export function ProductForm({
 
       {mode === "edit" && productId && product && (
         <div className="border-t border-border pt-6">
-          <h4 className="font-display text-xl">Cloudinary gallery ({gallery.length})</h4>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Upload adds files to Cloudinary. “Set cover” chooses the main shop image.
+          <h4 className="font-display text-xl">Photo order ({gallery.length})</h4>
+          <p className="mt-1 max-w-2xl text-xs text-muted-foreground">
+            Image <strong>1</strong> is the shop thumbnail and first photo on the product page. Use the arrows to
+            change order, or <strong>Make #1</strong> to jump a photo to the front.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             {gallery.map((src, i) => (
-              <div key={`${src}-${i}`} className="relative w-28 border border-border bg-muted">
+              <div key={`${src}-${i}`} className="relative w-32 border border-border bg-muted">
+                <span className="absolute left-1 top-1 z-10 rounded bg-background/95 px-1.5 py-0.5 text-[10px] font-semibold tabular-nums shadow-sm">
+                  #{i + 1}
+                </span>
                 <LazyImage src={src} alt="" optimizeWidth={224} className="aspect-square w-full object-cover" />
-                {product.image === src && (
-                  <span className="absolute left-1 top-1 bg-primary px-1.5 py-0.5 text-[9px] text-primary-foreground">
-                    COVER
+                {i === 0 && (
+                  <span className="absolute right-1 top-1 bg-primary px-1.5 py-0.5 text-[9px] text-primary-foreground">
+                    PRIMARY
                   </span>
                 )}
                 {!isCloudinaryUrl(src) && (
@@ -195,10 +225,33 @@ export function ProductForm({
                     type="button"
                     size="sm"
                     variant="ghost"
+                    className="h-8 px-1.5"
+                    disabled={i === 0}
+                    aria-label="Move earlier"
+                    onClick={() => moveImage(i, -1, gallery).catch((e) => toast.error(e.message))}
+                  >
+                    <ChevronLeft className="size-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 px-1.5"
+                    disabled={i === gallery.length - 1}
+                    aria-label="Move later"
+                    onClick={() => moveImage(i, 1, gallery).catch((e) => toast.error(e.message))}
+                  >
+                    <ChevronRight className="size-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
                     className="h-8 flex-1 text-[10px]"
+                    disabled={i === 0}
                     onClick={() => setCover(src, gallery).catch((e) => toast.error(e.message))}
                   >
-                    <Star className="mr-1 size-3" /> Cover
+                    <Star className="mr-0.5 size-3" /> #1
                   </Button>
                   <Button
                     type="button"

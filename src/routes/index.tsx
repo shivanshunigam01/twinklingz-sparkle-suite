@@ -8,7 +8,6 @@ import {
   EditSection,
   NewArrivalsSection,
   NewsletterSection,
-  ShopTheLookSection,
   SocialSection,
   WhyTwinklingzSection,
 } from "@/components/home/home-sections";
@@ -38,7 +37,6 @@ function HomePage() {
       <NewArrivalsSection />
       <CampaignSection />
       <BestsellersSection />
-      <ShopTheLookSection />
       <EditSection />
       <BrandStorySection />
       <WhyTwinklingzSection />
