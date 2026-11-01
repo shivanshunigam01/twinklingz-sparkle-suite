@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { formatPrice } from "@/lib/catalog";
 import { useStore } from "@/components/store-provider";
-import { apiFetch } from "@/lib/api";
+import { apiFetch, ApiError } from "@/lib/api";
 import { openRazorpayCheckout } from "@/lib/razorpay";
 import { toast } from "sonner";
 import { useCustomerAuth } from "@/components/customer-auth-provider";
@@ -352,24 +352,20 @@ function Page() {
       const orderId = created.order.id;
       const orderNum = created.order.orderNumber;
 
-      const amountPaise = Math.max(100, Math.round(created.order.total * 100));
-
       const rp = await apiFetch<{
-        order_id: string;
+        order_id?: string;
+        razorpayOrderId?: string;
         amount: number;
         currency: string;
         key_id?: string;
-      }>("/create-order", {
+        keyId?: string;
+      }>(`/orders/${orderId}/razorpay/create`, {
         method: "POST",
-        body: JSON.stringify({
-          amount: amountPaise,
-          currency: "INR",
-          receipt: orderNum,
-          shopOrderId: orderId,
-        }),
+        token,
       });
 
-      const keyId = rp.key_id || (import.meta.env.VITE_RAZORPAY_KEY_ID as string) || "";
+      const razorpayOrderId = rp.order_id || rp.razorpayOrderId || "";
+      const keyId = rp.key_id || rp.keyId || (import.meta.env.VITE_RAZORPAY_KEY_ID as string) || "";
       if (!keyId) {
         toast.message("Order saved", {
           description: "Add Razorpay keys to complete payment online. Order is pending payment.",
@@ -382,7 +378,7 @@ function Page() {
         keyId,
         amount: rp.amount,
         currency: rp.currency,
-        orderId: rp.order_id,
+        orderId: razorpayOrderId,
         prefill: { name: form.fullName.trim(), email: form.email.trim(), contact: mobile },
         description: `Order ${orderNum}`,
         onSuccess: async (response) => {
@@ -410,8 +406,14 @@ function Page() {
       const message = err instanceof Error ? err.message : "Checkout failed";
       if (message.toLowerCase().includes("sign in")) {
         setAuthDialogOpen(true);
+      } else if (
+        err instanceof ApiError &&
+        (err.status === 503 || /razorpay rejected/i.test(message) || /authentication failed/i.test(message))
+      ) {
+        toast.error("Payment gateway is not configured correctly. Please try again in a few minutes or contact support.");
+      } else {
+        toast.error(message);
       }
-      toast.error(message);
     } finally {
       setPaying(false);
     }
