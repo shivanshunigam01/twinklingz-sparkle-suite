@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Heart, Home, Menu, Search, ShoppingBag, UserRound } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandLogo } from "@/components/brand-logo";
@@ -28,7 +28,22 @@ export function SiteHeader() {
   const { data: catalog = [] } = usePublicProducts();
   const { customer } = useCustomerAuth();
   const accountLabel = customer?.name?.split(/\s+/)[0] || customer?.email?.split("@")[0] || "Account";
-  useEffect(() => { const onScroll = () => setScrolled(window.scrollY > 48); onScroll(); window.addEventListener("scroll", onScroll, { passive: true }); return () => window.removeEventListener("scroll", onScroll); }, []);
+  useLayoutEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 48);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (path !== "/") return;
+    const syncScroll = () => setScrolled(window.scrollY > 48);
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) syncScroll();
+    };
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, [path]);
   const results = term.trim()
     ? catalog.filter((p) => `${p.name} ${p.category} ${p.sku}`.toLowerCase().includes(term.toLowerCase())).slice(0, 8)
     : [];
