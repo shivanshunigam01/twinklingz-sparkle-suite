@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LazyImage } from "@/components/ui/lazy-image";
@@ -7,12 +7,20 @@ import { HERO_SCROLL_VIDEO_SRC } from "@/lib/cms-settings";
 import { media } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
 
+function videoIsRenderable(video: HTMLVideoElement) {
+  return !video.paused || video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA;
+}
+
 export function CinematicHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoPlaying, setVideoPlaying] = useState(false);
+  const [videoVisible, setVideoVisible] = useState(false);
   const [useVideo, setUseVideo] = useState(true);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const poster = media.heroImage;
+
+  const revealVideo = useCallback(() => {
+    setVideoVisible(true);
+  }, []);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -21,25 +29,36 @@ export function CinematicHero() {
   }, []);
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
-    const video = videoRef.current;
-    if (!video || !useVideo) return;
+    if (prefersReducedMotion || !useVideo) return;
 
-    const onPlaying = () => setVideoPlaying(true);
-    const onPause = () => {
-      if (video.currentTime === 0) setVideoPlaying(false);
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (videoIsRenderable(video)) {
+      revealVideo();
+    }
+
+    const onReady = () => {
+      if (videoIsRenderable(video)) revealVideo();
     };
 
-    video.addEventListener("playing", onPlaying);
-    video.addEventListener("pause", onPause);
+    video.addEventListener("loadeddata", onReady);
+    video.addEventListener("canplay", onReady);
+    video.addEventListener("playing", revealVideo);
 
-    void video.play().catch(() => setUseVideo(false));
+    const tryPlay = () => {
+      void video.play().catch(() => {
+        /* Autoplay blocked — keep poster + try again on first interaction */
+      });
+    };
+    tryPlay();
 
     return () => {
-      video.removeEventListener("playing", onPlaying);
-      video.removeEventListener("pause", onPause);
+      video.removeEventListener("loadeddata", onReady);
+      video.removeEventListener("canplay", onReady);
+      video.removeEventListener("playing", revealVideo);
     };
-  }, [prefersReducedMotion, useVideo]);
+  }, [prefersReducedMotion, useVideo, revealVideo]);
 
   return (
     <section className="relative h-screen bg-primary">
@@ -59,15 +78,19 @@ export function CinematicHero() {
           <video
             ref={videoRef}
             src={HERO_SCROLL_VIDEO_SRC}
+            poster={poster}
             muted
             playsInline
             autoPlay
             loop
             preload="auto"
             className={cn(
-              "absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-out",
-              videoPlaying ? "opacity-100" : "opacity-0",
+              "absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-out",
+              videoVisible ? "opacity-100" : "opacity-0",
             )}
+            onPlaying={revealVideo}
+            onLoadedData={revealVideo}
+            onCanPlay={revealVideo}
             onError={() => setUseVideo(false)}
           />
         ) : null}
