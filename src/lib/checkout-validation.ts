@@ -1,3 +1,5 @@
+import { customerEmailError } from "@/lib/customer-email";
+
 export type CheckoutFormValues = {
   fullName: string;
   mobile: string;
@@ -33,10 +35,8 @@ export function validateCheckoutForm(values: CheckoutFormValues, requireLocality
     errors.mobile = "Enter a valid 10-digit Indian mobile number (starts with 6–9).";
   }
 
-  const email = values.email.trim();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    errors.email = "Enter a valid email address.";
-  }
+  const emailErr = customerEmailError(values.email);
+  if (emailErr) errors.email = emailErr;
 
   const pin = values.pinCode.replace(/\D/g, "");
   if (!/^\d{6}$/.test(pin)) {

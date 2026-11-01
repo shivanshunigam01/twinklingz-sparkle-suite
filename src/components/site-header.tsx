@@ -9,6 +9,7 @@ import { LazyImage } from "@/components/ui/lazy-image";
 import { formatPrice } from "@/lib/catalog";
 import { ANNOUNCEMENT_BAR } from "@/lib/cms-settings";
 import { usePublicProducts } from "@/lib/use-public-products";
+import { useCustomerAuth } from "@/components/customer-auth-provider";
 const nav = [
   { label: "NEW IN", to: "/new-arrivals" as const },
   { label: "NECKLACES", to: "/collections/$slug" as const, slug: "necklaces" },
@@ -25,6 +26,8 @@ export function SiteHeader() {
   const path = useRouterState({ select: (state) => state.location.pathname }); const hero = path === "/" && !scrolled;
   const { cart, bagOpen, setBagOpen, subtotal, removeFromBag } = useStore();
   const { data: catalog = [] } = usePublicProducts();
+  const { customer } = useCustomerAuth();
+  const accountLabel = customer?.name?.split(/\s+/)[0] || customer?.email?.split("@")[0] || "Account";
   useEffect(() => { const onScroll = () => setScrolled(window.scrollY > 48); onScroll(); window.addEventListener("scroll", onScroll, { passive: true }); return () => window.removeEventListener("scroll", onScroll); }, []);
   const results = term.trim()
     ? catalog.filter((p) => `${p.name} ${p.category} ${p.sku}`.toLowerCase().includes(term.toLowerCase())).slice(0, 8)
@@ -38,7 +41,16 @@ export function SiteHeader() {
         <nav className="hidden items-center gap-5 lg:flex">{nav.map((item) => item.slug ? <Link key={item.label} to="/collections/$slug" params={{ slug: item.slug }} className="text-[11px] font-semibold tracking-[0.12em] transition hover:text-accent">{item.label}</Link> : <Link key={item.label} to={item.to} className="text-[11px] font-semibold tracking-[0.12em] transition hover:text-accent">{item.label}</Link>)}</nav>
         <div className="flex items-center gap-0.5">
           <Button variant="ghost" size="icon" onClick={() => setSearch(true)} aria-label="Search"><Search /></Button>
-          <Button asChild variant="ghost" size="icon" className="hidden sm:inline-flex"><Link to="/account" aria-label="Account"><UserRound /></Link></Button>
+          <Button
+            asChild
+            variant="ghost"
+            className="hidden max-w-[9rem] truncate px-2 sm:inline-flex sm:gap-1.5"
+          >
+            <Link to="/account" aria-label={customer ? `Account, signed in as ${customer.name}` : "Account"}>
+              <UserRound className="size-4 shrink-0" />
+              <span className="truncate text-[11px] font-semibold tracking-wide">{accountLabel}</span>
+            </Link>
+          </Button>
           <Button asChild variant="ghost" size="icon" className="hidden sm:inline-flex"><Link to="/wishlist" aria-label="Wishlist"><Heart /></Link></Button>
           <Button variant="ghost" size="icon" onClick={() => setBagOpen(true)} aria-label={`Shopping bag with ${cart.length} items`} className="relative"><ShoppingBag /><span className="absolute right-0 top-0 flex size-4 items-center justify-center rounded-full bg-accent text-[9px] text-accent-foreground">{cart.reduce((n, item) => n + item.quantity, 0)}</span></Button>
         </div>

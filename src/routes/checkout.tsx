@@ -15,6 +15,9 @@ import { useStore } from "@/components/store-provider";
 import { apiFetch } from "@/lib/api";
 import { openRazorpayCheckout } from "@/lib/razorpay";
 import { toast } from "sonner";
+import { useCustomerAuth } from "@/components/customer-auth-provider";
+import { getCustomerToken } from "@/lib/customer-auth";
+import { CheckoutAuthDialog } from "@/components/checkout/checkout-auth-dialog";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -206,7 +209,18 @@ function Page() {
   const [postOffices, setPostOffices] = useState<PostOffice[]>([]);
   const [pinLookupLoading, setPinLookupLoading] = useState(false);
   const [paying, setPaying] = useState(false);
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const { cart, subtotal, clearCart } = useStore();
+  const { customer } = useCustomerAuth();
+
+  useEffect(() => {
+    if (!customer) return;
+    setForm((prev) => ({
+      ...prev,
+      fullName: prev.fullName.trim() ? prev.fullName : customer.name,
+      email: prev.email.trim() ? prev.email : customer.email,
+    }));
+  }, [customer]);
 
   useEffect(() => {
     const pin = form.pinCode.replace(/\D/g, "");
@@ -285,21 +299,23 @@ function Page() {
     setFieldErrors((prev) => ({ ...prev, [key]: undefined }));
   }
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function isSignedInForCheckout(): boolean {
+    const token = getCustomerToken();
+    if (!token || !customer) return false;
+    return customer.email.toLowerCase() === form.email.trim().toLowerCase();
+  }
+
+  async function placeOrderAndPay() {
     if (!cart.length) return;
 
     const pin = form.pinCode.replace(/\D/g, "");
-    const values = { ...form, pinCode: pin };
-    const errors = validateCheckoutForm(values, postOffices.length > 1);
-    if (hasCheckoutErrors(errors)) {
-      setFieldErrors(errors);
-      toast.error("Please fix the highlighted fields.");
-      return;
-    }
-
     const mobile = normalizeIndianMobile(form.mobile);
     const landmarkParts = [form.locality.trim(), form.landmark.trim()].filter(Boolean);
+    const token = getCustomerToken();
+    if (!token) {
+      setAuthDialogOpen(true);
+      return;
+    }
 
     setPaying(true);
     try {
@@ -307,6 +323,7 @@ function Page() {
         order: { id: string; orderNumber: string; total: number };
       }>("/orders", {
         method: "POST",
+        token,
         body: JSON.stringify({
           customer: {
             fullName: form.fullName.trim(),
@@ -390,10 +407,35 @@ function Page() {
         },
       });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Checkout failed");
+      const message = err instanceof Error ? err.message : "Checkout failed";
+      if (message.toLowerCase().includes("sign in")) {
+        setAuthDialogOpen(true);
+      }
+      toast.error(message);
     } finally {
       setPaying(false);
     }
+  }
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!cart.length) return;
+
+    const pin = form.pinCode.replace(/\D/g, "");
+    const values = { ...form, pinCode: pin };
+    const errors = validateCheckoutForm(values, postOffices.length > 1);
+    if (hasCheckoutErrors(errors)) {
+      setFieldErrors(errors);
+      toast.error("Please fix the highlighted fields.");
+      return;
+    }
+
+    if (!isSignedInForCheckout()) {
+      setAuthDialogOpen(true);
+      return;
+    }
+
+    await placeOrderAndPay();
   }
 
   if (!cart.length) {
@@ -425,6 +467,15 @@ function Page() {
 
   return (
     <CheckoutPageShell>
+      <CheckoutAuthDialog
+        open={authDialogOpen}
+        onOpenChange={setAuthDialogOpen}
+        checkoutEmail={form.email.trim()}
+        checkoutName={form.fullName.trim()}
+        onSuccess={() => {
+          void placeOrderAndPay();
+        }}
+      />
       <header className="mb-8 text-center sm:mb-10 sm:text-left">
         <p className="text-xs tracking-[0.28em] text-primary-foreground/90">TWINKLINGZ CHECKOUT</p>
         <h1 className="mt-2 font-display text-4xl text-white sm:text-5xl">Secure Checkout</h1>
@@ -608,6 +659,12 @@ function Page() {
                 exchanges).
               </span>
             </label>
+            {customer && customer.email.toLowerCase() === form.email.trim().toLowerCase() && (
+              <p className="mt-4 text-sm text-muted-foreground">
+                Signed in as <span className="font-medium text-foreground">{customer.name}</span> — you&apos;re ready
+                for payment.
+              </p>
+            )}
             <Button type="submit" className="mt-6 h-12 w-full text-sm tracking-[0.12em]" disabled={paying}>
               {paying ? "Processing…" : "CONTINUE TO SECURE PAYMENT"}
             </Button>
