@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -31,6 +31,8 @@ export function CheckoutAuthDialog({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const emailMismatch =
     customer && customer.email.toLowerCase() !== checkoutEmail.trim().toLowerCase();
@@ -98,26 +100,50 @@ export function CheckoutAuthDialog({
           </label>
           <label className="block text-sm">
             <span className="mb-1 block text-xs font-medium tracking-wide text-muted-foreground">PASSWORD</span>
-            <input
-              type="password"
-              autoComplete={mode === "register" ? "new-password" : "current-password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-input bg-background p-3 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary/30"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                autoComplete={mode === "register" ? "new-password" : "current-password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border border-input bg-background p-3 pr-11 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary/30"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted-foreground transition hover:text-foreground"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                onClick={() => setShowPassword((v) => !v)}
+              >
+                {showPassword ? <EyeOff className="size-4" aria-hidden /> : <Eye className="size-4" aria-hidden />}
+              </button>
+            </div>
           </label>
           {mode === "register" && (
             <label className="block text-sm">
               <span className="mb-1 block text-xs font-medium tracking-wide text-muted-foreground">
                 CONFIRM PASSWORD
               </span>
-              <input
-                type="password"
-                autoComplete="new-password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full border border-input bg-background p-3 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary/30"
-              />
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full border border-input bg-background p-3 pr-11 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary/30"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted-foreground transition hover:text-foreground"
+                  aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                  onClick={() => setShowConfirmPassword((v) => !v)}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="size-4" aria-hidden />
+                  ) : (
+                    <Eye className="size-4" aria-hidden />
+                  )}
+                </button>
+              </div>
             </label>
           )}
           {error && (
