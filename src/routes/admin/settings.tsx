@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { apiFetch, type PublicSiteSettings } from "@/lib/api";
+import { apiFetch, apiUploadForm, type PublicSiteSettings } from "@/lib/api";
+import { LazyImage } from "@/components/ui/lazy-image";
 import { getAdminToken } from "@/lib/admin-auth";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
@@ -50,6 +51,13 @@ function SettingsPage() {
         <h2 className="font-display text-4xl">Site settings</h2>
         <p className="mt-2 text-muted-foreground">Contact address, announcement bar, and brand copy for the public site.</p>
       </div>
+
+      <OfferBannerUpload
+        imageUrl={form.offerBannerImage ?? ""}
+        onUploaded={(url) => setForm({ ...form, offerBannerImage: url })}
+        onClear={() => setForm({ ...form, offerBannerImage: "" })}
+        token={token}
+      />
 
       <section className="space-y-4 border border-border bg-background p-6">
         <h3 className="font-display text-xl">Brand</h3>
@@ -123,6 +131,78 @@ function SettingsPage() {
         Save all settings
       </Button>
     </div>
+  );
+}
+
+function OfferBannerUpload({
+  imageUrl,
+  onUploaded,
+  onClear,
+  token,
+}: {
+  imageUrl: string;
+  onUploaded: (url: string) => void;
+  onClear: () => void;
+  token: string | null;
+}) {
+  const qc = useQueryClient();
+  const [uploading, setUploading] = useState(false);
+
+  async function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !token) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("image", file);
+      const res = await apiUploadForm<{ url: string; settings: PublicSiteSettings }>(
+        "/admin/settings/offer-banner",
+        fd,
+        { token },
+      );
+      onUploaded(res.url);
+      qc.invalidateQueries({ queryKey: ["public", "settings"] });
+      qc.invalidateQueries({ queryKey: ["admin", "settings"] });
+      toast.success("Offer banner uploaded to Cloudinary");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  return (
+    <section className="space-y-4 border border-border bg-background p-6">
+      <h3 className="font-display text-xl">Homepage offer banner</h3>
+      <p className="text-sm text-muted-foreground">
+        Shown once below the hero video. Upload here (stored on Cloudinary). Recommended: wide JPG/PNG, full artwork
+        with text baked in.
+      </p>
+      {imageUrl ? (
+        <div className="overflow-hidden border border-border bg-[#2a1510]">
+          <LazyImage src={imageUrl} alt="Current offer banner" optimizeWidth={1200} className="block h-auto w-full" />
+        </div>
+      ) : (
+        <p className="text-sm text-muted-foreground">No banner uploaded yet — using site fallback until you upload.</p>
+      )}
+      <div className="flex flex-wrap gap-3">
+        <Label className="inline-flex cursor-pointer items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted">
+          {uploading ? "Uploading…" : "Upload to Cloudinary"}
+          <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={uploading} onChange={onFileChange} />
+        </Label>
+        {imageUrl ? (
+          <Button type="button" variant="outline" onClick={onClear}>
+            Remove banner URL
+          </Button>
+        ) : null}
+      </div>
+      <Field
+        label="Or paste Cloudinary URL"
+        value={imageUrl}
+        onChange={(v) => onUploaded(v)}
+      />
+    </section>
   );
 }
 

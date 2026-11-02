@@ -107,6 +107,7 @@ export type PublicSiteSettings = {
   social: { instagramHandle: string; instagramUrl: string };
   returnRefundPolicy: string;
   storyCopy: { headline: string; body: string; highlight: string };
+  offerBannerImage?: string;
 };
 
 export type ProductReview = {

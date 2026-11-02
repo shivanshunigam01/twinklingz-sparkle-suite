@@ -4,7 +4,6 @@ import { ArrowRight, CreditCard, Gem, Gift, HeartHandshake, PackageCheck, Plus }
 import { Button } from "@/components/ui/button";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { ProductCard } from "@/components/product-card";
-import { DiwaliBannerImage } from "@/components/home/diwali-banner-image";
 import { SOCIAL, STORY_COPY } from "@/lib/cms-settings";
 import { categoryHeroImage, formatPrice, galleryImages, media } from "@/lib/catalog";
 import { categoryNames } from "@/lib/product-categories";
@@ -95,16 +94,29 @@ export function NewArrivalsSection() {
 }
 
 export function CampaignSection() {
+  const { data: products = [] } = usePublicProducts();
+  const hero = pickCloudinaryImage(products, media.campaignImage);
   return (
-    <section className="bg-secondary py-16 sm:py-20" aria-label="Diwali festive sale">
-      <div className="mx-auto max-w-[1500px] px-4 lg:px-8">
-        <div className="border border-border bg-[#2a1510] shadow-lg">
-          <DiwaliBannerImage />
-          <div className="flex justify-center border-t border-border bg-background px-5 py-5">
-            <Button asChild size="lg">
-              <Link to="/shop">SHOP ALL JEWELLERY</Link>
-            </Button>
-          </div>
+    <section className="relative min-h-[75vh] overflow-hidden">
+      <LazyImage
+        src={hero}
+        alt="Rose gold statement jewellery on burgundy velvet"
+        optimizeWidth={1200}
+        width={1200}
+        height={800}
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+      <div className="absolute inset-0 bg-campaign-shade" />
+      <div className="relative mx-auto flex min-h-[75vh] max-w-7xl items-center px-6 text-primary-foreground">
+        <div className="max-w-lg">
+          <p className="text-xs tracking-[0.25em] text-champagne">THE OCCASION EDIT</p>
+          <h2 className="mt-4 font-display text-5xl sm:text-7xl">Made to be noticed.</h2>
+          <p className="mt-5 leading-7 text-primary-foreground/80">
+            Discover jewellery that turns everyday moments into something extraordinary.
+          </p>
+          <Button asChild className="mt-8 bg-primary-foreground text-primary">
+            <Link to="/collections">SHOP THE EDIT</Link>
+          </Button>
         </div>
       </div>
     </section>
