@@ -13,23 +13,34 @@ export const DIWALI_SALE = {
 export const DIWALI_ANNOUNCEMENT_BAR =
   "✦ DIWALI FESTIVE SALE — FLAT 25% OFF ON ALL ORDERS ✦ Secure Online Payments ✦";
 
-function listPriceBeforePromo(price: number, mrp?: number) {
-  const list = mrp && mrp > price ? mrp : price;
-  return list;
-}
-
+/** Apply promo for static/offline catalog only (live API already returns offer + original). */
 export function applyDiwaliPricing(product: Product): Product {
   if (!DIWALI_SALE.active) return product;
-  const list = listPriceBeforePromo(product.price, product.mrp);
-  const sale = Math.round(list * (1 - DIWALI_SALE.percentOff / 100));
-  if (sale >= list) return product;
-  return { ...product, mrp: list, price: sale };
+  const original = product.price;
+  const offer = Math.round(original * (1 - DIWALI_SALE.percentOff / 100));
+  if (offer >= original) return product;
+  return { ...product, mrp: original, price: offer };
 }
 
 export function applyDiwaliPricingList(products: Product[]): Product[] {
   return products.map(applyDiwaliPricing);
 }
 
+/** Original catalog price (shown struck through during promo). */
+export function getOriginalListPrice(product: Product): number {
+  if (product.mrp && product.mrp > product.price) return product.mrp;
+  return product.price;
+}
+
+export function getOfferPrice(product: Product): number {
+  return product.price;
+}
+
 export function hasPromoDiscount(product: Product) {
-  return Boolean(product.mrp && product.mrp > product.price);
+  return DIWALI_SALE.active && Boolean(product.mrp && product.mrp > product.price);
+}
+
+export function promoSavings(product: Product): number {
+  if (!hasPromoDiscount(product)) return 0;
+  return getOriginalListPrice(product) - getOfferPrice(product);
 }

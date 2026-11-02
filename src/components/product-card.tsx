@@ -164,7 +164,7 @@ export function ProductCard({
           {product.name}
         </Link>
         <div className="mt-1">
-          <ProductPrice product={product} />
+          <ProductPrice product={product} layout="inline" />
         </div>
         <Button className="mt-3 w-full md:hidden" onClick={() => addToBag(product)}>
           Quick Add

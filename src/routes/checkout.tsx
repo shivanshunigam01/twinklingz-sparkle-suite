@@ -10,6 +10,7 @@ import {
 import { fetchPostOfficesByPincode, type PostOffice } from "@/lib/india-pincode";
 import { Button } from "@/components/ui/button";
 import { LazyImage } from "@/components/ui/lazy-image";
+import { ProductPrice } from "@/components/product-price";
 import { formatPrice } from "@/lib/catalog";
 import { useStore } from "@/components/store-provider";
 import { apiFetch, ApiError } from "@/lib/api";
@@ -685,7 +686,10 @@ function Page() {
                 <div className="min-w-0 flex-1 text-sm">
                   <p className="truncate font-medium leading-snug">{product.name}</p>
                   <p className="text-muted-foreground">Qty {quantity}</p>
-                  <p className="mt-1 font-semibold">{formatPrice(product.price * quantity)}</p>
+                  <div className="mt-1">
+                    <ProductPrice product={product} layout="inline" size="sm" />
+                    <p className="text-xs text-muted-foreground">Qty {quantity} · {formatPrice(product.price * quantity)}</p>
+                  </div>
                 </div>
               </li>
             ))}
