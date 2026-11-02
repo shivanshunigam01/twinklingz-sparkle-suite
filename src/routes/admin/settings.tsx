@@ -53,10 +53,23 @@ function SettingsPage() {
       </div>
 
       <OfferBannerUpload
+        title="Homepage offer banner — desktop & tablet"
+        description="Wide landscape artwork shown from 768px width and up (below the hero)."
+        uploadPath="/admin/settings/offer-banner"
         imageUrl={form.offerBannerImage ?? ""}
         onUploaded={(url) => setForm({ ...form, offerBannerImage: url })}
         onClear={() => setForm({ ...form, offerBannerImage: "" })}
         token={token}
+      />
+      <OfferBannerUpload
+        title="Homepage offer banner — mobile"
+        description="Portrait or square artwork shown on phones (below the hero). Falls back to desktop banner if empty."
+        uploadPath="/admin/settings/offer-banner-mobile"
+        imageUrl={form.offerBannerImageMobile ?? ""}
+        onUploaded={(url) => setForm({ ...form, offerBannerImageMobile: url })}
+        onClear={() => setForm({ ...form, offerBannerImageMobile: "" })}
+        token={token}
+        previewMaxWidth={320}
       />
 
       <section className="space-y-4 border border-border bg-background p-6">
@@ -135,15 +148,23 @@ function SettingsPage() {
 }
 
 function OfferBannerUpload({
+  title,
+  description,
+  uploadPath,
   imageUrl,
   onUploaded,
   onClear,
   token,
+  previewMaxWidth = 720,
 }: {
+  title: string;
+  description: string;
+  uploadPath: string;
   imageUrl: string;
   onUploaded: (url: string) => void;
   onClear: () => void;
   token: string | null;
+  previewMaxWidth?: number;
 }) {
   const qc = useQueryClient();
   const [uploading, setUploading] = useState(false);
@@ -155,11 +176,9 @@ function OfferBannerUpload({
     try {
       const fd = new FormData();
       fd.append("image", file);
-      const res = await apiUploadForm<{ url: string; settings: PublicSiteSettings }>(
-        "/admin/settings/offer-banner",
-        fd,
-        { token },
-      );
+      const res = await apiUploadForm<{ url: string; settings: PublicSiteSettings }>(uploadPath, fd, {
+        token,
+      });
       onUploaded(res.url);
       qc.invalidateQueries({ queryKey: ["public", "settings"] });
       qc.invalidateQueries({ queryKey: ["admin", "settings"] });
@@ -174,17 +193,17 @@ function OfferBannerUpload({
 
   return (
     <section className="space-y-4 border border-border bg-background p-6">
-      <h3 className="font-display text-xl">Homepage offer banner</h3>
-      <p className="text-sm text-muted-foreground">
-        Shown once below the hero video. Upload here (stored on Cloudinary). Recommended: wide JPG/PNG, full artwork
-        with text baked in.
-      </p>
+      <h3 className="font-display text-xl">{title}</h3>
+      <p className="text-sm text-muted-foreground">{description}</p>
       {imageUrl ? (
-        <div className="overflow-hidden border border-border bg-[#2a1510]">
-          <LazyImage src={imageUrl} alt="Current offer banner" optimizeWidth={1200} className="block h-auto w-full" />
+        <div
+          className="mx-auto overflow-hidden border border-border bg-[#2a1510]"
+          style={{ maxWidth: previewMaxWidth }}
+        >
+          <LazyImage src={imageUrl} alt="" optimizeWidth={1200} className="block h-auto w-full" />
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground">No banner uploaded yet — using site fallback until you upload.</p>
+        <p className="text-sm text-muted-foreground">No banner uploaded yet.</p>
       )}
       <div className="flex flex-wrap gap-3">
         <Label className="inline-flex cursor-pointer items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted">

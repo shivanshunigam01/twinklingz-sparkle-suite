@@ -22,6 +22,7 @@ const fallback: PublicSiteSettings = {
   returnRefundPolicy: RETURN_REFUND_POLICY,
   storyCopy: { ...STORY_COPY },
   offerBannerImage: "",
+  offerBannerImageMobile: "",
 };
 
 export function useSiteSettings() {

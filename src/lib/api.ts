@@ -108,6 +108,7 @@ export type PublicSiteSettings = {
   returnRefundPolicy: string;
   storyCopy: { headline: string; body: string; highlight: string };
   offerBannerImage?: string;
+  offerBannerImageMobile?: string;
 };
 
 export type ProductReview = {
