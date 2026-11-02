@@ -133,7 +133,7 @@ function RootComponent() {
   useEffect(() => {
     if (isAdmin) return;
     void queryClient.prefetchQuery({
-      queryKey: ["public", "products"],
+      queryKey: ["public", "products", "diwali-25"],
       queryFn: fetchPublicProducts,
       staleTime: 5 * 60_000,
     });

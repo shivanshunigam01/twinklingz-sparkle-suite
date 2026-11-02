@@ -1,6 +1,6 @@
 import type { Product } from "@/lib/catalog";
 
-const CACHE_KEY = "twinklingz-public-products-v1";
+const CACHE_KEY = "twinklingz-public-products-v2-diwali";
 const MAX_AGE_MS = 30 * 60_000;
 
 export function readCatalogCache(): Product[] | undefined {

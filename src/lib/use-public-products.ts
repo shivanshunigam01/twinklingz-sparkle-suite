@@ -77,7 +77,7 @@ export async function fetchPublicProducts(): Promise<Product[]> {
     return merged;
   } catch {
     const cached = readCatalogCache();
-    if (cached?.length) return applyDiwaliPricingList(cached);
+    if (cached?.length) return cached;
     if (prefersRemoteApi) return [];
     return applyDiwaliPricingList(staticProducts);
   }
@@ -88,7 +88,7 @@ export function usePublicProducts() {
   const placeholder = cached ?? (prefersRemoteApi ? undefined : staticProducts);
 
   return useQuery({
-    queryKey: ["public", "products"],
+    queryKey: ["public", "products", "diwali-25"],
     queryFn: fetchPublicProducts,
     placeholderData: placeholder,
     staleTime: 5 * 60_000,
@@ -115,9 +115,10 @@ export async function fetchProductBySlug(slug: string): Promise<Product | undefi
       /* fall through to static catalog */
     }
     if (!prefersRemoteApi) {
-      return staticProducts.find(
+      const found = staticProducts.find(
         (p) => p.slug === slug || normalizeCatalogKey(p.slug, p.sku) === normalized,
       );
+      return found ? applyDiwaliPricing(found) : undefined;
     }
     return undefined;
   }
