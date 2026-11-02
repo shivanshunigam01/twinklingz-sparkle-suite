@@ -95,25 +95,19 @@ export function NewArrivalsSection() {
 
 export function CampaignSection() {
   return (
-    <section className="relative min-h-[70vh] overflow-hidden bg-primary">
-      <LazyImage
-        src="/promotions/diwali-festive-sale.jpg"
-        alt="Diwali Festive Sale — Flat 25% off on all Twinklingz jewellery"
-        optimizeWidth={1400}
-        width={1400}
-        height={750}
-        className="absolute inset-0 h-full w-full object-cover object-center"
-      />
-      <div className="absolute inset-0 bg-campaign-shade" />
-      <div className="relative mx-auto flex min-h-[70vh] max-w-7xl items-end px-6 pb-12 text-primary-foreground sm:items-center sm:pb-0">
-        <div className="max-w-xl">
-          <p className="text-xs tracking-[0.25em] text-champagne">DIWALI FESTIVE SALE</p>
-          <h2 className="mt-4 font-display text-5xl sm:text-7xl">Flat 25% off</h2>
-          <p className="mt-5 text-lg leading-7 text-primary-foreground/90">On every piece — celebrate the Festival of Lights with Twinklingz.</p>
-          <Button asChild className="mt-8 bg-primary-foreground text-primary hover:bg-champagne">
-            <Link to="/shop">SHOP ALL JEWELLERY</Link>
-          </Button>
-        </div>
+    <section className="bg-[#2a1510] py-0">
+      <div className="mx-auto max-w-[1500px] px-4 lg:px-8">
+        <Link to="/shop" className="block overflow-hidden border border-border shadow-md">
+          <LazyImage
+            src="/promotions/diwali-festive-sale.jpg"
+            alt="Diwali Festive Sale — Flat 25% off on all Twinklingz jewellery"
+            optimizeWidth={1920}
+            width={1920}
+            height={1080}
+            sizes="100vw"
+            className="block h-auto w-full max-w-full object-contain object-center"
+          />
+        </Link>
       </div>
     </section>
   );
