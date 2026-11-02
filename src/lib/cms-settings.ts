@@ -7,8 +7,9 @@ export const BRAND = {
   category: "Premium Fashion Jewellery",
 } as const;
 
-export const ANNOUNCEMENT_BAR =
-  "✦ Free Shipping on Selected Orders | Secure Online Payments ✦";
+import { DIWALI_ANNOUNCEMENT_BAR } from "@/lib/promotions";
+
+export const ANNOUNCEMENT_BAR = DIWALI_ANNOUNCEMENT_BAR;
 
 export const SOCIAL = {
   instagramHandle: "@Twinklingz",

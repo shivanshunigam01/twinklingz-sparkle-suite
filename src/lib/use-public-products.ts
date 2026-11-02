@@ -9,6 +9,7 @@ import {
   displayCategoryLabel,
   productMatchesCategorySlug,
 } from "@/lib/product-categories";
+import { applyDiwaliPricing, applyDiwaliPricingList } from "@/lib/promotions";
 
 export { categoriesFromProducts, categoryToSlug, productMatchesCategorySlug };
 
@@ -47,7 +48,7 @@ function mergeCatalog(apiList: ApiProduct[]): Product[] {
   const fromApi = apiList.map(mapApiProduct).filter((p) => p.images.length > 0 || p.image);
   if (fromApi.length > 0) return fromApi;
   if (prefersRemoteApi) return [];
-  return staticProducts;
+  return applyDiwaliPricingList(staticProducts);
 }
 
 export type ProductSort = "featured" | "new" | "low" | "high" | "best";
@@ -76,9 +77,9 @@ export async function fetchPublicProducts(): Promise<Product[]> {
     return merged;
   } catch {
     const cached = readCatalogCache();
-    if (cached?.length) return cached;
+    if (cached?.length) return applyDiwaliPricingList(cached);
     if (prefersRemoteApi) return [];
-    return staticProducts;
+    return applyDiwaliPricingList(staticProducts);
   }
 }
 

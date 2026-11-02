@@ -94,28 +94,24 @@ export function NewArrivalsSection() {
 }
 
 export function CampaignSection() {
-  const { data: products = [] } = usePublicProducts();
-  const hero = pickCloudinaryImage(products, media.campaignImage);
   return (
-    <section className="relative min-h-[75vh] overflow-hidden">
+    <section className="relative min-h-[70vh] overflow-hidden bg-primary">
       <LazyImage
-        src={hero}
-        alt="Rose gold statement jewellery on burgundy velvet"
-        optimizeWidth={1200}
-        width={1200}
-        height={800}
-        className="absolute inset-0 h-full w-full object-cover"
+        src="/promotions/diwali-festive-sale.jpg"
+        alt="Diwali Festive Sale — Flat 25% off on all Twinklingz jewellery"
+        optimizeWidth={1400}
+        width={1400}
+        height={750}
+        className="absolute inset-0 h-full w-full object-cover object-center"
       />
       <div className="absolute inset-0 bg-campaign-shade" />
-      <div className="relative mx-auto flex min-h-[75vh] max-w-7xl items-center px-6 text-primary-foreground">
-        <div className="max-w-lg">
-          <p className="text-xs tracking-[0.25em] text-champagne">THE OCCASION EDIT</p>
-          <h2 className="mt-4 font-display text-5xl sm:text-7xl">Made to be noticed.</h2>
-          <p className="mt-5 leading-7 text-primary-foreground/80">
-            Discover jewellery that turns everyday moments into something extraordinary.
-          </p>
-          <Button asChild className="mt-8 bg-primary-foreground text-primary">
-            <Link to="/collections">SHOP THE EDIT</Link>
+      <div className="relative mx-auto flex min-h-[70vh] max-w-7xl items-end px-6 pb-12 text-primary-foreground sm:items-center sm:pb-0">
+        <div className="max-w-xl">
+          <p className="text-xs tracking-[0.25em] text-champagne">DIWALI FESTIVE SALE</p>
+          <h2 className="mt-4 font-display text-5xl sm:text-7xl">Flat 25% off</h2>
+          <p className="mt-5 text-lg leading-7 text-primary-foreground/90">On every piece — celebrate the Festival of Lights with Twinklingz.</p>
+          <Button asChild className="mt-8 bg-primary-foreground text-primary hover:bg-champagne">
+            <Link to="/shop">SHOP ALL JEWELLERY</Link>
           </Button>
         </div>
       </div>

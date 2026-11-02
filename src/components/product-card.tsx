@@ -7,7 +7,9 @@ import {
   ProductImageSliderDialog,
   productGalleryCount,
 } from "@/components/product-image-slider-dialog";
-import { formatPrice, type Product } from "@/lib/catalog";
+import { type Product } from "@/lib/catalog";
+import { ProductPrice } from "@/components/product-price";
+import { DIWALI_SALE } from "@/lib/promotions";
 import { productGalleryUrls } from "@/lib/product-images";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/components/store-provider";
@@ -111,9 +113,9 @@ export function ProductCard({
         >
           <ProductCardHoverGallery product={product} priority={priority} />
         </Link>
-        {product.badge && (
+        {(product.badge || DIWALI_SALE.active) && (
           <span className="absolute left-3 top-3 bg-primary px-2.5 py-1 text-[10px] font-semibold tracking-[0.18em] text-primary-foreground">
-            {product.badge}
+            {product.badge ?? DIWALI_SALE.shortLabel}
           </span>
         )}
         <Button
@@ -161,8 +163,8 @@ export function ProductCard({
         >
           {product.name}
         </Link>
-        <div className="mt-1 text-sm">
-          <strong>{formatPrice(product.price)}</strong>
+        <div className="mt-1">
+          <ProductPrice product={product} />
         </div>
         <Button className="mt-3 w-full md:hidden" onClick={() => addToBag(product)}>
           Quick Add

@@ -7,6 +7,8 @@ import { LazyImage } from "@/components/ui/lazy-image";
 import { optimizePdpHeroUrl } from "@/lib/cloudinary-url";
 import { ProductCard } from "@/components/product-card";
 import { formatPrice, products as staticProducts, type Product } from "@/lib/catalog";
+import { ProductPrice } from "@/components/product-price";
+import { DIWALI_SALE } from "@/lib/promotions";
 import { moreFromCatalog, peopleAlsoSee, similarProducts } from "@/lib/product-recommendations";
 import { categoryToSlug, fetchProductBySlug, usePublicProducts } from "@/lib/use-public-products";
 import { RETURN_REFUND_POLICY } from "@/lib/cms-settings";
@@ -160,7 +162,10 @@ function Page() {
               </header>
 
               <div className="border-y border-border py-5">
-                <p className="text-3xl font-semibold tracking-tight">{formatPrice(product.price)}</p>
+                <ProductPrice product={product} size="lg" />
+                {DIWALI_SALE.active && (
+                  <p className="mt-2 text-sm font-medium text-accent">{DIWALI_SALE.label} — {DIWALI_SALE.shortLabel} applied</p>
+                )}
                 <p className="mt-1 text-sm text-muted-foreground">Inclusive of all taxes</p>
               </div>
 
