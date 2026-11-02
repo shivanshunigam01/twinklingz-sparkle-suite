@@ -4,6 +4,7 @@ import { ArrowRight, CreditCard, Gem, Gift, HeartHandshake, PackageCheck, Plus }
 import { Button } from "@/components/ui/button";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { ProductCard } from "@/components/product-card";
+import { DiwaliBannerImage } from "@/components/home/diwali-banner-image";
 import { SOCIAL, STORY_COPY } from "@/lib/cms-settings";
 import { categoryHeroImage, formatPrice, galleryImages, media } from "@/lib/catalog";
 import { categoryNames } from "@/lib/product-categories";
@@ -95,19 +96,16 @@ export function NewArrivalsSection() {
 
 export function CampaignSection() {
   return (
-    <section className="bg-[#2a1510] py-0">
+    <section className="bg-secondary py-16 sm:py-20" aria-label="Diwali festive sale">
       <div className="mx-auto max-w-[1500px] px-4 lg:px-8">
-        <Link to="/shop" className="block overflow-hidden border border-border shadow-md">
-          <LazyImage
-            src="/promotions/diwali-festive-sale.jpg"
-            alt="Diwali Festive Sale — Flat 25% off on all Twinklingz jewellery"
-            optimizeWidth={1920}
-            width={1920}
-            height={1080}
-            sizes="100vw"
-            className="block h-auto w-full max-w-full object-contain object-center"
-          />
-        </Link>
+        <div className="border border-border bg-[#2a1510] shadow-lg">
+          <DiwaliBannerImage />
+          <div className="flex justify-center border-t border-border bg-background px-5 py-5">
+            <Button asChild size="lg">
+              <Link to="/shop">SHOP ALL JEWELLERY</Link>
+            </Button>
+          </div>
+        </div>
       </div>
     </section>
   );
