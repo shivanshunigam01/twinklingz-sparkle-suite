@@ -14,6 +14,8 @@ import { RETURN_REFUND_POLICY } from "@/lib/cms-settings";
 import { useStore } from "@/components/store-provider";
 import { JewelleryCareGuide } from "@/components/product/jewellery-care-guide";
 import { ProductReviewsSection } from "@/components/product/product-reviews-section";
+import { ProductShareButton } from "@/components/product/product-share-button";
+import { getOfferPrice } from "@/lib/promotions";
 
 export const Route = createFileRoute("/products/$slug")({
   loader: ({ params }) => fetchProductBySlug(params.slug),
@@ -134,6 +136,21 @@ function Page() {
               onSelect={setActiveImage}
               onZoom={() => setZoomOpen(true)}
             />
+            <div className="mt-3 flex items-center justify-end gap-2 border-b border-border pb-4 lg:hidden">
+              <Button
+                variant="outline"
+                size="icon"
+                className="size-11 rounded-lg border-border bg-background shadow-sm"
+                onClick={() => toggleWishlist(product.slug)}
+                aria-label="Save to wishlist"
+              >
+                <Heart className={wishlist.includes(product.slug) ? "fill-accent text-accent" : ""} />
+              </Button>
+              <ProductShareButton
+                variant="chip"
+                product={{ name: product.name, slug: product.slug, price: getOfferPrice(product) }}
+              />
+            </div>
           </div>
 
           <div className="min-w-0 lg:sticky lg:top-28 lg:max-w-lg lg:self-start">
@@ -188,6 +205,11 @@ function Page() {
                   >
                     <Heart className={wishlist.includes(product.slug) ? "fill-accent text-accent" : ""} />
                   </Button>
+                  <ProductShareButton
+                    variant="icon"
+                    className="hidden lg:inline-flex"
+                    product={{ name: product.name, slug: product.slug, price: getOfferPrice(product) }}
+                  />
                 </div>
 
                 <Button
