@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LazyImage } from "@/components/ui/lazy-image";
-import { HERO_SCROLL_VIDEO_SRC } from "@/lib/cms-settings";
+import { HERO_VIDEO_DESKTOP_SRC, HERO_VIDEO_MOBILE_SRC } from "@/lib/cms-settings";
 import { media } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
 
@@ -77,7 +77,6 @@ export function CinematicHero() {
         {useVideo && !prefersReducedMotion ? (
           <video
             ref={videoRef}
-            src={HERO_SCROLL_VIDEO_SRC}
             poster={poster}
             muted
             playsInline
@@ -92,7 +91,10 @@ export function CinematicHero() {
             onLoadedData={revealVideo}
             onCanPlay={revealVideo}
             onError={() => setUseVideo(false)}
-          />
+          >
+            <source src={HERO_VIDEO_DESKTOP_SRC} media="(min-width: 768px)" type="video/mp4" />
+            <source src={HERO_VIDEO_MOBILE_SRC} media="(max-width: 767px)" type="video/mp4" />
+          </video>
         ) : null}
 
         <div className="absolute inset-0 bg-hero-shade" />

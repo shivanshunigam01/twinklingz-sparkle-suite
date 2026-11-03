@@ -48,13 +48,26 @@ export const FOUNDER_STORY = {
   tagline: "Every woman has a story. Let yours sparkle.",
 } as const;
 
-/** Hero background video under /public (override with VITE_HERO_SCROLL_VIDEO). */
-export const HERO_SCROLL_VIDEO_SRC =
-  (import.meta.env.VITE_HERO_SCROLL_VIDEO as string | undefined)?.trim() || "/hero-fashion-film.mp4";
+const heroScrollLegacy =
+  (import.meta.env.VITE_HERO_SCROLL_VIDEO as string | undefined)?.trim() || undefined;
 
-/** Optional separate clip for `/admin/login` (defaults to hero video). */
+/** Hero on phones (max-width 767px). */
+export const HERO_VIDEO_MOBILE_SRC =
+  (import.meta.env.VITE_HERO_VIDEO_MOBILE as string | undefined)?.trim() ||
+  heroScrollLegacy ||
+  "/hero-fashion-film.mp4";
+
+/** Hero on tablet and desktop (768px and up). */
+export const HERO_VIDEO_DESKTOP_SRC =
+  (import.meta.env.VITE_HERO_VIDEO_DESKTOP as string | undefined)?.trim() ||
+  "/hero-fashion-film-desktop.mp4";
+
+/** @deprecated Use HERO_VIDEO_MOBILE_SRC / HERO_VIDEO_DESKTOP_SRC */
+export const HERO_SCROLL_VIDEO_SRC = HERO_VIDEO_MOBILE_SRC;
+
+/** Optional separate clip for `/admin/login` (defaults to desktop hero video). */
 export const ADMIN_LOGIN_VIDEO_SRC =
-  (import.meta.env.VITE_ADMIN_LOGIN_VIDEO as string | undefined)?.trim() || HERO_SCROLL_VIDEO_SRC;
+  (import.meta.env.VITE_ADMIN_LOGIN_VIDEO as string | undefined)?.trim() || HERO_VIDEO_DESKTOP_SRC;
 
 export const CATALOG_DEMO_NOTICE =
   "Styles and pricing shown use catalogue photography from Priya Kaur’s shoot. Final product titles and specs can be updated from admin.";
