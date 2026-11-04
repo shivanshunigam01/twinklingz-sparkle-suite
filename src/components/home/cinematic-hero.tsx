@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HERO_VIDEO_DESKTOP_SRC, HERO_VIDEO_MOBILE_SRC } from "@/lib/cms-settings";
@@ -59,11 +59,14 @@ export function CinematicHero() {
 
   const showVideo = useVideo && !prefersReducedMotion;
 
-  useEffect(() => {
-    if (!showVideo) return;
+  useLayoutEffect(() => {
+    if (!showVideo || !clientReady) return;
 
     const video = videoRef.current;
     if (!video) return;
+
+    video.muted = true;
+    video.loop = true;
 
     const syncCover = () => {
       if (video.currentTime > 0.05 && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
@@ -80,25 +83,32 @@ export function CinematicHero() {
       }
     };
 
+    const startPlayback = () => {
+      if (!video.paused) {
+        syncCover();
+        return;
+      }
+      void video.play().then(() => syncCover()).catch(() => {
+        /* Autoplay blocked — keep cover until first interaction */
+      });
+    };
+
     video.addEventListener("playing", dismissCover);
     video.addEventListener("timeupdate", syncCover);
     video.addEventListener("timeupdate", smoothLoop);
-    video.addEventListener("loadeddata", syncCover);
+    video.addEventListener("loadeddata", startPlayback);
+    video.addEventListener("canplay", startPlayback);
 
-    syncCover();
-    if (video.paused) {
-      void video.play().catch(() => {
-        /* Autoplay blocked — keep cover until interaction */
-      });
-    }
+    startPlayback();
 
     return () => {
       video.removeEventListener("playing", dismissCover);
       video.removeEventListener("timeupdate", syncCover);
       video.removeEventListener("timeupdate", smoothLoop);
-      video.removeEventListener("loadeddata", syncCover);
+      video.removeEventListener("loadeddata", startPlayback);
+      video.removeEventListener("canplay", startPlayback);
     };
-  }, [showVideo, videoSrc, dismissCover]);
+  }, [showVideo, clientReady, videoSrc, dismissCover]);
 
   return (
     <section className="relative h-screen bg-primary">
@@ -115,6 +125,11 @@ export function CinematicHero() {
             disablePictureInPicture
             className="absolute inset-0 h-full w-full object-cover [transform:translateZ(0)]"
             onPlaying={dismissCover}
+            onCanPlay={(e) => {
+              const v = e.currentTarget;
+              v.muted = true;
+              if (v.paused) void v.play().catch(() => undefined);
+            }}
             onError={() => setUseVideo(false)}
           />
         ) : null}
