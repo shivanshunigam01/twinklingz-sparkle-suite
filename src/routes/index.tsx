@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CinematicHero } from "@/components/home/cinematic-hero";
-import { HERO_VIDEO_DESKTOP_SRC, HERO_VIDEO_MOBILE_SRC } from "@/lib/cms-settings";
 import { DiwaliOfferSection } from "@/components/home/diwali-offer-section";
 import {
   BestsellersSection,
@@ -16,22 +15,6 @@ import {
 
 export const Route = createFileRoute("/")({
   head: () => ({
-    links: [
-      {
-        rel: "preload",
-        href: HERO_VIDEO_DESKTOP_SRC,
-        as: "video",
-        type: "video/mp4",
-        media: "(min-width: 768px)",
-      },
-      {
-        rel: "preload",
-        href: HERO_VIDEO_MOBILE_SRC,
-        as: "video",
-        type: "video/mp4",
-        media: "(max-width: 767px)",
-      },
-    ],
     meta: [
       { title: "Twinklingz by Priya Kaur | Premium Fashion Jewellery" },
       {

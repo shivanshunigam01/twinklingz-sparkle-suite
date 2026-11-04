@@ -9,21 +9,19 @@ import { optimizeImageUrl } from "@/lib/cloudinary-url";
 const DESKTOP_HERO_POSTER = "/hero-fashion-film-desktop-poster.jpg";
 
 function readHeroViewport(): "mobile" | "desktop" {
-  if (typeof window === "undefined") return "desktop";
   return window.matchMedia("(max-width: 767px)").matches ? "mobile" : "desktop";
 }
 
+/** SSR + first client paint must match — viewport is applied after mount. */
 export function CinematicHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const coverDismissedRef = useRef(false);
   const previousVideoSrcRef = useRef<string | null>(null);
   const [showCover, setShowCover] = useState(true);
   const [useVideo, setUseVideo] = useState(true);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  });
-  const [viewport, setViewport] = useState(readHeroViewport);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [viewport, setViewport] = useState<"mobile" | "desktop">("desktop");
+  const [clientReady, setClientReady] = useState(false);
 
   const videoSrc = viewport === "mobile" ? HERO_VIDEO_MOBILE_SRC : HERO_VIDEO_DESKTOP_SRC;
   const coverImageSrc = useMemo(() => {
@@ -38,16 +36,17 @@ export function CinematicHero() {
   }, []);
 
   useEffect(() => {
+    setClientReady(true);
+    setViewport(readHeroViewport());
+
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     setPrefersReducedMotion(reduced);
     if (reduced) setUseVideo(false);
-  }, []);
 
-  useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
-    const onChange = () => setViewport(mq.matches ? "mobile" : "desktop");
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
+    const onViewportChange = () => setViewport(mq.matches ? "mobile" : "desktop");
+    mq.addEventListener("change", onViewportChange);
+    return () => mq.removeEventListener("change", onViewportChange);
   }, []);
 
   useEffect(() => {
@@ -104,7 +103,7 @@ export function CinematicHero() {
   return (
     <section className="relative h-screen bg-primary">
       <div className="relative h-full overflow-hidden">
-        {showVideo ? (
+        {showVideo && clientReady ? (
           <video
             ref={videoRef}
             src={videoSrc}

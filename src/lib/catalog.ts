@@ -19,6 +19,8 @@ export type Product = {
   featured?: boolean;
 };
 
+const defaultCatalogImage = catalogEntries[0]?.images[0] ?? "/catalog/NEC-57165/1.png";
+
 export const products: Product[] = catalogEntries.map((entry, i) => ({
   id: `p${i + 1}`,
   slug: entry.slug,
@@ -29,8 +31,8 @@ export const products: Product[] = catalogEntries.map((entry, i) => ({
   badge: entry.badge,
   rating: entry.rating,
   reviews: entry.reviews,
-  image: entry.images[0] ?? "/catalog/57165/1.png",
-  altImage: entry.images[1] ?? entry.images[0] ?? "/catalog/57165/1.png",
+  image: entry.images[0] ?? defaultCatalogImage,
+  altImage: entry.images[1] ?? entry.images[0] ?? defaultCatalogImage,
   images: entry.images,
 }));
 
@@ -40,23 +42,23 @@ const pick = (sku: string, n = 1) => {
 };
 
 export const media = {
-  heroImage: pick("57165", 1),
-  categoriesImage: pick("57165-1", 1),
-  campaignImage: pick("53655", 1),
-  lookImage: pick("04", 1),
-  storyImage: pick("54155", 2),
+  heroImage: pick("NEC-57165", 1),
+  categoriesImage: pick("NEC-57165-1", 1),
+  campaignImage: pick("NEC-53655", 1),
+  lookImage: pick("BRA-04", 1),
+  storyImage: pick("NEC-54155", 2),
 };
 
 /** Frames for scroll-scrub hero when no hero video is uploaded yet. */
 export const heroScrollFrames: string[] = [
-  pick("57165", 1),
-  pick("57165", 2),
-  pick("57165", 3),
-  pick("57165", 4),
-  pick("57165-1", 1),
-  pick("57165-1", 2),
-  pick("53655", 1),
-  pick("04", 1),
+  pick("NEC-57165", 1),
+  pick("NEC-57165", 2),
+  pick("NEC-57165", 3),
+  pick("NEC-57165", 4),
+  pick("NEC-57165-1", 1),
+  pick("NEC-57165-1", 2),
+  pick("NEC-53655", 1),
+  pick("BRA-04", 1),
 ].filter(Boolean);
 
 /** Every catalog photo for grids, social, and editorial sections. */
