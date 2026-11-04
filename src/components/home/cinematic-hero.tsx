@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { LazyImage } from "@/components/ui/lazy-image";
 import { HERO_VIDEO_DESKTOP_SRC, HERO_VIDEO_MOBILE_SRC } from "@/lib/cms-settings";
 import { media } from "@/lib/catalog";
-import { cn } from "@/lib/utils";
+import { optimizeImageUrl } from "@/lib/cloudinary-url";
+
+const DESKTOP_HERO_POSTER = "/hero-fashion-film-desktop-poster.jpg";
 
 function readHeroViewport(): "mobile" | "desktop" {
   if (typeof window === "undefined") return "desktop";
@@ -15,17 +16,25 @@ function readHeroViewport(): "mobile" | "desktop" {
 export function CinematicHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const coverDismissedRef = useRef(false);
-  const [coverVisible, setCoverVisible] = useState(true);
+  const previousVideoSrcRef = useRef<string | null>(null);
+  const [showCover, setShowCover] = useState(true);
   const [useVideo, setUseVideo] = useState(true);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  });
   const [viewport, setViewport] = useState(readHeroViewport);
-  const poster = media.heroImage;
+
   const videoSrc = viewport === "mobile" ? HERO_VIDEO_MOBILE_SRC : HERO_VIDEO_DESKTOP_SRC;
+  const coverImageSrc = useMemo(() => {
+    if (viewport === "desktop") return DESKTOP_HERO_POSTER;
+    return optimizeImageUrl(media.heroImage, 1600);
+  }, [viewport]);
 
   const dismissCover = useCallback(() => {
     if (coverDismissedRef.current) return;
     coverDismissedRef.current = true;
-    setCoverVisible(false);
+    setShowCover(false);
   }, []);
 
   useEffect(() => {
@@ -42,43 +51,61 @@ export function CinematicHero() {
   }, []);
 
   useEffect(() => {
+    const previous = previousVideoSrcRef.current;
+    previousVideoSrcRef.current = videoSrc;
+    if (previous === null || previous === videoSrc) return;
     coverDismissedRef.current = false;
-    setCoverVisible(true);
+    setShowCover(true);
   }, [videoSrc]);
 
+  const showVideo = useVideo && !prefersReducedMotion;
+
   useEffect(() => {
-    if (prefersReducedMotion || !useVideo) return;
+    if (!showVideo) return;
 
     const video = videoRef.current;
     if (!video) return;
 
-    const onPlayback = () => {
-      if (video.currentTime > 0.02 || !video.paused) dismissCover();
+    const syncCover = () => {
+      if (video.currentTime > 0.05 && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+        dismissCover();
+      }
+    };
+
+    /** Avoid a black flash when the browser seeks back to 0 at loop end. */
+    const smoothLoop = () => {
+      const { duration, currentTime } = video;
+      if (!Number.isFinite(duration) || duration <= 0) return;
+      if (currentTime >= duration - 0.08) {
+        video.currentTime = 0.001;
+      }
     };
 
     video.addEventListener("playing", dismissCover);
-    video.addEventListener("timeupdate", onPlayback);
-    video.addEventListener("loadeddata", onPlayback);
+    video.addEventListener("timeupdate", syncCover);
+    video.addEventListener("timeupdate", smoothLoop);
+    video.addEventListener("loadeddata", syncCover);
 
-    void video.play().catch(() => {
-      /* Autoplay blocked — keep cover until user interacts */
-    });
+    syncCover();
+    if (video.paused) {
+      void video.play().catch(() => {
+        /* Autoplay blocked — keep cover until interaction */
+      });
+    }
 
     return () => {
       video.removeEventListener("playing", dismissCover);
-      video.removeEventListener("timeupdate", onPlayback);
-      video.removeEventListener("loadeddata", onPlayback);
+      video.removeEventListener("timeupdate", syncCover);
+      video.removeEventListener("timeupdate", smoothLoop);
+      video.removeEventListener("loadeddata", syncCover);
     };
-  }, [prefersReducedMotion, useVideo, videoSrc, dismissCover]);
-
-  const showVideo = useVideo && !prefersReducedMotion;
+  }, [showVideo, videoSrc, dismissCover]);
 
   return (
     <section className="relative h-screen bg-primary">
       <div className="relative h-full overflow-hidden">
         {showVideo ? (
           <video
-            key={videoSrc}
             ref={videoRef}
             src={videoSrc}
             muted
@@ -86,26 +113,25 @@ export function CinematicHero() {
             autoPlay
             loop
             preload="auto"
-            className="absolute inset-0 h-full w-full object-cover"
+            disablePictureInPicture
+            className="absolute inset-0 h-full w-full object-cover [transform:translateZ(0)]"
             onPlaying={dismissCover}
             onError={() => setUseVideo(false)}
           />
         ) : null}
 
-        <LazyImage
-          src={poster}
-          alt=""
-          optimizeWidth={1600}
-          width={1600}
-          height={900}
-          priority
-          aria-hidden
-          className={cn(
-            "absolute inset-0 h-full w-full object-cover",
-            showVideo && "pointer-events-none transition-opacity duration-700 ease-out",
-            showVideo && (coverVisible ? "z-[1] opacity-100" : "z-0 opacity-0"),
-          )}
-        />
+        {showCover ? (
+          <img
+            src={coverImageSrc}
+            alt=""
+            width={1600}
+            height={900}
+            decoding="async"
+            fetchPriority="high"
+            aria-hidden
+            className="absolute inset-0 z-[1] h-full w-full object-cover"
+          />
+        ) : null}
 
         <div className="absolute inset-0 z-[2] bg-hero-shade" />
 
