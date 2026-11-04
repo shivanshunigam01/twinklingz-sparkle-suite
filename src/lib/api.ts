@@ -109,6 +109,8 @@ export type PublicSiteSettings = {
   storyCopy: { headline: string; body: string; highlight: string };
   offerBannerImage?: string;
   offerBannerImageMobile?: string;
+  heroVideoDesktop?: string;
+  heroVideoMobile?: string;
 };
 
 export type ProductReview = {

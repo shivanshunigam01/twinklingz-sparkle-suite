@@ -49,28 +49,63 @@ function SettingsPage() {
     <div className="max-w-2xl space-y-10">
       <div>
         <h2 className="font-display text-4xl">Site settings</h2>
-        <p className="mt-2 text-muted-foreground">Contact address, announcement bar, and brand copy for the public site.</p>
+        <p className="mt-2 text-muted-foreground">
+          Homepage media, seasonal campaigns, contact, and brand copy. Uploads go to Cloudinary and update the live site
+          immediately.
+        </p>
       </div>
 
-      <OfferBannerUpload
-        title="Homepage offer banner — desktop & tablet"
-        description="Wide landscape artwork shown from 768px width and up (below the hero)."
-        uploadPath="/admin/settings/offer-banner"
-        imageUrl={form.offerBannerImage ?? ""}
-        onUploaded={(url) => setForm({ ...form, offerBannerImage: url })}
-        onClear={() => setForm({ ...form, offerBannerImage: "" })}
-        token={token}
-      />
-      <OfferBannerUpload
-        title="Homepage offer banner — mobile"
-        description="Portrait or square artwork shown on phones (below the hero). Falls back to desktop banner if empty."
-        uploadPath="/admin/settings/offer-banner-mobile"
-        imageUrl={form.offerBannerImageMobile ?? ""}
-        onUploaded={(url) => setForm({ ...form, offerBannerImageMobile: url })}
-        onClear={() => setForm({ ...form, offerBannerImageMobile: "" })}
-        token={token}
-        previewMaxWidth={320}
-      />
+      <div className="space-y-6">
+        <h3 className="font-display text-2xl">Homepage hero video</h3>
+        <p className="text-sm text-muted-foreground">
+          Autoplay loop on the main banner. Use separate clips for desktop/tablet (768px+) and phones. MP4 recommended,
+          under 40MB. If empty, the site uses the default videos in <code className="text-xs">/public</code>.
+        </p>
+        <HeroVideoUpload
+          title="Hero video — desktop & tablet"
+          uploadPath="/admin/settings/hero-video-desktop"
+          videoUrl={form.heroVideoDesktop ?? ""}
+          onUploaded={(url) => setForm({ ...form, heroVideoDesktop: url })}
+          onClear={() => setForm({ ...form, heroVideoDesktop: "" })}
+          token={token}
+        />
+        <HeroVideoUpload
+          title="Hero video — mobile"
+          uploadPath="/admin/settings/hero-video-mobile"
+          videoUrl={form.heroVideoMobile ?? ""}
+          onUploaded={(url) => setForm({ ...form, heroVideoMobile: url })}
+          onClear={() => setForm({ ...form, heroVideoMobile: "" })}
+          token={token}
+          previewMaxWidth={280}
+        />
+      </div>
+
+      <div className="space-y-6 border-t border-border pt-10">
+        <h3 className="font-display text-2xl">Seasonal offer banner</h3>
+        <p className="text-sm text-muted-foreground">
+          Full-width promo image below the hero (Diwali, festive sales, etc.). Swap anytime for a new season — desktop and
+          mobile can differ.
+        </p>
+        <OfferBannerUpload
+          title="Offer banner — desktop & tablet"
+          description="Landscape artwork from 768px and up."
+          uploadPath="/admin/settings/offer-banner"
+          imageUrl={form.offerBannerImage ?? ""}
+          onUploaded={(url) => setForm({ ...form, offerBannerImage: url })}
+          onClear={() => setForm({ ...form, offerBannerImage: "" })}
+          token={token}
+        />
+        <OfferBannerUpload
+          title="Offer banner — mobile"
+          description="Portrait or square for phones. Falls back to desktop if empty."
+          uploadPath="/admin/settings/offer-banner-mobile"
+          imageUrl={form.offerBannerImageMobile ?? ""}
+          onUploaded={(url) => setForm({ ...form, offerBannerImageMobile: url })}
+          onClear={() => setForm({ ...form, offerBannerImageMobile: "" })}
+          token={token}
+          previewMaxWidth={320}
+        />
+      </div>
 
       <section className="space-y-4 border border-border bg-background p-6">
         <h3 className="font-display text-xl">Brand</h3>
@@ -144,6 +179,80 @@ function SettingsPage() {
         Save all settings
       </Button>
     </div>
+  );
+}
+
+function HeroVideoUpload({
+  title,
+  uploadPath,
+  videoUrl,
+  onUploaded,
+  onClear,
+  token,
+  previewMaxWidth = 640,
+}: {
+  title: string;
+  uploadPath: string;
+  videoUrl: string;
+  onUploaded: (url: string) => void;
+  onClear: () => void;
+  token: string | null;
+  previewMaxWidth?: number;
+}) {
+  const qc = useQueryClient();
+  const [uploading, setUploading] = useState(false);
+
+  async function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !token) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("video", file);
+      const res = await apiUploadForm<{ url: string; settings: PublicSiteSettings }>(uploadPath, fd, {
+        token,
+      });
+      onUploaded(res.url);
+      qc.invalidateQueries({ queryKey: ["public", "settings"] });
+      qc.invalidateQueries({ queryKey: ["admin", "settings"] });
+      toast.success("Hero video uploaded to Cloudinary");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  return (
+    <section className="space-y-4 border border-border bg-background p-6">
+      <h4 className="font-display text-xl">{title}</h4>
+      {videoUrl ? (
+        <div className="mx-auto overflow-hidden border border-border bg-black" style={{ maxWidth: previewMaxWidth }}>
+          <video src={videoUrl} muted playsInline loop autoPlay controls className="block h-auto w-full" />
+        </div>
+      ) : (
+        <p className="text-sm text-muted-foreground">No custom video — using site default.</p>
+      )}
+      <div className="flex flex-wrap gap-3">
+        <Label className="inline-flex cursor-pointer items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted">
+          {uploading ? "Uploading…" : "Upload MP4 to Cloudinary"}
+          <input
+            type="file"
+            accept="video/mp4,video/quicktime,video/webm"
+            className="sr-only"
+            disabled={uploading}
+            onChange={onFileChange}
+          />
+        </Label>
+        {videoUrl ? (
+          <Button type="button" variant="outline" onClick={onClear}>
+            Use default video
+          </Button>
+        ) : null}
+      </div>
+      <Field label="Or paste Cloudinary video URL" value={videoUrl} onChange={(v) => onUploaded(v)} />
+    </section>
   );
 }
 

@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { HERO_VIDEO_DESKTOP_SRC, HERO_VIDEO_MOBILE_SRC } from "@/lib/cms-settings";
 import { media } from "@/lib/catalog";
 import { optimizeImageUrl } from "@/lib/cloudinary-url";
+import { cloudinaryVideoPosterUrl } from "@/lib/cloudinary-video-poster";
+import { useSiteSettings } from "@/lib/use-site-settings";
 
 const DESKTOP_HERO_POSTER = "/hero-fashion-film-desktop-poster.jpg";
 
@@ -22,12 +24,20 @@ export function CinematicHero() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [viewport, setViewport] = useState<"mobile" | "desktop">("desktop");
   const [clientReady, setClientReady] = useState(false);
+  const { data: siteSettings } = useSiteSettings();
 
-  const videoSrc = viewport === "mobile" ? HERO_VIDEO_MOBILE_SRC : HERO_VIDEO_DESKTOP_SRC;
+  const desktopVideo =
+    siteSettings.heroVideoDesktop?.trim() || HERO_VIDEO_DESKTOP_SRC;
+  const mobileVideo = siteSettings.heroVideoMobile?.trim() || HERO_VIDEO_MOBILE_SRC;
+  const videoSrc = viewport === "mobile" ? mobileVideo : desktopVideo;
+
   const coverImageSrc = useMemo(() => {
+    const activeVideo = viewport === "mobile" ? mobileVideo : desktopVideo;
+    const fromCloudinary = cloudinaryVideoPosterUrl(activeVideo, 1600);
+    if (fromCloudinary) return fromCloudinary;
     if (viewport === "desktop") return DESKTOP_HERO_POSTER;
     return optimizeImageUrl(media.heroImage, 1600);
-  }, [viewport]);
+  }, [viewport, desktopVideo, mobileVideo]);
 
   const dismissCover = useCallback(() => {
     if (coverDismissedRef.current) return;

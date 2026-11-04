@@ -23,6 +23,8 @@ const fallback: PublicSiteSettings = {
   storyCopy: { ...STORY_COPY },
   offerBannerImage: "",
   offerBannerImageMobile: "",
+  heroVideoDesktop: "",
+  heroVideoMobile: "",
 };
 
 export function useSiteSettings() {
