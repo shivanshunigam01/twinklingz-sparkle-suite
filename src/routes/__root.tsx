@@ -104,6 +104,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@300;400;500;600;700&family=Parisienne&display=swap" },
       { rel: "icon", href: "/favicon.jpg", type: "image/jpeg" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.jpg" },
+      { rel: "canonical", href: "https://www.twinklingz.com" },
+      { rel: "alternate", type: "text/plain", href: "/llms.txt", title: "LLM site summary" },
     ],
   }),
   shellComponent: RootShell,

@@ -1,0 +1,37 @@
+# Twinklingz by Priya Kaur
+
+> Premium fashion jewellery for every story — curated by Priya Kaur.
+
+## Canonical URL (use this for browsing)
+
+Always open **https://www.twinklingz.com** (with `www`).  
+The bare domain `twinklingz.com` redirects; some tools fail on that redirect chain.
+
+## Key pages
+
+- [Home](https://www.twinklingz.com/)
+- [Shop all](https://www.twinklingz.com/shop)
+- [New arrivals](https://www.twinklingz.com/new-arrivals)
+- [Bestsellers](https://www.twinklingz.com/bestsellers)
+- [Collections](https://www.twinklingz.com/collections)
+- [About](https://www.twinklingz.com/about)
+- [Contact](https://www.twinklingz.com/contact)
+- [FAQ](https://www.twinklingz.com/faq)
+- [Jewellery care](https://www.twinklingz.com/jewellery-care)
+- [Shipping policy](https://www.twinklingz.com/shipping-policy)
+- [Privacy](https://www.twinklingz.com/privacy)
+- [Terms](https://www.twinklingz.com/terms)
+
+## Machine-readable data
+
+- [Sitemap](https://www.twinklingz.com/sitemap.xml)
+- [Full catalog text (auto-updated)](https://www.twinklingz.com/llms-full.txt)
+- [Product catalog JSON](https://api.twinklingz.com/api/products)
+
+## Product URL pattern
+
+`https://www.twinklingz.com/products/{slug}`
+
+## Optional
+
+Contact: use the form at https://www.twinklingz.com/contact
