@@ -179,7 +179,7 @@ function Page() {
 
               <div className="border-y border-border py-5">
                 <ProductPrice product={product} size="lg" />
-                <p className="mt-3 text-sm text-muted-foreground">Inclusive of all taxes · Limited-time Diwali offer</p>
+                <p className="mt-3 text-sm text-muted-foreground">Inclusive of all taxes · Limited-time offer</p>
               </div>
 
               <div className="rounded-lg border border-border bg-secondary/40 p-5">

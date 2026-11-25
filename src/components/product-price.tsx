@@ -1,7 +1,7 @@
 import { formatPrice } from "@/lib/catalog";
 import type { Product } from "@/lib/catalog";
 import {
-  DIWALI_SALE,
+  SITE_SALE,
   getOfferPrice,
   getOriginalListPrice,
   hasPromoDiscount,
@@ -56,7 +56,7 @@ export function ProductPrice({
         <span className={cn(mrpClass, "line-through decoration-2")}>{formatPrice(original)}</span>
         <strong className={offerClass}>{formatPrice(offer)}</strong>
         <span className="rounded-sm bg-emerald-600/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-800">
-          {DIWALI_SALE.shortLabel}
+          {SITE_SALE.shortLabel}
         </span>
       </div>
     );
@@ -73,7 +73,7 @@ export function ProductPrice({
         <strong className={offerClass}>{formatPrice(offer)}</strong>
       </div>
       <p className="text-xs font-medium text-emerald-800">
-        You save {formatPrice(savings)} ({DIWALI_SALE.percentOff}% off)
+        You save {formatPrice(savings)} ({SITE_SALE.percentOff}% off)
       </p>
     </div>
   );

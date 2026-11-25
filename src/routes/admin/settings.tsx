@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { apiFetch, apiUploadForm, type PublicSiteSettings } from "@/lib/api";
-import { LazyImage } from "@/components/ui/lazy-image";
 import { getAdminToken } from "@/lib/admin-auth";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
@@ -77,33 +76,6 @@ function SettingsPage() {
           onClear={() => setForm({ ...form, heroVideoMobile: "" })}
           token={token}
           previewMaxWidth={280}
-        />
-      </div>
-
-      <div className="space-y-6 border-t border-border pt-10">
-        <h3 className="font-display text-2xl">Seasonal offer banner</h3>
-        <p className="text-sm text-muted-foreground">
-          Full-width promo image below the hero (Diwali, festive sales, etc.). Swap anytime for a new season — desktop and
-          mobile can differ.
-        </p>
-        <OfferBannerUpload
-          title="Offer banner — desktop & tablet"
-          description="Landscape artwork from 768px and up."
-          uploadPath="/admin/settings/offer-banner"
-          imageUrl={form.offerBannerImage ?? ""}
-          onUploaded={(url) => setForm({ ...form, offerBannerImage: url })}
-          onClear={() => setForm({ ...form, offerBannerImage: "" })}
-          token={token}
-        />
-        <OfferBannerUpload
-          title="Offer banner — mobile"
-          description="Portrait or square for phones. Falls back to desktop if empty."
-          uploadPath="/admin/settings/offer-banner-mobile"
-          imageUrl={form.offerBannerImageMobile ?? ""}
-          onUploaded={(url) => setForm({ ...form, offerBannerImageMobile: url })}
-          onClear={() => setForm({ ...form, offerBannerImageMobile: "" })}
-          token={token}
-          previewMaxWidth={320}
         />
       </div>
 
@@ -252,84 +224,6 @@ function HeroVideoUpload({
         ) : null}
       </div>
       <Field label="Or paste Cloudinary video URL" value={videoUrl} onChange={(v) => onUploaded(v)} />
-    </section>
-  );
-}
-
-function OfferBannerUpload({
-  title,
-  description,
-  uploadPath,
-  imageUrl,
-  onUploaded,
-  onClear,
-  token,
-  previewMaxWidth = 720,
-}: {
-  title: string;
-  description: string;
-  uploadPath: string;
-  imageUrl: string;
-  onUploaded: (url: string) => void;
-  onClear: () => void;
-  token: string | null;
-  previewMaxWidth?: number;
-}) {
-  const qc = useQueryClient();
-  const [uploading, setUploading] = useState(false);
-
-  async function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file || !token) return;
-    setUploading(true);
-    try {
-      const fd = new FormData();
-      fd.append("image", file);
-      const res = await apiUploadForm<{ url: string; settings: PublicSiteSettings }>(uploadPath, fd, {
-        token,
-      });
-      onUploaded(res.url);
-      qc.invalidateQueries({ queryKey: ["public", "settings"] });
-      qc.invalidateQueries({ queryKey: ["admin", "settings"] });
-      toast.success("Offer banner uploaded to Cloudinary");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Upload failed");
-    } finally {
-      setUploading(false);
-      e.target.value = "";
-    }
-  }
-
-  return (
-    <section className="space-y-4 border border-border bg-background p-6">
-      <h3 className="font-display text-xl">{title}</h3>
-      <p className="text-sm text-muted-foreground">{description}</p>
-      {imageUrl ? (
-        <div
-          className="mx-auto overflow-hidden border border-border bg-[#2a1510]"
-          style={{ maxWidth: previewMaxWidth }}
-        >
-          <LazyImage src={imageUrl} alt="" optimizeWidth={1200} className="block h-auto w-full" />
-        </div>
-      ) : (
-        <p className="text-sm text-muted-foreground">No banner uploaded yet.</p>
-      )}
-      <div className="flex flex-wrap gap-3">
-        <Label className="inline-flex cursor-pointer items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted">
-          {uploading ? "Uploading…" : "Upload to Cloudinary"}
-          <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={uploading} onChange={onFileChange} />
-        </Label>
-        {imageUrl ? (
-          <Button type="button" variant="outline" onClick={onClear}>
-            Remove banner URL
-          </Button>
-        ) : null}
-      </div>
-      <Field
-        label="Or paste Cloudinary URL"
-        value={imageUrl}
-        onChange={(v) => onUploaded(v)}
-      />
     </section>
   );
 }

@@ -9,7 +9,7 @@ import {
 } from "@/components/product-image-slider-dialog";
 import { type Product } from "@/lib/catalog";
 import { ProductPrice } from "@/components/product-price";
-import { DIWALI_SALE } from "@/lib/promotions";
+import { SITE_SALE } from "@/lib/promotions";
 import { productGalleryUrls } from "@/lib/product-images";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/components/store-provider";
@@ -113,9 +113,9 @@ export function ProductCard({
         >
           <ProductCardHoverGallery product={product} priority={priority} />
         </Link>
-        {(product.badge || DIWALI_SALE.active) && (
+        {(product.badge || SITE_SALE.active) && (
           <span className="absolute left-3 top-3 bg-primary px-2.5 py-1 text-[10px] font-semibold tracking-[0.18em] text-primary-foreground">
-            {product.badge ?? DIWALI_SALE.shortLabel}
+            {product.badge ?? SITE_SALE.shortLabel}
           </span>
         )}
         <Button

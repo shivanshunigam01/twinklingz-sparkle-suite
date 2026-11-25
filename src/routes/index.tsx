@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CinematicHero } from "@/components/home/cinematic-hero";
-import { DiwaliOfferSection } from "@/components/home/diwali-offer-section";
 import {
   BestsellersSection,
   BrandStorySection,
@@ -34,7 +33,6 @@ function HomePage() {
   return (
     <main>
       <CinematicHero />
-      <DiwaliOfferSection />
       <CategorySection />
       <NewArrivalsSection />
       <CampaignSection />

@@ -7,9 +7,9 @@ export const BRAND = {
   category: "Premium Fashion Jewellery",
 } as const;
 
-import { DIWALI_ANNOUNCEMENT_BAR } from "@/lib/promotions";
+import { SITE_ANNOUNCEMENT_BAR } from "@/lib/promotions";
 
-export const ANNOUNCEMENT_BAR = DIWALI_ANNOUNCEMENT_BAR;
+export const ANNOUNCEMENT_BAR = SITE_ANNOUNCEMENT_BAR;
 
 export const SOCIAL = {
   instagramHandle: "@Twinklingz",

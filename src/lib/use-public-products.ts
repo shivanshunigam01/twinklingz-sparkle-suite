@@ -9,7 +9,7 @@ import {
   displayCategoryLabel,
   productMatchesCategorySlug,
 } from "@/lib/product-categories";
-import { applyDiwaliPricing, applyDiwaliPricingList } from "@/lib/promotions";
+import { applySitePricing, applySitePricingList } from "@/lib/promotions";
 
 export { categoriesFromProducts, categoryToSlug, productMatchesCategorySlug };
 
@@ -46,9 +46,9 @@ function normalizeCatalogKey(slug: string, sku?: string) {
 
 function mergeCatalog(apiList: ApiProduct[]): Product[] {
   const fromApi = apiList.map(mapApiProduct).filter((p) => p.images.length > 0 || p.image);
-  if (fromApi.length > 0) return fromApi;
+  if (fromApi.length > 0) return applySitePricingList(fromApi);
   if (prefersRemoteApi) return [];
-  return applyDiwaliPricingList(staticProducts);
+  return applySitePricingList(staticProducts);
 }
 
 export type ProductSort = "featured" | "new" | "low" | "high" | "best";
@@ -79,7 +79,7 @@ export async function fetchPublicProducts(): Promise<Product[]> {
     const cached = readCatalogCache();
     if (cached?.length) return cached;
     if (prefersRemoteApi) return [];
-    return applyDiwaliPricingList(staticProducts);
+    return applySitePricingList(staticProducts);
   }
 }
 
@@ -88,7 +88,7 @@ export function usePublicProducts() {
   const placeholder = cached ?? (prefersRemoteApi ? undefined : staticProducts);
 
   return useQuery({
-    queryKey: ["public", "products", "diwali-25"],
+    queryKey: ["public", "products", "black-friday-30"],
     queryFn: fetchPublicProducts,
     placeholderData: placeholder,
     staleTime: 5 * 60_000,
@@ -102,14 +102,14 @@ export async function fetchProductBySlug(slug: string): Promise<Product | undefi
   const normalized = normalizeCatalogKey(slug);
   try {
     const res = await apiFetch<{ product: ApiProduct }>(`/products/${encodeURIComponent(slug)}`);
-    return mapApiProduct(res.product);
+    return applySitePricing(mapApiProduct(res.product));
   } catch {
     try {
       if (slug !== normalized) {
         const res = await apiFetch<{ product: ApiProduct }>(
           `/products/${encodeURIComponent(normalized)}`,
         );
-        return mapApiProduct(res.product);
+        return applySitePricing(mapApiProduct(res.product));
       }
     } catch {
       /* fall through to static catalog */
@@ -118,7 +118,7 @@ export async function fetchProductBySlug(slug: string): Promise<Product | undefi
       const found = staticProducts.find(
         (p) => p.slug === slug || normalizeCatalogKey(p.slug, p.sku) === normalized,
       );
-      return found ? applyDiwaliPricing(found) : undefined;
+      return found ? applySitePricing(found) : undefined;
     }
     return undefined;
   }
