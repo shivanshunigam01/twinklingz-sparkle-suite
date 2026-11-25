@@ -81,15 +81,27 @@ function SettingsPage() {
       </div>
 
       <div className="space-y-6 border-t border-border pt-10">
-        <h3 className="font-display text-2xl">Desktop offer banner</h3>
+        <h3 className="font-display text-2xl">Homepage offer banners</h3>
         <p className="text-sm text-muted-foreground">
-          Shown on tablet and desktop below the hero (hidden on phones). Uploads go to Cloudinary.
+          Shown below the hero — separate artwork for phones and for tablet/desktop. Uploads go to Cloudinary.
         </p>
         <OfferBannerUpload
+          title="Mobile (phones)"
+          uploadPath="/admin/settings/offer-banner-mobile"
+          imageUrl={form.offerBannerImageMobile ?? ""}
+          onUploaded={(url) => setForm({ ...form, offerBannerImageMobile: url })}
+          onClear={() => setForm({ ...form, offerBannerImageMobile: "" })}
+          token={token}
+          previewMaxWidth={320}
+        />
+        <OfferBannerUpload
+          title="Tablet & desktop"
+          uploadPath="/admin/settings/offer-banner"
           imageUrl={form.offerBannerImage ?? ""}
           onUploaded={(url) => setForm({ ...form, offerBannerImage: url })}
           onClear={() => setForm({ ...form, offerBannerImage: "" })}
           token={token}
+          previewMaxWidth={720}
         />
       </div>
 
@@ -243,15 +255,21 @@ function HeroVideoUpload({
 }
 
 function OfferBannerUpload({
+  title,
+  uploadPath,
   imageUrl,
   onUploaded,
   onClear,
   token,
+  previewMaxWidth = 720,
 }: {
+  title: string;
+  uploadPath: string;
   imageUrl: string;
   onUploaded: (url: string) => void;
   onClear: () => void;
   token: string | null;
+  previewMaxWidth?: number;
 }) {
   const qc = useQueryClient();
   const [uploading, setUploading] = useState(false);
@@ -263,11 +281,9 @@ function OfferBannerUpload({
     try {
       const fd = new FormData();
       fd.append("image", file);
-      const res = await apiUploadForm<{ url: string; settings: PublicSiteSettings }>(
-        "/admin/settings/offer-banner",
-        fd,
-        { token },
-      );
+      const res = await apiUploadForm<{ url: string; settings: PublicSiteSettings }>(uploadPath, fd, {
+        token,
+      });
       onUploaded(res.url);
       qc.invalidateQueries({ queryKey: ["public", "settings"] });
       qc.invalidateQueries({ queryKey: ["admin", "settings"] });
@@ -282,8 +298,11 @@ function OfferBannerUpload({
 
   return (
     <section className="space-y-4 border border-border bg-background p-6">
+      <h4 className="font-display text-lg">{title}</h4>
       {imageUrl ? (
-        <LazyImage src={imageUrl} alt="" optimizeWidth={1200} className="mx-auto block h-auto w-full max-w-3xl" />
+        <div className="mx-auto overflow-hidden" style={{ maxWidth: previewMaxWidth }}>
+          <LazyImage src={imageUrl} alt="" optimizeWidth={1200} className="block h-auto w-full" />
+        </div>
       ) : (
         <p className="text-sm text-muted-foreground">No banner — site uses the default Cloudinary artwork.</p>
       )}

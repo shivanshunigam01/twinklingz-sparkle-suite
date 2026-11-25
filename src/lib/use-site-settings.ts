@@ -4,6 +4,7 @@ import {
   ANNOUNCEMENT_BAR,
   BRAND,
   DEFAULT_OFFER_BANNER_DESKTOP,
+  DEFAULT_OFFER_BANNER_MOBILE,
   RETURN_REFUND_POLICY,
   SOCIAL,
   STORY_COPY,
@@ -29,7 +30,7 @@ const fallback: PublicSiteSettings = {
   returnRefundPolicy: RETURN_REFUND_POLICY,
   storyCopy: { ...STORY_COPY },
   offerBannerImage: DEFAULT_OFFER_BANNER_DESKTOP,
-  offerBannerImageMobile: "",
+  offerBannerImageMobile: DEFAULT_OFFER_BANNER_MOBILE,
   heroVideoDesktop: "",
   heroVideoMobile: "",
 };
