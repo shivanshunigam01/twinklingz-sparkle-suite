@@ -103,8 +103,8 @@ export function ProductCard({
   const [galleryOpen, setGalleryOpen] = useState(false);
   const photoCount = productGalleryCount(product);
   return (
-    <article className="group min-w-0">
-      <div className="relative aspect-[4/5] overflow-hidden bg-muted">
+    <article className="group flex h-full min-w-0 flex-col">
+      <div className="relative aspect-[4/5] shrink-0 overflow-hidden bg-muted">
         <Link
           to="/products/$slug"
           params={{ slug: product.slug }}
@@ -149,7 +149,7 @@ export function ProductCard({
           <ShoppingBag /> Quick Add
         </Button>
       </div>
-      <div className="pt-4">
+      <div className="flex min-h-0 flex-1 flex-col pt-3 sm:pt-4">
         {showRating && product.reviews > 0 && (
           <div className="mb-1 flex items-center gap-1 text-xs text-muted-foreground">
             <Star className="size-3 fill-accent text-accent" /> {product.rating}{" "}
@@ -159,16 +159,16 @@ export function ProductCard({
         <Link
           to="/products/$slug"
           params={{ slug: product.slug }}
-          className="font-display text-lg text-foreground hover:text-primary"
+          className="line-clamp-2 min-h-[2.75rem] font-display text-base leading-snug text-foreground hover:text-primary sm:min-h-[3rem] sm:text-lg"
         >
           {product.name}
         </Link>
-        <div className="mt-1">
-          <ProductPrice product={product} layout="inline" />
+        <div className="mt-2 flex flex-col gap-3">
+          <ProductPrice product={product} layout="inline" className="min-h-[1.5rem] items-center" />
+          <Button className="w-full md:hidden" onClick={() => addToBag(product)}>
+            Quick Add
+          </Button>
         </div>
-        <Button className="mt-3 w-full md:hidden" onClick={() => addToBag(product)}>
-          Quick Add
-        </Button>
       </div>
     </article>
   );

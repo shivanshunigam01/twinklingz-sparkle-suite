@@ -52,7 +52,7 @@ export function ProductPrice({
 
   if (layout === "inline") {
     return (
-      <div className={cn("flex flex-wrap items-baseline gap-x-2 gap-y-0.5", className)}>
+      <div className={cn("flex flex-wrap items-center gap-x-1.5 gap-y-1", className)}>
         <span className={cn(mrpClass, "line-through decoration-2")}>{formatPrice(original)}</span>
         <strong className={offerClass}>{formatPrice(offer)}</strong>
         <span className="rounded-sm bg-emerald-600/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-800">
