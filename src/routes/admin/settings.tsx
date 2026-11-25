@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { LazyImage } from "@/components/ui/lazy-image";
 import { apiFetch, apiUploadForm, type PublicSiteSettings } from "@/lib/api";
 import { getAdminToken } from "@/lib/admin-auth";
 import { toast } from "sonner";
@@ -76,6 +77,19 @@ function SettingsPage() {
           onClear={() => setForm({ ...form, heroVideoMobile: "" })}
           token={token}
           previewMaxWidth={280}
+        />
+      </div>
+
+      <div className="space-y-6 border-t border-border pt-10">
+        <h3 className="font-display text-2xl">Desktop offer banner</h3>
+        <p className="text-sm text-muted-foreground">
+          Shown on tablet and desktop below the hero (hidden on phones). Uploads go to Cloudinary.
+        </p>
+        <OfferBannerUpload
+          imageUrl={form.offerBannerImage ?? ""}
+          onUploaded={(url) => setForm({ ...form, offerBannerImage: url })}
+          onClear={() => setForm({ ...form, offerBannerImage: "" })}
+          token={token}
         />
       </div>
 
@@ -224,6 +238,73 @@ function HeroVideoUpload({
         ) : null}
       </div>
       <Field label="Or paste Cloudinary video URL" value={videoUrl} onChange={(v) => onUploaded(v)} />
+    </section>
+  );
+}
+
+function OfferBannerUpload({
+  imageUrl,
+  onUploaded,
+  onClear,
+  token,
+}: {
+  imageUrl: string;
+  onUploaded: (url: string) => void;
+  onClear: () => void;
+  token: string | null;
+}) {
+  const qc = useQueryClient();
+  const [uploading, setUploading] = useState(false);
+
+  async function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !token) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("image", file);
+      const res = await apiUploadForm<{ url: string; settings: PublicSiteSettings }>(
+        "/admin/settings/offer-banner",
+        fd,
+        { token },
+      );
+      onUploaded(res.url);
+      qc.invalidateQueries({ queryKey: ["public", "settings"] });
+      qc.invalidateQueries({ queryKey: ["admin", "settings"] });
+      toast.success("Offer banner uploaded to Cloudinary");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  return (
+    <section className="space-y-4 border border-border bg-background p-6">
+      {imageUrl ? (
+        <LazyImage src={imageUrl} alt="" optimizeWidth={1200} className="mx-auto block h-auto w-full max-w-3xl" />
+      ) : (
+        <p className="text-sm text-muted-foreground">No banner — site uses the default Cloudinary artwork.</p>
+      )}
+      <div className="flex flex-wrap gap-3">
+        <Label className="inline-flex cursor-pointer items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted">
+          {uploading ? "Uploading…" : "Upload to Cloudinary"}
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="sr-only"
+            disabled={uploading}
+            onChange={onFileChange}
+          />
+        </Label>
+        {imageUrl ? (
+          <Button type="button" variant="outline" onClick={onClear}>
+            Remove banner URL
+          </Button>
+        ) : null}
+      </div>
+      <Field label="Or paste Cloudinary URL" value={imageUrl} onChange={(v) => onUploaded(v)} />
     </section>
   );
 }
