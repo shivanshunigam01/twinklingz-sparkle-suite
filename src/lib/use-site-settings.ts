@@ -1,14 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch, type PublicSiteSettings } from "@/lib/api";
-import {
-  ANNOUNCEMENT_BAR,
-  BRAND,
-  DEFAULT_OFFER_BANNER_DESKTOP,
-  DEFAULT_OFFER_BANNER_MOBILE,
-  RETURN_REFUND_POLICY,
-  SOCIAL,
-  STORY_COPY,
-} from "@/lib/cms-settings";
+import { ANNOUNCEMENT_BAR, BRAND, RETURN_REFUND_POLICY, SOCIAL, STORY_COPY } from "@/lib/cms-settings";
 
 const fallback: PublicSiteSettings = {
   brandName: BRAND.name,
@@ -29,8 +21,8 @@ const fallback: PublicSiteSettings = {
   social: { ...SOCIAL },
   returnRefundPolicy: RETURN_REFUND_POLICY,
   storyCopy: { ...STORY_COPY },
-  offerBannerImage: DEFAULT_OFFER_BANNER_DESKTOP,
-  offerBannerImageMobile: DEFAULT_OFFER_BANNER_MOBILE,
+  offerBannerImage: "",
+  offerBannerImageMobile: "",
   heroVideoDesktop: "",
   heroVideoMobile: "",
 };

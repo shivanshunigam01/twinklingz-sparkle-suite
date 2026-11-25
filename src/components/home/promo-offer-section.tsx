@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { LazyImage } from "@/components/ui/lazy-image";
-import { DEFAULT_OFFER_BANNER_DESKTOP, DEFAULT_OFFER_BANNER_MOBILE } from "@/lib/cms-settings";
+import { isCloudinaryUrl } from "@/lib/product-images";
 import { SITE_SALE } from "@/lib/promotions";
 import { useSiteSettings } from "@/lib/use-site-settings";
 
@@ -11,7 +11,6 @@ function OfferBannerLink({
   width,
   height,
   sizes,
-  className,
 }: {
   src: string;
   alt: string;
@@ -19,7 +18,6 @@ function OfferBannerLink({
   width: number;
   height: number;
   sizes: string;
-  className?: string;
 }) {
   return (
     <Link
@@ -33,20 +31,25 @@ function OfferBannerLink({
         width={width}
         height={height}
         sizes={sizes}
-        className={className ?? "mx-auto block h-auto w-full max-w-full"}
+        className="mx-auto block h-auto w-full max-w-full"
       />
     </Link>
   );
 }
 
-/** Promo strip below the hero — portrait on phones, landscape on tablet/desktop. */
-export function PromoOfferSection() {
-  const { data: settings } = useSiteSettings();
-  const desktopSrc = settings.offerBannerImage?.trim() || DEFAULT_OFFER_BANNER_DESKTOP;
-  const mobileSrc =
-    settings.offerBannerImageMobile?.trim() || settings.offerBannerImage?.trim() || DEFAULT_OFFER_BANNER_MOBILE;
+function apiOfferBannerUrl(raw: string | undefined): string {
+  const url = raw?.trim() ?? "";
+  return isCloudinaryUrl(url) ? url : "";
+}
 
-  if (!SITE_SALE.active) return null;
+/** Promo strip below the hero — URLs only from GET /settings (Cloudinary via API). */
+export function PromoOfferSection() {
+  const { data: settings, isFetched } = useSiteSettings();
+  const desktopSrc = apiOfferBannerUrl(settings.offerBannerImage);
+  const mobileSrc = apiOfferBannerUrl(settings.offerBannerImageMobile);
+
+  if (!SITE_SALE.active || !isFetched) return null;
+  if (!desktopSrc && !mobileSrc) return null;
 
   const alt = `Twinklingz ${SITE_SALE.shortLabel} on all orders — shop jewellery`;
   const aria = `${SITE_SALE.label} — ${SITE_SALE.shortLabel}`;

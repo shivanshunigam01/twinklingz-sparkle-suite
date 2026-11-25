@@ -65,14 +65,6 @@ export const HERO_VIDEO_DESKTOP_SRC =
 /** @deprecated Use HERO_VIDEO_MOBILE_SRC / HERO_VIDEO_DESKTOP_SRC */
 export const HERO_SCROLL_VIDEO_SRC = HERO_VIDEO_MOBILE_SRC;
 
-/** Desktop offer banner (Cloudinary); overridden by API `offerBannerImage` when set. */
-export const DEFAULT_OFFER_BANNER_DESKTOP =
-  "https://res.cloudinary.com/cozu2jtr/image/upload/v1795607381/twinklingz/marketing/diwali-offer-banner.jpg";
-
-/** Mobile offer banner (portrait); overridden by API `offerBannerImageMobile` when set. */
-export const DEFAULT_OFFER_BANNER_MOBILE =
-  "https://res.cloudinary.com/cozu2jtr/image/upload/v1795607476/twinklingz/marketing/offer-banner-mobile.jpg";
-
 /** Optional separate clip for `/admin/login` (defaults to desktop hero video). */
 export const ADMIN_LOGIN_VIDEO_SRC =
   (import.meta.env.VITE_ADMIN_LOGIN_VIDEO as string | undefined)?.trim() || HERO_VIDEO_DESKTOP_SRC;
