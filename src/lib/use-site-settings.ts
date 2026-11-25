@@ -27,19 +27,23 @@ const fallback: PublicSiteSettings = {
   heroVideoMobile: "",
 };
 
+export async function fetchPublicSiteSettings(): Promise<PublicSiteSettings> {
+  try {
+    const res = await apiFetch<{ settings: PublicSiteSettings }>("/settings");
+    return res.settings;
+  } catch {
+    return fallback;
+  }
+}
+
 export function useSiteSettings() {
   return useQuery({
     queryKey: ["public", "settings"],
-    queryFn: async () => {
-      try {
-        const res = await apiFetch<{ settings: PublicSiteSettings }>("/settings");
-        return res.settings;
-      } catch {
-        return fallback;
-      }
-    },
+    queryFn: fetchPublicSiteSettings,
     staleTime: 60_000,
-    initialData: fallback,
+    /** Placeholder only — must refetch on mount so API offer banners are not stuck empty. */
+    placeholderData: fallback,
+    refetchOnMount: "always",
   });
 }
 

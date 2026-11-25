@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { LazyImage } from "@/components/ui/lazy-image";
-import { isCloudinaryUrl } from "@/lib/product-images";
 import { SITE_SALE } from "@/lib/promotions";
 import { useSiteSettings } from "@/lib/use-site-settings";
 
@@ -11,6 +10,7 @@ function OfferBannerLink({
   width,
   height,
   sizes,
+  priority = false,
 }: {
   src: string;
   alt: string;
@@ -18,6 +18,7 @@ function OfferBannerLink({
   width: number;
   height: number;
   sizes: string;
+  priority?: boolean;
 }) {
   return (
     <Link
@@ -31,6 +32,7 @@ function OfferBannerLink({
         width={width}
         height={height}
         sizes={sizes}
+        priority={priority}
         className="mx-auto block h-auto w-full max-w-full"
       />
     </Link>
@@ -38,17 +40,16 @@ function OfferBannerLink({
 }
 
 function apiOfferBannerUrl(raw: string | undefined): string {
-  const url = raw?.trim() ?? "";
-  return isCloudinaryUrl(url) ? url : "";
+  return raw?.trim() ?? "";
 }
 
-/** Promo strip below the hero — URLs only from GET /settings (Cloudinary via API). */
+/** Promo strip below the hero — URLs from GET /settings (Cloudinary via API). */
 export function PromoOfferSection() {
-  const { data: settings, isFetched } = useSiteSettings();
-  const desktopSrc = apiOfferBannerUrl(settings.offerBannerImage);
-  const mobileSrc = apiOfferBannerUrl(settings.offerBannerImageMobile);
+  const { data: settings } = useSiteSettings();
+  const desktopSrc = apiOfferBannerUrl(settings?.offerBannerImage);
+  const mobileSrc = apiOfferBannerUrl(settings?.offerBannerImageMobile);
 
-  if (!SITE_SALE.active || !isFetched) return null;
+  if (!SITE_SALE.active) return null;
   if (!desktopSrc && !mobileSrc) return null;
 
   const alt = `Twinklingz ${SITE_SALE.shortLabel} on all orders — shop jewellery`;
@@ -66,6 +67,7 @@ export function PromoOfferSection() {
               width={600}
               height={900}
               sizes="100vw"
+              priority
             />
           </div>
         </section>

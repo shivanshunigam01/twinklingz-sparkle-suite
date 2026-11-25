@@ -16,6 +16,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { StoreProvider } from "@/components/store-provider";
 import { CustomerAuthProvider } from "@/components/customer-auth-provider";
 import { fetchPublicProducts } from "@/lib/use-public-products";
+import { fetchPublicSiteSettings } from "@/lib/use-site-settings";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
@@ -138,6 +139,11 @@ function RootComponent() {
       queryKey: ["public", "products", "black-friday-30"],
       queryFn: fetchPublicProducts,
       staleTime: 5 * 60_000,
+    });
+    void queryClient.prefetchQuery({
+      queryKey: ["public", "settings"],
+      queryFn: fetchPublicSiteSettings,
+      staleTime: 60_000,
     });
   }, [isAdmin, queryClient]);
 
