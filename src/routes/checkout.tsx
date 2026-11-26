@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState, type ReactNode } from "react";
-import { CheckCircle2, Loader2, Lock, Mail, MapPin, ShieldCheck, Sparkles, Truck } from "lucide-react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { CheckCircle2, ClipboardList, Loader2, Lock, Mail, MapPin, ShieldCheck, Sparkles, Truck } from "lucide-react";
 import {
   hasCheckoutErrors,
   normalizeIndianMobile,
@@ -17,7 +17,13 @@ import { apiFetch, ApiError } from "@/lib/api";
 import { openRazorpayCheckout } from "@/lib/razorpay";
 import { toast } from "sonner";
 import { useCustomerAuth } from "@/components/customer-auth-provider";
-import { getCustomerToken } from "@/lib/customer-auth";
+import {
+  defaultContactFromCustomer,
+  getCustomerProfile,
+  getCustomerToken,
+  hasSavedCheckoutProfile,
+  savedShippingToForm,
+} from "@/lib/customer-auth";
 import { CheckoutAuthDialog } from "@/components/checkout/checkout-auth-dialog";
 
 export const Route = createFileRoute("/checkout")({
@@ -212,16 +218,37 @@ function Page() {
   const [paying, setPaying] = useState(false);
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const { cart, subtotal, clearCart } = useStore();
-  const { customer } = useCustomerAuth();
+  const { customer, refresh } = useCustomerAuth();
+  const appliedContactDefaults = useRef(false);
 
   useEffect(() => {
-    if (!customer) return;
+    if (!customer) {
+      appliedContactDefaults.current = false;
+      return;
+    }
+    if (appliedContactDefaults.current) return;
+    appliedContactDefaults.current = true;
+    const contact = defaultContactFromCustomer(customer);
     setForm((prev) => ({
       ...prev,
-      fullName: prev.fullName.trim() ? prev.fullName : customer.name,
-      email: prev.email.trim() ? prev.email : customer.email,
+      fullName: prev.fullName.trim() || contact.fullName,
+      email: prev.email.trim() || contact.email,
+      mobile: prev.mobile.trim() || contact.mobile,
     }));
   }, [customer]);
+
+  function applySavedCheckoutDetails() {
+    if (!customer) return;
+    const contact = defaultContactFromCustomer(customer);
+    const shipping = savedShippingToForm(customer.savedShipping);
+    setForm((prev) => ({
+      ...prev,
+      fullName: contact.fullName,
+      email: contact.email,
+      mobile: contact.mobile || prev.mobile,
+      ...shipping,
+    }));
+  }
 
   useEffect(() => {
     const pin = form.pinCode.replace(/\D/g, "");
@@ -312,6 +339,7 @@ function Page() {
     const pin = form.pinCode.replace(/\D/g, "");
     const mobile = normalizeIndianMobile(form.mobile);
     const landmarkParts = [form.locality.trim(), form.landmark.trim()].filter(Boolean);
+    const shippingLandmark = form.landmark.trim();
     const token = getCustomerToken();
     if (!token) {
       setAuthDialogOpen(true);
@@ -333,7 +361,8 @@ function Page() {
           },
           shippingAddress: {
             address: form.address.trim(),
-            landmark: landmarkParts.join(", "),
+            landmark: shippingLandmark,
+            locality: form.locality.trim(),
             city: form.city.trim(),
             state: form.state.trim(),
             pinCode: pin,
@@ -475,7 +504,18 @@ function Page() {
         onOpenChange={setAuthDialogOpen}
         checkoutEmail={form.email.trim()}
         checkoutName={form.fullName.trim()}
-        onSuccess={() => {
+        onSuccess={async () => {
+          await refresh();
+          const profile = getCustomerProfile();
+          if (profile) {
+            const contact = defaultContactFromCustomer(profile);
+            setForm((prev) => ({
+              ...prev,
+              fullName: contact.fullName,
+              email: contact.email,
+              mobile: contact.mobile || prev.mobile,
+            }));
+          }
           void placeOrderAndPay();
         }}
       />
@@ -499,8 +539,33 @@ function Page() {
 
       <form onSubmit={onSubmit} noValidate className="grid gap-6 lg:grid-cols-[1fr_360px] lg:gap-8">
         <section className="rounded-sm border border-white/35 bg-background/92 p-6 shadow-xl backdrop-blur-md sm:p-9">
-          <h2 className="font-display text-2xl text-primary">Delivery details</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Where should we send your order?</p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h2 className="font-display text-2xl text-primary">Delivery details</h2>
+              <p className="mt-1 text-sm text-muted-foreground">Where should we send your order?</p>
+            </div>
+            {hasSavedCheckoutProfile(customer) ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="shrink-0 gap-2 border-primary/30 text-xs tracking-wide"
+                onClick={() => {
+                  applySavedCheckoutDetails();
+                  toast.success("Filled from your saved profile");
+                }}
+              >
+                <ClipboardList className="size-4" aria-hidden />
+                Use saved details
+              </Button>
+            ) : null}
+          </div>
+          {customer ? (
+            <p className="mt-3 text-xs text-muted-foreground">
+              Name, email, and mobile are prefilled from your account
+              {customer.mobile ? "" : " — add your mobile below if this is your first order"}.
+            </p>
+          ) : null}
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <label>
               <span className="mb-1.5 block text-[11px] font-medium tracking-[0.12em] text-muted-foreground">

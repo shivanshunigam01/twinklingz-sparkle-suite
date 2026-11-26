@@ -32,11 +32,11 @@ import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminManageReviewsRouteImport } from './routes/admin/manage-reviews'
 import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 import { Route as AdminProductsRouteImport } from './routes/admin/products'
 import { Route as AdminReportsRouteImport } from './routes/admin/reports'
 import { Route as AdminReviewsRouteImport } from './routes/admin/reviews'
-import { Route as AdminManageReviewsRouteImport } from './routes/admin/manage-reviews'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminSubmissionsRouteImport } from './routes/admin/submissions'
 import { Route as CollectionsIndexRouteImport } from './routes/collections.index'
@@ -161,6 +161,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminManageReviewsRoute = AdminManageReviewsRouteImport.update({
+  id: '/manage-reviews',
+  path: '/manage-reviews',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminOrdersRoute = AdminOrdersRouteImport.update({
   id: '/orders',
   path: '/orders',
@@ -179,11 +184,6 @@ const AdminReportsRoute = AdminReportsRouteImport.update({
 const AdminReviewsRoute = AdminReviewsRouteImport.update({
   id: '/reviews',
   path: '/reviews',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminManageReviewsRoute = AdminManageReviewsRouteImport.update({
-  id: '/manage-reviews',
-  path: '/manage-reviews',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
@@ -250,11 +250,11 @@ export interface FileRoutesByFullPath {
   '/wishlist': typeof WishlistRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/manage-reviews': typeof AdminManageReviewsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/reports': typeof AdminReportsRoute
   '/admin/reviews': typeof AdminReviewsRoute
-  '/admin/manage-reviews': typeof AdminManageReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/submissions': typeof AdminSubmissionsRoute
   '/collections/$slug': typeof CollectionsSlugRoute
@@ -286,10 +286,10 @@ export interface FileRoutesByTo {
   '/wishlist': typeof WishlistRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/manage-reviews': typeof AdminManageReviewsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/reviews': typeof AdminReviewsRoute
-  '/admin/manage-reviews': typeof AdminManageReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/submissions': typeof AdminSubmissionsRoute
   '/collections/$slug': typeof CollectionsSlugRoute
@@ -324,11 +324,11 @@ export interface FileRoutesById {
   '/wishlist': typeof WishlistRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/manage-reviews': typeof AdminManageReviewsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/reports': typeof AdminReportsRoute
   '/admin/reviews': typeof AdminReviewsRoute
-  '/admin/manage-reviews': typeof AdminManageReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/submissions': typeof AdminSubmissionsRoute
   '/collections/$slug': typeof CollectionsSlugRoute
@@ -364,11 +364,11 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/admin/dashboard'
     | '/admin/login'
+    | '/admin/manage-reviews'
     | '/admin/orders'
     | '/admin/products'
     | '/admin/reports'
     | '/admin/reviews'
-    | '/admin/manage-reviews'
     | '/admin/settings'
     | '/admin/submissions'
     | '/collections/$slug'
@@ -400,10 +400,10 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/admin/dashboard'
     | '/admin/login'
+    | '/admin/manage-reviews'
     | '/admin/orders'
     | '/admin/reports'
     | '/admin/reviews'
-    | '/admin/manage-reviews'
     | '/admin/settings'
     | '/admin/submissions'
     | '/collections/$slug'
@@ -437,11 +437,11 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/admin/dashboard'
     | '/admin/login'
+    | '/admin/manage-reviews'
     | '/admin/orders'
     | '/admin/products'
     | '/admin/reports'
     | '/admin/reviews'
-    | '/admin/manage-reviews'
     | '/admin/settings'
     | '/admin/submissions'
     | '/collections/$slug'
@@ -640,6 +640,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/manage-reviews': {
+      id: '/admin/manage-reviews'
+      path: '/manage-reviews'
+      fullPath: '/admin/manage-reviews'
+      preLoaderRoute: typeof AdminManageReviewsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/orders': {
       id: '/admin/orders'
       path: '/orders'
@@ -666,13 +673,6 @@ declare module '@tanstack/react-router' {
       path: '/reviews'
       fullPath: '/admin/reviews'
       preLoaderRoute: typeof AdminReviewsRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/manage-reviews': {
-      id: '/admin/manage-reviews'
-      path: '/manage-reviews'
-      fullPath: '/admin/manage-reviews'
-      preLoaderRoute: typeof AdminManageReviewsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/settings': {
@@ -753,11 +753,11 @@ const AdminProductsRouteWithChildren = AdminProductsRoute._addFileChildren(
 interface AdminRouteRouteChildren {
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminManageReviewsRoute: typeof AdminManageReviewsRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProductsRoute: typeof AdminProductsRouteWithChildren
   AdminReportsRoute: typeof AdminReportsRoute
   AdminReviewsRoute: typeof AdminReviewsRoute
-  AdminManageReviewsRoute: typeof AdminManageReviewsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSubmissionsRoute: typeof AdminSubmissionsRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -766,11 +766,11 @@ interface AdminRouteRouteChildren {
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminDashboardRoute: AdminDashboardRoute,
   AdminLoginRoute: AdminLoginRoute,
+  AdminManageReviewsRoute: AdminManageReviewsRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminProductsRoute: AdminProductsRouteWithChildren,
   AdminReportsRoute: AdminReportsRoute,
   AdminReviewsRoute: AdminReviewsRoute,
-  AdminManageReviewsRoute: AdminManageReviewsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminSubmissionsRoute: AdminSubmissionsRoute,
   AdminIndexRoute: AdminIndexRoute,
