@@ -83,6 +83,31 @@ function CheckoutBackdrop() {
   );
 }
 
+function CheckoutFieldLabel({
+  children,
+  locked,
+  lockedReason,
+}: {
+  children: ReactNode;
+  locked?: boolean;
+  lockedReason?: string;
+}) {
+  return (
+    <span className="mb-1.5 flex flex-wrap items-center gap-2 text-[11px] font-medium tracking-[0.12em] text-muted-foreground">
+      {children}
+      {locked ? (
+        <span
+          title={lockedReason}
+          className="inline-flex items-center gap-1 rounded border border-border bg-muted/80 px-1.5 py-0.5 text-[10px] font-medium normal-case tracking-normal text-muted-foreground"
+        >
+          <Lock className="size-3 shrink-0" aria-hidden />
+          Not editable
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
 function CheckoutPageShell({ children }: { children: ReactNode }) {
   return (
     <main className="relative min-h-screen overflow-hidden px-4 pb-28 pt-28 sm:px-6 sm:pt-32">
@@ -485,11 +510,19 @@ function Page() {
     );
   }
 
-  const inputClass = (hasError?: boolean) =>
-    `w-full border bg-background/90 p-3.5 text-sm outline-none transition placeholder:text-muted-foreground/70 focus:ring-1 ${
-      hasError
-        ? "border-destructive focus:border-destructive focus:ring-destructive/30"
-        : "border-input/80 focus:border-primary focus:ring-primary/30"
+  const pinDigits = form.pinCode.replace(/\D/g, "");
+  const emailLocked = Boolean(customer);
+  const localityFromPin = pinDigits.length === 6 && postOffices.length <= 1;
+  const cityStateFromPin =
+    pinDigits.length === 6 && Boolean(form.city.trim() && form.state.trim());
+
+  const inputClass = (hasError?: boolean, readOnly?: boolean) =>
+    `w-full border p-3.5 text-sm outline-none transition placeholder:text-muted-foreground/70 focus:ring-1 ${
+      readOnly
+        ? "cursor-not-allowed border-muted bg-muted/45 text-foreground focus:ring-0"
+        : hasError
+          ? "border-destructive bg-background/90 focus:border-destructive focus:ring-destructive/30"
+          : "border-input/80 bg-background/90 focus:border-primary focus:ring-primary/30"
     }`;
 
   function FieldError({ message }: { message?: string }) {
@@ -562,15 +595,22 @@ function Page() {
           </div>
           {customer ? (
             <p className="mt-3 text-xs text-muted-foreground">
-              Name, email, and mobile are prefilled from your account
-              {customer.mobile ? "" : " — add your mobile below if this is your first order"}.
+              Name and mobile are prefilled from your account and can be edited for this delivery.
+              {customer.mobile ? "" : " Add your mobile below if this is your first order."}
             </p>
           ) : null}
+          {(emailLocked || cityStateFromPin || localityFromPin) && (
+            <p className="mt-2 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+              <span className="inline-flex items-center gap-1 rounded border border-border bg-muted/80 px-1.5 py-0.5 text-[10px] font-medium">
+                <Lock className="size-3" aria-hidden />
+                Not editable
+              </span>
+              <span>— tied to your account or filled from your PIN code. Change PIN to refresh city and state.</span>
+            </p>
+          )}
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <label>
-              <span className="mb-1.5 block text-[11px] font-medium tracking-[0.12em] text-muted-foreground">
-                FULL NAME
-              </span>
+              <CheckoutFieldLabel>FULL NAME</CheckoutFieldLabel>
               <input
                 autoComplete="name"
                 value={form.fullName}
@@ -580,9 +620,7 @@ function Page() {
               <FieldError message={fieldErrors.fullName} />
             </label>
             <label>
-              <span className="mb-1.5 block text-[11px] font-medium tracking-[0.12em] text-muted-foreground">
-                MOBILE NUMBER
-              </span>
+              <CheckoutFieldLabel>MOBILE NUMBER</CheckoutFieldLabel>
               <input
                 type="tel"
                 inputMode="numeric"
@@ -596,22 +634,26 @@ function Page() {
               <FieldError message={fieldErrors.mobile} />
             </label>
             <label className="sm:col-span-2">
-              <span className="mb-1.5 block text-[11px] font-medium tracking-[0.12em] text-muted-foreground">
+              <CheckoutFieldLabel
+                locked={emailLocked}
+                lockedReason="Orders must use the email on your signed-in account."
+              >
                 EMAIL
-              </span>
+              </CheckoutFieldLabel>
               <input
                 type="email"
                 autoComplete="email"
                 value={form.email}
+                readOnly={emailLocked}
+                aria-readonly={emailLocked}
+                title={emailLocked ? "Linked to your signed-in account" : undefined}
                 onChange={(e) => updateField("email", e.target.value)}
-                className={inputClass(!!fieldErrors.email)}
+                className={inputClass(!!fieldErrors.email, emailLocked)}
               />
               <FieldError message={fieldErrors.email} />
             </label>
             <label>
-              <span className="mb-1.5 block text-[11px] font-medium tracking-[0.12em] text-muted-foreground">
-                PIN CODE
-              </span>
+              <CheckoutFieldLabel>PIN CODE</CheckoutFieldLabel>
               <div className="relative">
                 <input
                   inputMode="numeric"
@@ -629,9 +671,12 @@ function Page() {
               <FieldError message={fieldErrors.pinCode} />
             </label>
             <label>
-              <span className="mb-1.5 block text-[11px] font-medium tracking-[0.12em] text-muted-foreground">
+              <CheckoutFieldLabel
+                locked={localityFromPin}
+                lockedReason="Filled automatically from your PIN code."
+              >
                 AREA / LOCALITY
-              </span>
+              </CheckoutFieldLabel>
               {postOffices.length > 1 ? (
                 <select
                   value={form.locality}
@@ -649,17 +694,16 @@ function Page() {
               ) : (
                 <input
                   readOnly
+                  aria-readonly
                   value={form.locality}
                   placeholder={pinLookupLoading ? "Looking up…" : "Autofilled from PIN"}
-                  className={inputClass(!!fieldErrors.locality)}
+                  className={inputClass(!!fieldErrors.locality, localityFromPin || pinLookupLoading)}
                 />
               )}
               <FieldError message={fieldErrors.locality} />
             </label>
             <label className="sm:col-span-2">
-              <span className="mb-1.5 block text-[11px] font-medium tracking-[0.12em] text-muted-foreground">
-                HOUSE / STREET ADDRESS
-              </span>
+              <CheckoutFieldLabel>HOUSE / STREET ADDRESS</CheckoutFieldLabel>
               <input
                 autoComplete="street-address"
                 value={form.address}
@@ -669,9 +713,7 @@ function Page() {
               <FieldError message={fieldErrors.address} />
             </label>
             <label className="sm:col-span-2">
-              <span className="mb-1.5 block text-[11px] font-medium tracking-[0.12em] text-muted-foreground">
-                APARTMENT / LANDMARK (OPTIONAL)
-              </span>
+              <CheckoutFieldLabel>APARTMENT / LANDMARK (OPTIONAL)</CheckoutFieldLabel>
               <input
                 value={form.landmark}
                 onChange={(e) => updateField("landmark", e.target.value)}
@@ -679,26 +721,36 @@ function Page() {
               />
             </label>
             <label>
-              <span className="mb-1.5 block text-[11px] font-medium tracking-[0.12em] text-muted-foreground">
+              <CheckoutFieldLabel
+                locked={cityStateFromPin}
+                lockedReason="Filled from India Post data for this PIN."
+              >
                 CITY
-              </span>
+              </CheckoutFieldLabel>
               <input
                 autoComplete="address-level2"
                 value={form.city}
+                readOnly={cityStateFromPin}
+                aria-readonly={cityStateFromPin}
                 onChange={(e) => updateField("city", e.target.value)}
-                className={inputClass(!!fieldErrors.city)}
+                className={inputClass(!!fieldErrors.city, cityStateFromPin)}
               />
               <FieldError message={fieldErrors.city} />
             </label>
             <label>
-              <span className="mb-1.5 block text-[11px] font-medium tracking-[0.12em] text-muted-foreground">
+              <CheckoutFieldLabel
+                locked={cityStateFromPin}
+                lockedReason="Filled from India Post data for this PIN."
+              >
                 STATE
-              </span>
+              </CheckoutFieldLabel>
               <input
                 autoComplete="address-level1"
                 value={form.state}
+                readOnly={cityStateFromPin}
+                aria-readonly={cityStateFromPin}
                 onChange={(e) => updateField("state", e.target.value)}
-                className={inputClass(!!fieldErrors.state)}
+                className={inputClass(!!fieldErrors.state, cityStateFromPin)}
               />
               <FieldError message={fieldErrors.state} />
             </label>
