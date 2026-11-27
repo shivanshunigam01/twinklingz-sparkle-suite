@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { HeroAutoplayVideo } from "@/components/hero-autoplay-video";
 import { HERO_VIDEO_DESKTOP_SRC, HERO_VIDEO_MOBILE_SRC } from "@/lib/cms-settings";
 import { media } from "@/lib/catalog";
 import { optimizeImageUrl } from "@/lib/cloudinary-url";
@@ -14,168 +15,82 @@ function readHeroViewport(): "mobile" | "desktop" {
   return window.matchMedia("(max-width: 767px)").matches ? "mobile" : "desktop";
 }
 
-function tryPlay(video: HTMLVideoElement) {
-  video.muted = true;
-  video.defaultMuted = true;
-  video.playsInline = true;
-  video.loop = true;
-  return video.play();
+function pickHeroVideoSrc(
+  viewport: "mobile" | "desktop",
+  apiDesktop: string,
+  apiMobile: string,
+): string {
+  const raw =
+    viewport === "mobile"
+      ? apiMobile.trim() || HERO_VIDEO_MOBILE_SRC
+      : apiDesktop.trim() || HERO_VIDEO_DESKTOP_SRC;
+  return cloudinaryVideoMp4Url(raw);
 }
 
-/** SSR + first client paint must match — viewport is applied after mount. */
 export function CinematicHero() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const coverDismissedRef = useRef(false);
-  const previousVideoSrcRef = useRef<string | null>(null);
   const fallbackTriedRef = useRef(false);
-  const [showCover, setShowCover] = useState(true);
-  const [useVideo, setUseVideo] = useState(true);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [viewport, setViewport] = useState<"mobile" | "desktop">("desktop");
-  const [clientReady, setClientReady] = useState(false);
+  const [useVideo, setUseVideo] = useState(true);
+  const [videoSrcOverride, setVideoSrcOverride] = useState<string | null>(null);
   const { data: siteSettings } = useSiteSettings();
 
-  const desktopFallback = HERO_VIDEO_DESKTOP_SRC;
-  const mobileFallback = HERO_VIDEO_MOBILE_SRC;
-  const desktopVideo = cloudinaryVideoMp4Url(siteSettings.heroVideoDesktop?.trim() || desktopFallback);
-  const mobileVideo = cloudinaryVideoMp4Url(siteSettings.heroVideoMobile?.trim() || mobileFallback);
-  const videoSrc = viewport === "mobile" ? mobileVideo : desktopVideo;
-  const localFallback = viewport === "mobile" ? mobileFallback : desktopFallback;
+  const apiDesktop = siteSettings.heroVideoDesktop ?? "";
+  const apiMobile = siteSettings.heroVideoMobile ?? "";
 
-  const coverImageSrc = useMemo(() => {
-    const activeVideo = viewport === "mobile" ? mobileVideo : desktopVideo;
-    const fromCloudinary = cloudinaryVideoPosterUrl(activeVideo, 1600);
+  const resolvedVideoSrc = useMemo(
+    () => pickHeroVideoSrc(viewport, apiDesktop, apiMobile),
+    [viewport, apiDesktop, apiMobile],
+  );
+  const videoSrc = videoSrcOverride ?? resolvedVideoSrc;
+
+  const localFallback = viewport === "mobile" ? HERO_VIDEO_MOBILE_SRC : HERO_VIDEO_DESKTOP_SRC;
+  const isLocalVideo = videoSrc.startsWith("/");
+
+  const posterSrc = useMemo(() => {
+    const fromCloudinary = cloudinaryVideoPosterUrl(videoSrc, 1600);
     if (fromCloudinary) return fromCloudinary;
     if (viewport === "desktop") return DESKTOP_HERO_POSTER;
     return optimizeImageUrl(media.heroImage, 1600);
-  }, [viewport, desktopVideo, mobileVideo]);
-
-  const [posterSrc, setPosterSrc] = useState(coverImageSrc);
-  useEffect(() => {
-    setPosterSrc(coverImageSrc);
-  }, [coverImageSrc]);
-
-  const dismissCover = useCallback(() => {
-    if (coverDismissedRef.current) return;
-    coverDismissedRef.current = true;
-    setShowCover(false);
-  }, []);
+  }, [videoSrc, viewport]);
 
   useEffect(() => {
-    setClientReady(true);
+    setMounted(true);
     setViewport(readHeroViewport());
-
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setPrefersReducedMotion(reduced);
-    if (reduced) setUseVideo(false);
-
     const mq = window.matchMedia("(max-width: 767px)");
-    const onViewportChange = () => setViewport(mq.matches ? "mobile" : "desktop");
-    mq.addEventListener("change", onViewportChange);
-    return () => mq.removeEventListener("change", onViewportChange);
+    const onViewport = () => {
+      setViewport(mq.matches ? "mobile" : "desktop");
+      fallbackTriedRef.current = false;
+      setVideoSrcOverride(null);
+    };
+    mq.addEventListener("change", onViewport);
+    return () => mq.removeEventListener("change", onViewport);
   }, []);
 
   useEffect(() => {
-    const previous = previousVideoSrcRef.current;
-    previousVideoSrcRef.current = videoSrc;
-    if (previous === null || previous === videoSrc) return;
-    coverDismissedRef.current = false;
     fallbackTriedRef.current = false;
-    setShowCover(true);
-  }, [videoSrc]);
+    setVideoSrcOverride(null);
+  }, [resolvedVideoSrc]);
 
-  const showVideo = useVideo && !prefersReducedMotion;
-
-  useEffect(() => {
-    if (!showVideo || !clientReady) return;
-
-    const video = videoRef.current;
-    if (!video) return;
-
-    const syncCover = () => {
-      if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && (!video.paused || video.currentTime > 0)) {
-        dismissCover();
-      }
-    };
-
-    const smoothLoop = () => {
-      const { duration, currentTime } = video;
-      if (!Number.isFinite(duration) || duration <= 0) return;
-      if (currentTime >= duration - 0.08) {
-        video.currentTime = 0.001;
-      }
-    };
-
-    const tick = window.setInterval(() => {
-      if (video.paused) {
-        void tryPlay(video).catch(() => undefined);
-      } else {
-        dismissCover();
-      }
-    }, 500);
-
-    const coverSafety = window.setTimeout(() => {
-      if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) dismissCover();
-    }, 1800);
-
-    const onUserGesture = () => {
-      void tryPlay(video).then(() => dismissCover()).catch(() => undefined);
-    };
-    document.addEventListener("pointerdown", onUserGesture, { once: true, passive: true });
-
-    video.addEventListener("playing", dismissCover);
-    video.addEventListener("timeupdate", syncCover);
-    video.addEventListener("timeupdate", smoothLoop);
-
-    void tryPlay(video).catch(() => undefined);
-
-    return () => {
-      window.clearInterval(tick);
-      window.clearTimeout(coverSafety);
-      document.removeEventListener("pointerdown", onUserGesture);
-      video.removeEventListener("playing", dismissCover);
-      video.removeEventListener("timeupdate", syncCover);
-      video.removeEventListener("timeupdate", smoothLoop);
-    };
-  }, [showVideo, clientReady, videoSrc, dismissCover]);
-
-  const handleVideoError = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
+  function handleVideoError() {
     if (!fallbackTriedRef.current && videoSrc !== localFallback) {
       fallbackTriedRef.current = true;
-      video.src = localFallback;
-      void tryPlay(video).catch(() => undefined);
+      setVideoSrcOverride(localFallback);
       return;
     }
     setUseVideo(false);
-  }, [videoSrc, localFallback]);
+  }
 
   return (
     <section className="relative h-screen bg-primary">
       <div className="relative h-full overflow-hidden">
-        {showVideo && clientReady ? (
-          <video
-            key={videoSrc}
-            ref={videoRef}
+        {mounted && useVideo ? (
+          <HeroAutoplayVideo
             src={videoSrc}
-            muted
-            defaultMuted
-            playsInline
-            autoPlay
-            loop
-            preload="auto"
-            disablePictureInPicture
-            className="absolute inset-0 z-0 h-full w-full object-cover [transform:translateZ(0)]"
-            onPlaying={dismissCover}
-            onPlay={dismissCover}
-            onTimeUpdate={dismissCover}
+            poster={isLocalVideo ? undefined : posterSrc}
             onError={handleVideoError}
           />
-        ) : null}
-
-        {showCover ? (
+        ) : (
           <img
             src={posterSrc}
             alt=""
@@ -183,19 +98,14 @@ export function CinematicHero() {
             height={900}
             decoding="async"
             fetchPriority="high"
+            className="absolute inset-0 z-0 h-full w-full object-cover"
             aria-hidden
-            className="pointer-events-none absolute inset-0 z-[1] h-full w-full object-cover"
-            onError={() => {
-              if (viewport === "desktop") setPosterSrc(DESKTOP_HERO_POSTER);
-              else setPosterSrc(optimizeImageUrl(media.heroImage, 1600));
-              dismissCover();
-            }}
           />
-        ) : null}
+        )}
 
-        <div className="absolute inset-0 z-[2] bg-hero-shade" />
+        <div className="absolute inset-0 z-[1] bg-hero-shade" />
 
-        <div className="absolute inset-0 z-[3] flex items-center justify-center px-5 text-center text-primary-foreground">
+        <div className="absolute inset-0 z-[2] flex items-center justify-center px-5 text-center text-primary-foreground">
           <div className="max-w-4xl">
             <p className="font-display text-5xl sm:text-7xl lg:text-8xl">TWINKLINGZ</p>
             <p className="mt-4 font-display text-2xl leading-snug sm:text-4xl">
